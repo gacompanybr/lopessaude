@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, BadgeDollarSign, Microscope } from "lucide-react";
+import { ShieldCheck, BadgeDollarSign, Microscope, ArrowRight } from "lucide-react";
 import patientSmile from "@/assets/patient-smile.jpg";
 
 const features = [
@@ -11,7 +11,7 @@ const features = [
   {
     icon: BadgeDollarSign,
     title: "Informações sobre Valores",
-    desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
+    desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe.",
   },
   {
     icon: Microscope,
@@ -87,6 +87,19 @@ const Differentials = () => {
                 </motion.div>
               ))}
             </div>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-10"
+            >
+              <a href="#contato" className="btn-primary inline-flex">
+                Quero minha avaliação
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </motion.div>
           </div>
         </div>
       </div>

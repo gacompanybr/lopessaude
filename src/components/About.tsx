@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import clinicInterior from "@/assets/clinic-interior.jpg";
 
 const About = () => {
@@ -26,12 +27,11 @@ const About = () => {
               </p>
             </div>
             <a
-              href="https://api.whatsapp.com/send?phone=5514996684609"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contato"
               className="btn-primary mt-8 inline-flex"
             >
-              Conheça nossa equipe
+              Agende sua visita
+              <ArrowRight className="w-4 h-4" />
             </a>
           </motion.div>
 

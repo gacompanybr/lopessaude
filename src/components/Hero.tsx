@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, AlertCircle, Phone } from "lucide-react";
+import { Calendar, Clock, AlertCircle, Phone, ArrowRight } from "lucide-react";
 import clinicHero from "@/assets/clinic-hero.jpg";
 
 const Hero = () => {
@@ -26,18 +26,17 @@ const Hero = () => {
               Cuidamos da sua saúde bucal com atenção, carinho e tecnologia, para que você sorria com confiança todos os dias.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="https://api.whatsapp.com/send?phone=5514996684609"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                Agendar agora
+              <a href="#contato" className="btn-primary">
+                Agendar minha consulta
+                <ArrowRight className="w-4 h-4" />
               </a>
               <a href="#servicos" className="btn-outline">
                 Nossos serviços
               </a>
             </div>
+            <p className="mt-4 text-xs text-muted-foreground">
+              ✓ Atendimento humanizado &nbsp; ✓ Garantia vitalícia em implantes &nbsp; ✓ Valores acessíveis
+            </p>
           </motion.div>
 
           {/* Image */}

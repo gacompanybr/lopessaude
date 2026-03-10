@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Send, MapPin, Phone, Mail } from "lucide-react";
 
+const WHATSAPP_NUMBER = "5514996684609";
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,9 +15,18 @@ const ContactForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const text = `Olá! Meu nome é ${formData.name}. Cidade: ${formData.city}. ${formData.message}`;
+    const lines = [
+      `*Nova solicitação de contato*`,
+      ``,
+      `*Nome:* ${formData.name || "Não informado"}`,
+      `*WhatsApp:* ${formData.whatsapp}`,
+      `*Cidade:* ${formData.city}`,
+      `*Atendimento particular:* ${formData.isParticular || "Não respondeu"}`,
+      `*Condição odontológica:* ${formData.message || "Não informado"}`,
+    ];
+    const text = lines.join("\n");
     window.open(
-      `https://api.whatsapp.com/send?phone=5514996684609&text=${encodeURIComponent(text)}`,
+      `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`,
       "_blank"
     );
   };
@@ -127,6 +138,10 @@ const ContactForm = () => {
                 <Send className="w-4 h-4" />
                 Enviar agora mesmo
               </button>
+
+              <p className="text-xs text-muted-foreground text-center">
+                Ao clicar em enviar, você será redirecionado para o WhatsApp com todas as informações preenchidas.
+              </p>
             </form>
           </motion.div>
         </div>

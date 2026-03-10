@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CalendarCheck, Search, Sparkles } from "lucide-react";
+import { CalendarCheck, Search, Sparkles, ArrowRight } from "lucide-react";
 
 const steps = [
   {
@@ -67,6 +67,20 @@ const HowWeWork = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-14"
+        >
+          <p className="text-muted-foreground mb-4">Comece agora mesmo o primeiro passo!</p>
+          <a href="#contato" className="btn-primary inline-flex">
+            Agendar minha consulta
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );
