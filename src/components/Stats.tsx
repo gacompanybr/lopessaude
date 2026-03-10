@@ -1,5 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 
 const stats = [
   { value: 900, suffix: "+", label: "Pacientes Atendidos" },
@@ -42,7 +43,7 @@ const Stats = () => {
   return (
     <section className="py-16 gradient-bg">
       <div className="section-container">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -58,6 +59,12 @@ const Stats = () => {
               <p className="text-primary-foreground/80 text-sm font-medium">{stat.label}</p>
             </motion.div>
           ))}
+        </div>
+        <div className="text-center">
+          <a href="#contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold bg-primary-foreground text-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+            Faça parte desses números
+            <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>

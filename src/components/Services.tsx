@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Stethoscope, Smile, CircleDot, Shield } from "lucide-react";
+import { Stethoscope, Smile, CircleDot, Shield, ArrowRight } from "lucide-react";
 
 const services = [
   {
@@ -61,6 +61,20 @@ const Services = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <p className="text-muted-foreground mb-4">Quer saber qual tratamento é ideal para você?</p>
+          <a href="#contato" className="btn-primary inline-flex">
+            Faça sua avaliação gratuita
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

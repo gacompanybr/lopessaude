@@ -64,12 +64,10 @@ const Navbar = () => {
               </a>
             ))}
             <a
-              href="https://api.whatsapp.com/send?phone=5514996684609"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contato"
               className="btn-primary !py-3 !px-6 text-sm"
             >
-              Contato
+              Agendar consulta
             </a>
           </div>
 
@@ -100,12 +98,11 @@ const Navbar = () => {
                   </a>
                 ))}
                 <a
-                  href="https://api.whatsapp.com/send?phone=5514996684609"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#contato"
+                  onClick={() => setMobileOpen(false)}
                   className="btn-primary text-center text-sm"
                 >
-                  Contato
+                  Agendar consulta
                 </a>
               </div>
             </motion.div>
