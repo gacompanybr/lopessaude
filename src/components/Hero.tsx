@@ -4,20 +4,16 @@ import clinicHero from "@/assets/clinic-hero.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative bg-background">
       {/* Hero main */}
       <div className="section-container py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="section-badge mb-6">
-              <span className="w-2 h-2 rounded-full bg-primary" />
-              Atendimento particular
-            </div>
             <h1 className="section-title mb-6">
               Seu sorriso é{" "}
               <span className="gradient-text">nossa prioridade</span>
@@ -25,43 +21,34 @@ const Hero = () => {
             <p className="section-subtitle mb-8">
               Cuidamos da sua saúde bucal com atenção, carinho e tecnologia, para que você sorria com confiança todos os dias.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#contato" className="btn-primary">
-                Agendar minha consulta
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a href="#servicos" className="btn-outline">
-                Nossos serviços
-              </a>
-            </div>
-            <p className="mt-4 text-xs text-muted-foreground">
-              ✓ Atendimento humanizado &nbsp; ✓ Garantia vitalícia em implantes &nbsp; ✓ Valores acessíveis
-            </p>
+            <a href="#contato" className="btn-primary">
+              Atendimento particular
+              <ArrowRight className="w-4 h-4" />
+            </a>
           </motion.div>
 
           {/* Image */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
             className="relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={clinicHero}
                 alt="Clínica Lopes Saúde e Odontologia - Fachada moderna"
-                className="w-full h-[400px] lg:h-[500px] object-cover"
+                className="w-full h-[380px] lg:h-[460px] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
             </div>
-            {/* Floating card */}
+            {/* Floating phone card */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-6 -left-6 glass-card p-4 flex items-center gap-3"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-4 -left-4 glass-card p-4 flex items-center gap-3"
             >
-              <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
-                <Phone className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                <Phone className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">(14) 99668-4609</p>
@@ -97,17 +84,17 @@ const Hero = () => {
           ].map((item, i) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
               className="card-elevated p-6 group"
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+              <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary transition-colors duration-300">
                 <item.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground mb-3">{item.desc}</p>
+              <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{item.desc}</p>
               <span className="text-sm font-semibold text-primary">{item.highlight}</span>
             </motion.div>
           ))}

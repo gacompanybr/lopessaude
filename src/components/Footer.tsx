@@ -2,14 +2,14 @@ import { Clock, MapPin, Phone, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer id="horarios" className="gradient-bg text-primary-foreground">
-      <div className="section-container py-16">
+    <footer id="horarios" className="bg-primary text-primary-foreground">
+      <div className="section-container py-14">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary-foreground/20 flex items-center justify-center">
-                <span className="font-display font-bold text-xl">L</span>
+              <div className="w-9 h-9 rounded-lg bg-primary-foreground/20 flex items-center justify-center">
+                <span className="font-display font-bold text-lg">L</span>
               </div>
               <div>
                 <p className="font-display font-bold text-lg leading-tight">Lopes</p>
@@ -71,8 +71,8 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="border-t border-primary-foreground/20">
-        <div className="section-container py-6 text-center text-sm opacity-70">
+      <div className="border-t border-primary-foreground/15">
+        <div className="section-container py-5 text-center text-sm opacity-60">
           Copyright © Lopes Saúde e Odontologia – Todos os direitos reservados.
         </div>
       </div>
