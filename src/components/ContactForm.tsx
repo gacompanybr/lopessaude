@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Send, MapPin, Phone, Mail } from "lucide-react";
+import { saveLead } from "@/lib/leads";
 
-const WHATSAPP_NUMBER = "5514996684609";
+const WHATSAPP_NUMBER = "551496684609";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,16 @@ const ContactForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Save lead to localStorage
+    saveLead({
+      name: formData.name,
+      whatsapp: formData.whatsapp,
+      city: formData.city,
+      message: formData.message,
+      isParticular: formData.isParticular,
+    });
+
     const lines = [
       `*Nova solicitação de contato*`,
       ``,
@@ -40,7 +51,7 @@ const ContactForm = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
             <span className="section-badge mb-4">Faça o seu agendamento</span>
             <h2 className="section-title mb-4">
@@ -50,7 +61,7 @@ const ContactForm = () => {
               Tem alguma dúvida, deseja agendar uma consulta ou saber mais sobre nossos tratamentos? Preencha o formulário e nossa equipe entrará em contato!
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-5">
               {[
                 { icon: Phone, label: "Contato", value: "+55 (14) 99668-4609" },
                 { icon: Mail, label: "E-mail", value: "lopes.saude@hotmail.com" },
@@ -68,7 +79,7 @@ const ContactForm = () => {
               ))}
             </div>
 
-            <div className="mt-10 p-6 rounded-2xl bg-primary/5 border border-primary/10">
+            <div className="mt-10 p-5 rounded-xl bg-primary/5 border border-primary/10">
               <p className="text-sm text-muted-foreground italic">
                 "Nossa missão é transformar sorrisos, promovendo saúde, bem-estar, conforto e segurança por meio de tratamentos odontológicos humanizados e programas preventivos personalizados!"
               </p>
@@ -80,7 +91,7 @@ const ContactForm = () => {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
           >
             <form onSubmit={handleSubmit} className="card-elevated p-8 space-y-5">
               <div>
@@ -105,18 +116,22 @@ const ContactForm = () => {
                 </div>
               </div>
 
-              {["name", "whatsapp", "city"].map((field) => (
-                <div key={field}>
+              {[
+                { key: "name", label: "Nome", type: "text", required: false, placeholder: "Seu nome" },
+                { key: "whatsapp", label: "WhatsApp *", type: "tel", required: true, placeholder: "(14) 99999-9999" },
+                { key: "city", label: "Cidade *", type: "text", required: true, placeholder: "Digite sua cidade" },
+              ].map((field) => (
+                <div key={field.key}>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">
-                    {field === "name" ? "Nome" : field === "whatsapp" ? "WhatsApp *" : "Cidade *"}
+                    {field.label}
                   </label>
                   <input
-                    type={field === "whatsapp" ? "tel" : "text"}
-                    required={field !== "name"}
-                    value={formData[field as keyof typeof formData]}
-                    onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
-                    placeholder={field === "name" ? "Seu nome" : field === "whatsapp" ? "(14) 99999-9999" : "Digite sua cidade"}
+                    type={field.type}
+                    required={field.required}
+                    value={formData[field.key as keyof typeof formData]}
+                    onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                    placeholder={field.placeholder}
                   />
                 </div>
               ))}
@@ -129,7 +144,7 @@ const ContactForm = () => {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 resize-none"
                   placeholder="Escreva em detalhes sua condição odontológica"
                 />
               </div>

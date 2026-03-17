@@ -36,10 +36,10 @@ const Services = () => {
         >
           <span className="section-badge mb-4">Nossos serviços</span>
           <h2 className="section-title mb-4">
-            Cuidados que <span className="gradient-text">transformam</span> seu sorriso
+            Descubra todos os cuidados que oferecemos
           </h2>
           <p className="section-subtitle mx-auto">
-            Descubra todos os cuidados que oferecemos para transformar seu sorriso e cuidar da sua saúde bucal com carinho e excelência.
+            Transformamos seu sorriso e cuidamos da sua saúde bucal com carinho e excelência.
           </p>
         </motion.div>
 
@@ -47,14 +47,14 @@ const Services = () => {
           {services.map((service, i) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
               className="card-elevated p-8 text-center group cursor-pointer"
             >
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors duration-300">
-                <service.icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary transition-colors duration-300">
+                <service.icon className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <h3 className="text-lg font-bold text-foreground mb-3">{service.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
@@ -62,16 +62,14 @@ const Services = () => {
           ))}
         </div>
 
-        {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-muted-foreground mb-4">Quer saber qual tratamento é ideal para você?</p>
           <a href="#contato" className="btn-primary inline-flex">
-            Faça sua avaliação gratuita
+            Agendar minha consulta
             <ArrowRight className="w-4 h-4" />
           </a>
         </motion.div>

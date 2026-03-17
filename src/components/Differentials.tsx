@@ -27,23 +27,23 @@ const Differentials = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image side */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
             className="relative"
           >
-            <div className="rounded-3xl overflow-hidden shadow-2xl">
+            <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={patientSmile}
                 alt="Paciente sorrindo após tratamento odontológico"
-                className="w-full h-[450px] object-cover"
+                className="w-full h-[420px] object-cover"
               />
             </div>
             <motion.div
-              animate={{ y: [0, -6, 0] }}
+              animate={{ y: [0, -5, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-4 -right-4 glass-card p-5"
+              className="absolute -bottom-3 -right-3 glass-card p-4"
             >
               <p className="text-sm font-semibold text-foreground">Acompanhamento</p>
               <p className="text-xs text-muted-foreground">Pré e pós cirúrgico</p>
@@ -71,13 +71,13 @@ const Differentials = () => {
               {features.map((feature, i) => (
                 <motion.div
                   key={feature.title}
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 15 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.15 }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="flex gap-4 group"
                 >
-                  <div className="w-12 h-12 min-w-[48px] rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+                  <div className="w-11 h-11 min-w-[44px] rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
                     <feature.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
                   </div>
                   <div>
@@ -88,7 +88,6 @@ const Differentials = () => {
               ))}
             </div>
 
-            {/* CTA */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
