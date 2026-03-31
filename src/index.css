@@ -6,40 +6,37 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 30% 18%;
+    --background: 0 0% 100%;
+    --foreground: 215 25% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 30% 18%;
+    --card: 210 20% 98%;
+    --card-foreground: 215 25% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 30% 18%;
+    --popover-foreground: 215 25% 20%;
 
-    --primary: 213 70% 45%;
+    --primary: 210 80% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 96%;
-    --secondary-foreground: 215 30% 18%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 215 25% 20%;
 
-    --muted: 210 20% 95%;
-    --muted-foreground: 215 12% 55%;
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 10% 50%;
 
-    --accent: 213 70% 45%;
+    --accent: 210 80% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 20% 92%;
-    --input: 214 20% 92%;
-    --ring: 213 70% 45%;
+    --border: 214 15% 91%;
+    --input: 214 15% 91%;
+    --ring: 210 80% 42%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --hero-gradient: linear-gradient(135deg, hsl(213 70% 45%) 0%, hsl(213 70% 55%) 100%);
-    --card-shadow: 0 2px 16px -4px hsl(213 70% 45% / 0.06);
-    --card-shadow-hover: 0 8px 30px -8px hsl(213 70% 45% / 0.12);
-    --glow: 0 0 40px hsl(213 70% 45% / 0.1);
+    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -68,82 +65,59 @@
 
 @layer components {
   .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--hero-gradient);
-  }
-
-  .gradient-bg {
-    background-image: var(--hero-gradient);
-  }
-
-  .card-elevated {
-    @apply bg-card rounded-2xl border border-border;
-    box-shadow: var(--card-shadow);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-
-  .card-elevated:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-2px);
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .section-badge {
-    @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-primary/8 text-primary;
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-primary border border-primary/20 bg-primary/5;
   }
 
   .section-title {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight;
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground leading-tight;
   }
 
   .section-subtitle {
-    @apply text-lg text-muted-foreground max-w-2xl;
+    @apply text-base text-muted-foreground max-w-xl leading-relaxed;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-primary-foreground transition-all duration-300;
-    background: hsl(var(--primary));
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 6px 20px hsl(213 70% 45% / 0.3);
-    transform: translateY(-1px);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm text-primary-foreground bg-primary transition-all duration-200 hover:opacity-90;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold border-2 border-primary text-primary transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm border border-primary text-primary transition-all duration-200 hover:bg-primary hover:text-primary-foreground;
   }
 
-  .glass-card {
-    @apply backdrop-blur-md bg-card/90 border border-border/50 rounded-2xl;
+  .card-elevated {
+    @apply bg-background rounded-xl border border-border;
     box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .card-elevated:hover {
+    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.08);
   }
 
   .floating-whatsapp {
-    @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 hover:scale-110;
+    @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-105;
     background: #25D366;
   }
 }
 
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   background: hsl(var(--muted));
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.2);
+  background: hsl(var(--primary) / 0.15);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.4);
+  background: hsl(var(--primary) / 0.3);
 }

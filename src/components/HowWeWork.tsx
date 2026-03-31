@@ -1,84 +1,63 @@
 import { motion } from "framer-motion";
-import { CalendarCheck, Search, Sparkles, ArrowRight } from "lucide-react";
+import { CalendarCheck, Search, Sparkles } from "lucide-react";
 
 const steps = [
   {
     icon: CalendarCheck,
-    num: "1",
+    num: "01",
     title: "Agendamento",
-    desc: "Entre em contato conosco e agende sua consulta com facilidade, escolhendo o melhor dia e horário para você.",
+    desc: "Entre em contato e agende sua consulta no melhor dia e horário para você.",
   },
   {
     icon: Search,
-    num: "2",
+    num: "02",
     title: "Avaliação",
-    desc: "Vamos entender sua necessidade, realizar os primeiros exames e montar um plano personalizado para o seu sorriso.",
+    desc: "Realizamos exames e montamos um plano personalizado para seu sorriso.",
   },
   {
     icon: Sparkles,
-    num: "3",
-    title: "Início do Tratamento",
-    desc: "Seguimos o plano acordado com você, com foco em resultado, conforto e excelência.",
+    num: "03",
+    title: "Tratamento",
+    desc: "Seguimos o plano com foco em resultado, conforto e excelência.",
   },
 ];
 
 const HowWeWork = () => {
   return (
-    <section className="py-20 lg:py-28 bg-background">
+    <section className="py-16 lg:py-24 bg-card">
       <div className="section-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="section-badge mb-4">Como trabalhamos</span>
-          <h2 className="section-title mb-4">
-            Entenda como funciona o nosso atendimento
-          </h2>
-          <p className="section-subtitle mx-auto">
-            Nosso processo é simples, eficiente e pensado para oferecer segurança e conforto em todas as etapas.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Connector line */}
-          <div className="hidden md:block absolute top-16 left-[16.6%] right-[16.6%] h-px bg-border" />
-
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.12 }}
-              className="relative text-center"
-            >
-              <div className="relative inline-flex mb-6">
-                <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-md relative z-10">
-                  <step.icon className="w-7 h-7 text-primary-foreground" />
-                </div>
-                <span className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-card border-2 border-primary flex items-center justify-center text-xs font-bold text-primary z-20">
-                  {step.num}
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
-              <p className="text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-14"
+          className="text-center mb-12"
         >
-          <a href="#contato" className="btn-primary inline-flex">
-            Agendar minha consulta
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          <span className="section-badge mb-3">Como funciona</span>
+          <h2 className="section-title mb-3">Nosso atendimento em 3 passos</h2>
+          <p className="section-subtitle mx-auto">
+            Processo simples e eficiente para seu conforto.
+          </p>
         </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.num}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.08 }}
+              className="text-center"
+            >
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <step.icon className="w-6 h-6 text-primary" />
+              </div>
+              <span className="text-xs font-bold text-primary uppercase tracking-wider">Passo {step.num}</span>
+              <h3 className="font-bold text-foreground mt-2 mb-2">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.desc}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
