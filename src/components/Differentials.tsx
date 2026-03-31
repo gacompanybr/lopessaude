@@ -1,105 +1,85 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, BadgeDollarSign, Microscope, ArrowRight } from "lucide-react";
-import patientSmile from "@/assets/patient-smile.jpg";
+import beforeAfter1 from "@/assets/before-after-1.jpg";
+import beforeAfter2 from "@/assets/before-after-2.jpg";
+import beforeAfter3 from "@/assets/before-after-3.jpg";
 
 const features = [
   {
-    icon: ShieldCheck,
-    title: "Garantia Vitalícia",
+    title: "ACOMPANHAMENTO PRÉ E PÓS CIRÚRGICO",
+    desc: "Nosso objetivo é proporcionar a melhor experiência possível ao paciente, cuidando de cada detalhe para garantir o sucesso do tratamento.",
+    icon: "🏥",
+  },
+  {
+    title: "INFORMAÇÕES SOBRE VALORES",
+    desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
+    icon: "💰",
+  },
+  {
+    title: "GARANTIA VITALÍCIA",
     desc: "Entendemos que um tratamento odontológico é um investimento para a vida toda. Por isso, oferecemos garantia vitalícia para os nossos implantes dentários.",
+    icon: "🛡️",
   },
   {
-    icon: BadgeDollarSign,
-    title: "Informações sobre Valores",
-    desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe.",
-  },
-  {
-    icon: Microscope,
-    title: "Avaliação Especializada",
-    desc: "Utilizamos tecnologias avançadas para garantir uma avaliação precisa e detalhada, com plano de tratamento personalizado para cada paciente.",
+    title: "AVALIAÇÃO ESPECIALIZADA",
+    desc: "Utilizamos tecnologias avançadas para garantir uma avaliação ainda mais precisa e detalhada, com plano de tratamento personalizado.",
+    icon: "🔍",
   },
 ];
 
 const Differentials = () => {
   return (
-    <section id="diferenciais" className="py-20 lg:py-28 bg-card">
+    <section id="diferenciais" className="py-16 lg:py-24 bg-background">
       <div className="section-container">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image side */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="relative"
-          >
-            <div className="rounded-2xl overflow-hidden shadow-xl">
-              <img
-                src={patientSmile}
-                alt="Paciente sorrindo após tratamento odontológico"
-                className="w-full h-[420px] object-cover"
-              />
-            </div>
-            <motion.div
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-3 -right-3 glass-card p-4"
-            >
-              <p className="text-sm font-semibold text-foreground">Acompanhamento</p>
-              <p className="text-xs text-muted-foreground">Pré e pós cirúrgico</p>
-            </motion.div>
-          </motion.div>
+        {/* Headline */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary leading-tight max-w-2xl">
+            Já pensou em poder se alimentar normalmente sem o medo e a insegurança que uma dentadura te traz?
+          </h2>
+        </motion.div>
 
-          {/* Content */}
-          <div>
+        {/* Features grid */}
+        <div className="grid sm:grid-cols-2 gap-8 mb-16">
+          {features.map((feature, i) => (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <span className="section-badge mb-4">Diferenciais</span>
-              <h2 className="section-title mb-4">
-                Já pensou em poder se alimentar normalmente{" "}
-                <span className="gradient-text">sem medo?</span>
-              </h2>
-              <p className="section-subtitle mb-10">
-                Nosso objetivo é proporcionar a melhor experiência possível ao paciente, cuidando de cada detalhe para garantir o sucesso do tratamento.
-              </p>
-            </motion.div>
-
-            <div className="space-y-6">
-              {features.map((feature, i) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, x: 15 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="flex gap-4 group"
-                >
-                  <div className="w-11 h-11 min-w-[44px] rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
-                    <feature.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-foreground mb-1">{feature.title}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
+              key={feature.title}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mt-10"
+              transition={{ delay: i * 0.05 }}
+              className="flex gap-4"
             >
-              <a href="#contato" className="btn-primary inline-flex">
-                Quero minha avaliação
-                <ArrowRight className="w-4 h-4" />
-              </a>
+              <div className="text-2xl mt-0.5">{feature.icon}</div>
+              <div>
+                <h4 className="font-bold text-foreground text-sm uppercase tracking-wide mb-2">{feature.title}</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+              </div>
             </motion.div>
-          </div>
+          ))}
+        </div>
+
+        {/* Before/After images */}
+        <div className="grid sm:grid-cols-3 gap-5">
+          {[beforeAfter1, beforeAfter2, beforeAfter3].map((img, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              className="bg-card rounded-2xl overflow-hidden shadow-sm"
+            >
+              <img
+                src={img}
+                alt={`Resultado de tratamento ${i + 1}`}
+                className="w-full h-56 object-cover"
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

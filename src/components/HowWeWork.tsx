@@ -1,62 +1,91 @@
 import { motion } from "framer-motion";
-import { CalendarCheck, Search, Sparkles } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import dentistPortrait from "@/assets/dentist-portrait.jpg";
 
 const steps = [
   {
-    icon: CalendarCheck,
-    num: "01",
+    num: "1",
     title: "Agendamento",
-    desc: "Entre em contato e agende sua consulta no melhor dia e horário para você.",
+    desc: "Entre em contato conosco e agende sua consulta com facilidade, escolhendo o melhor dia e horário para você.",
   },
   {
-    icon: Search,
-    num: "02",
+    num: "2",
     title: "Avaliação",
-    desc: "Realizamos exames e montamos um plano personalizado para seu sorriso.",
+    desc: "Vamos entender sua necessidade, realizar os primeiros exames e montar um plano personalizado para o seu sorriso.",
   },
   {
-    icon: Sparkles,
-    num: "03",
-    title: "Tratamento",
-    desc: "Seguimos o plano com foco em resultado, conforto e excelência.",
+    num: "3",
+    title: "Início do Tratamento",
+    desc: "Seguimos o plano acordado com você, com foco em resultado, conforto e excelência.",
   },
 ];
 
 const HowWeWork = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   return (
     <section className="py-16 lg:py-24 bg-card">
       <div className="section-container">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <span className="section-badge mb-3">Como funciona</span>
-          <h2 className="section-title mb-3">Nosso atendimento em 3 passos</h2>
-          <p className="section-subtitle mx-auto">
-            Processo simples e eficiente para seu conforto.
-          </p>
-        </motion.div>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Text side */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="text-primary font-semibold text-sm mb-2">Como trabalhamos</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-3">
+              Entenda como funciona o nosso atendimento odontológico
+            </h2>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              Nosso processo é simples, eficiente e pensado para oferecer segurança e conforto em todas as etapas do seu atendimento.
+            </p>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: i * 0.08 }}
-              className="text-center"
-            >
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <step.icon className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs font-bold text-primary uppercase tracking-wider">Passo {step.num}</span>
-              <h3 className="font-bold text-foreground mt-2 mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.desc}</p>
-            </motion.div>
-          ))}
+            {/* Accordion */}
+            <div className="space-y-3">
+              {steps.map((step, i) => (
+                <div
+                  key={step.num}
+                  className="border border-border rounded-xl overflow-hidden bg-background"
+                >
+                  <button
+                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left"
+                  >
+                    <span className="text-primary font-semibold text-sm">
+                      {step.num}. {step.title}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-primary transition-transform duration-200 ${
+                        openIndex === i ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  {openIndex === i && (
+                    <div className="px-5 pb-4">
+                      <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Image side */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="hidden lg:block"
+          >
+            <img
+              src={dentistPortrait}
+              alt="Dentista profissional da Clínica Lopes"
+              className="w-full h-[500px] object-cover rounded-2xl"
+            />
+          </motion.div>
         </div>
       </div>
     </section>

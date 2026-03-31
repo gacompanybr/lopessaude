@@ -6,37 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 215 25% 20%;
+    --background: 210 40% 97%;
+    --foreground: 215 30% 18%;
 
-    --card: 210 20% 98%;
-    --card-foreground: 215 25% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 30% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 20%;
+    --popover-foreground: 215 30% 18%;
 
-    --primary: 210 80% 42%;
+    --primary: 213 80% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 215 25% 20%;
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 215 30% 18%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 10% 50%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 10% 46%;
 
-    --accent: 210 80% 42%;
+    --accent: 213 80% 40%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 15% 91%;
-    --input: 214 15% 91%;
-    --ring: 210 80% 42%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 213 80% 40%;
 
-    --radius: 0.5rem;
-
-    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -68,36 +66,6 @@
     @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .section-badge {
-    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-primary border border-primary/20 bg-primary/5;
-  }
-
-  .section-title {
-    @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground leading-tight;
-  }
-
-  .section-subtitle {
-    @apply text-base text-muted-foreground max-w-xl leading-relaxed;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm text-primary-foreground bg-primary transition-all duration-200 hover:opacity-90;
-  }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm border border-primary text-primary transition-all duration-200 hover:bg-primary hover:text-primary-foreground;
-  }
-
-  .card-elevated {
-    @apply bg-background rounded-xl border border-border;
-    box-shadow: var(--card-shadow);
-    transition: box-shadow 0.2s ease;
-  }
-
-  .card-elevated:hover {
-    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.08);
-  }
-
   .floating-whatsapp {
     @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-105;
     background: #25D366;
@@ -106,18 +74,4 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.15);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.3);
 }
