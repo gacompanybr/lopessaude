@@ -1,26 +1,25 @@
 import { motion } from "framer-motion";
-import { Stethoscope, Smile, CircleDot, Shield, ArrowRight } from "lucide-react";
 
 const services = [
   {
-    icon: Stethoscope,
     title: "Clínica Geral",
-    desc: "Consultas, limpezas, restaurações e diagnósticos para manter sua saúde bucal em dia.",
+    desc: "Consultas, limpezas, restaurações e diagnósticos completos para manter a sua saúde bucal sempre em dia.",
+    icon: "🦷",
   },
   {
-    icon: CircleDot,
     title: "Implante Dentário",
-    desc: "Soluções seguras para repor dentes perdidos e devolver estética e confiança.",
+    desc: "Soluções modernas e seguras para repor dentes perdidos e devolver estética, mastigação e confiança no sorriso.",
+    icon: "⚙️",
   },
   {
-    icon: Smile,
     title: "Prótese Dentária",
-    desc: "Próteses sob medida com conforto, funcionalidade e aparência natural.",
+    desc: "Próteses sob medida que garantem conforto, funcionalidade e aparência natural para sua nova dentição.",
+    icon: "😁",
   },
   {
-    icon: Shield,
-    title: "Ortodontia e Endodontia",
-    desc: "Tratamentos ortodônticos, extrações e canais com precisão e conforto.",
+    title: "Ortodontia, Exodontia e Endodontia",
+    desc: "Tratamentos ortodônticos, extrações e canais realizados com precisão, tecnologia e foco no bem-estar do paciente.",
+    icon: "🔬",
   },
 ];
 
@@ -32,13 +31,12 @@ const Services = () => {
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <span className="section-badge mb-3">Nossos serviços</span>
-          <h2 className="section-title mb-3">Cuidados que oferecemos</h2>
-          <p className="section-subtitle mx-auto">
-            Tratamentos completos para transformar seu sorriso com segurança.
-          </p>
+          <p className="text-primary font-semibold text-sm mb-2">Nossos serviços</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground leading-tight max-w-2xl mx-auto">
+            Descubra todos os cuidados que oferecemos para transformar seu sorriso
+          </h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -49,22 +47,13 @@ const Services = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
-              className="card-elevated p-6 text-center"
+              className="bg-card rounded-2xl p-6 shadow-sm text-center"
             >
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <service.icon className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="font-bold text-foreground mb-2 text-sm">{service.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{service.desc}</p>
+              <div className="text-3xl mb-4">{service.icon}</div>
+              <h3 className="font-bold text-foreground mb-2">{service.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
             </motion.div>
           ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <a href="#contato" className="btn-primary">
-            Agendar minha consulta
-            <ArrowRight className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>
