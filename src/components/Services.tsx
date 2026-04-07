@@ -1,25 +1,26 @@
 import { motion } from "framer-motion";
+import { Cross, Cog, Smile, Microscope } from "lucide-react";
 
 const services = [
   {
     title: "Clínica Geral",
     desc: "Consultas, limpezas, restaurações e diagnósticos completos para manter a sua saúde bucal sempre em dia.",
-    icon: "🦷",
+    icon: <Cross className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Implante Dentário",
     desc: "Soluções modernas e seguras para repor dentes perdidos e devolver estética, mastigação e confiança no sorriso.",
-    icon: "⚙️",
+    icon: <Cog className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Prótese Dentária",
     desc: "Próteses sob medida que garantem conforto, funcionalidade e aparência natural para sua nova dentição.",
-    icon: "😁",
+    icon: <Smile className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Ortodontia, Exodontia e Endodontia",
     desc: "Tratamentos ortodônticos, extrações e canais realizados com precisão, tecnologia e foco no bem-estar do paciente.",
-    icon: "🔬",
+    icon: <Microscope className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
 ];
 
@@ -49,7 +50,7 @@ const Services = () => {
               transition={{ duration: 0.3, delay: i * 0.05 }}
               className="bg-card rounded-2xl p-6 shadow-sm text-center"
             >
-              <div className="text-3xl mb-4">{service.icon}</div>
+              <div className="mb-4">{service.icon}</div>
               <h3 className="font-bold text-foreground mb-2">{service.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
             </motion.div>

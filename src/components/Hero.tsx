@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { CalendarDays, Clock, Siren } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -56,7 +57,7 @@ const Hero = () => {
               <img
                 src="/clinic-facade.png"
                 alt="Clínica Lopes Saúde e Odontologia - Fachada"
-                className="w-full h-full object-cover px-[50px] py-[20px]"
+                className="w-full h-full object-cover scale-125"
               />
             </motion.div>
           </div>
@@ -71,26 +72,26 @@ const Hero = () => {
               title: "Agendamentos",
               desc: "Facilitamos seu atendimento com horários flexíveis e equipe preparada para te receber com conforto e pontualidade.",
               highlight: "Seg-Sex: 8h–18h",
-              icon: "📅",
+              icon: <CalendarDays className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
             {
               title: "Funcionamento",
               desc: "Segunda a Sexta: 8h00 às 18h00 · Sábado: 8h00 às 12h00 · Domingo: Fechado",
               highlight: "Sábado: 8h–12h",
-              icon: "🕐",
+              icon: <Clock className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
             {
               title: "Emergência",
               desc: "Para situações urgentes, estamos disponíveis para te atender com rapidez e segurança.",
               highlight: "(14) 99668-4609",
-              icon: "🚨",
+              icon: <Siren className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
           ].map((item) => (
             <div
               key={item.title}
               className="bg-card rounded-2xl p-6 shadow-sm"
             >
-              <div className="text-2xl mb-3">{item.icon}</div>
+              <div className="mb-3">{item.icon}</div>
               <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.desc}</p>
               <span className="text-sm font-semibold text-primary">{item.highlight}</span>

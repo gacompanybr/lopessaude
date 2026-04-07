@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Hospital, Banknote, ShieldCheck, Search } from "lucide-react";
 import beforeAfter1 from "@/assets/before-after-1.jpg";
 import beforeAfter2 from "@/assets/before-after-2.jpg";
 import beforeAfter3 from "@/assets/before-after-3.jpg";
@@ -7,22 +8,22 @@ const features = [
   {
     title: "ACOMPANHAMENTO PRÉ E PÓS CIRÚRGICO",
     desc: "Nosso objetivo é proporcionar a melhor experiência possível ao paciente, cuidando de cada detalhe para garantir o sucesso do tratamento.",
-    icon: "🏥",
+    icon: <Hospital className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "INFORMAÇÕES SOBRE VALORES",
     desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
-    icon: "💰",
+    icon: <Banknote className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "GARANTIA VITALÍCIA",
     desc: "Entendemos que um tratamento odontológico é um investimento para a vida toda. Por isso, oferecemos garantia vitalícia para os nossos implantes dentários.",
-    icon: "🛡️",
+    icon: <ShieldCheck className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "AVALIAÇÃO ESPECIALIZADA",
     desc: "Utilizamos tecnologias avançadas para garantir uma avaliação ainda mais precisa e detalhada, com plano de tratamento personalizado.",
-    icon: "🔍",
+    icon: <Search className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
 ];
 
@@ -53,7 +54,7 @@ const Differentials = () => {
               transition={{ delay: i * 0.05 }}
               className="flex gap-4"
             >
-              <div className="text-2xl mt-0.5">{feature.icon}</div>
+              <div className="mt-0.5">{feature.icon}</div>
               <div>
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wide mb-2">{feature.title}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
