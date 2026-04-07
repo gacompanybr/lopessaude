@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { CalendarDays, Clock, Siren } from "lucide-react";
 
 const Hero = () => {
   return (
