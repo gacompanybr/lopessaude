@@ -55,9 +55,9 @@ const Hero = () => {
               className="relative h-full min-h-[300px] lg:min-h-[420px]"
             >
               <img
-                src={clinicHero}
+                src="/e2ca1473-b1f3-4144-ab04-7a847f6d52bd.png"
                 alt="Clínica Lopes Saúde e Odontologia - Fachada"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover px-[50px] py-[20px]"
               />
             </motion.div>
           </div>
