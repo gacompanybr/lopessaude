@@ -57,7 +57,7 @@ const Hero = () => {
               <img
                 src="/clinic-facade.png"
                 alt="Clínica Lopes Saúde e Odontologia - Fachada"
-                className="w-full h-full object-cover px-[50px] py-[20px]"
+                className="w-full h-full object-cover scale-125"
               />
             </motion.div>
           </div>
