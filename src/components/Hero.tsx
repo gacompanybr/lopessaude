@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import clinicHero from "@/assets/clinic-hero.jpg";
 
 const Hero = () => {
   return (
@@ -41,7 +40,7 @@ const Hero = () => {
               </p>
               <a
                 href="#contato"
-                className="inline-block bg-primary text-primary-foreground px-10 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
               >
                 Atendimento particular
               </a>
@@ -55,9 +54,9 @@ const Hero = () => {
               className="relative h-full min-h-[300px] lg:min-h-[420px]"
             >
               <img
-                src={clinicHero}
+                src="/e2ca1473-b1f3-4144-ab04-7a847f6d52bd.png"
                 alt="Clínica Lopes Saúde e Odontologia - Fachada"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover px-[50px] py-[20px]"
               />
             </motion.div>
           </div>
@@ -101,7 +100,7 @@ const Hero = () => {
         <div className="text-center mt-8">
           <a
             href="#contato"
-            className="inline-block bg-primary text-primary-foreground px-10 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
           >
             Agendar agora
           </a>

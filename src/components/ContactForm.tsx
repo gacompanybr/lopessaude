@@ -72,7 +72,7 @@ const ContactForm = () => {
 
               <a
                 href="#contato"
-                className="inline-block mt-8 bg-primary text-primary-foreground px-10 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="inline-block mt-8 bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
               >
                 Enviar agora mesmo
               </a>
@@ -144,7 +144,7 @@ const ContactForm = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+                  className="w-full bg-primary text-primary-foreground py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
                 >
                   Enviar agora mesmo
                 </button>
