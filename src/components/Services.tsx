@@ -50,7 +50,7 @@ const Services = () => {
               transition={{ duration: 0.3, delay: i * 0.05 }}
               className="bg-card rounded-2xl p-6 shadow-sm text-center"
             >
-              <div className="text-3xl mb-4">{service.icon}</div>
+              <div className="mb-4">{service.icon}</div>
               <h3 className="font-bold text-foreground mb-2">{service.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
             </motion.div>

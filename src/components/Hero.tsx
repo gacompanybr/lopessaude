@@ -91,7 +91,7 @@ const Hero = () => {
               key={item.title}
               className="bg-card rounded-2xl p-6 shadow-sm"
             >
-              <div className="text-2xl mb-3">{item.icon}</div>
+              <div className="mb-3">{item.icon}</div>
               <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.desc}</p>
               <span className="text-sm font-semibold text-primary">{item.highlight}</span>
