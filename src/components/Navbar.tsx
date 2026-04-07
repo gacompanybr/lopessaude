@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import logoLopes from "@/assets/logo-lopes.jpg";
 import { AnimatePresence, motion } from "framer-motion";
 import { Phone, MapPin, Menu, X } from "lucide-react";
 
