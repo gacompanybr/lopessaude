@@ -1,25 +1,26 @@
 import { motion } from "framer-motion";
+import { Cross, Cog, Smile, Microscope } from "lucide-react";
 
 const services = [
   {
     title: "Clínica Geral",
     desc: "Consultas, limpezas, restaurações e diagnósticos completos para manter a sua saúde bucal sempre em dia.",
-    icon: "🦷",
+    icon: <Cross className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Implante Dentário",
     desc: "Soluções modernas e seguras para repor dentes perdidos e devolver estética, mastigação e confiança no sorriso.",
-    icon: "⚙️",
+    icon: <Cog className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Prótese Dentária",
     desc: "Próteses sob medida que garantem conforto, funcionalidade e aparência natural para sua nova dentição.",
-    icon: "😁",
+    icon: <Smile className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "Ortodontia, Exodontia e Endodontia",
     desc: "Tratamentos ortodônticos, extrações e canais realizados com precisão, tecnologia e foco no bem-estar do paciente.",
-    icon: "🔬",
+    icon: <Microscope className="w-8 h-8 text-primary" strokeWidth={1.5} />,
   },
 ];
 
