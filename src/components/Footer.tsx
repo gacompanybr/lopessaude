@@ -1,3 +1,5 @@
+import logoLopes from "@/assets/logo-lopes.jpg";
+
 const Footer = () => {
   return (
     <footer id="horarios" className="bg-primary text-primary-foreground">
