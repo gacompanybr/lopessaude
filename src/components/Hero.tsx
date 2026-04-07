@@ -41,7 +41,7 @@ const Hero = () => {
               </p>
               <a
                 href="#contato"
-                className="inline-block bg-primary text-primary-foreground px-10 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
               >
                 Atendimento particular
               </a>
