@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import clinicHero from "@/assets/clinic-hero.jpg";
 
 const Hero = () => {
   return (
