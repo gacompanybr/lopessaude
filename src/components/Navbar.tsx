@@ -44,18 +44,7 @@ const Navbar = () => {
       >
         <div className="section-container flex items-center justify-between h-20">
           <a href="#" className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="text-primary">
-                <path d="M20 4C11.16 4 4 11.16 4 20s7.16 16 16 16 16-7.16 16-16S28.84 4 20 4zm-2 24h-4v-4h4v4zm0-6h-4V10h4v12zm8 6h-4v-4h4v4zm0-6h-4V10h4v12z" fill="currentColor" opacity="0.15"/>
-                <path d="M20 8v10h-6v-2h4V8h2zm2 0v8h4v2h-6V8h2z" fill="currentColor"/>
-                <rect x="16" y="22" width="8" height="2" rx="1" fill="currentColor"/>
-              </svg>
-              <span className="font-display font-bold text-2xl text-primary tracking-tight">lopes</span>
-            </div>
-            <div className="flex flex-col ml-0.5">
-              <span className="text-[9px] text-muted-foreground leading-none uppercase tracking-widest">Saúde e</span>
-              <span className="text-[9px] text-muted-foreground leading-none uppercase tracking-widest">Odontologia</span>
-            </div>
+            <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-12 object-contain" />
           </a>
 
           {/* Desktop links */}

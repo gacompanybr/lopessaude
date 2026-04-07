@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import dentistPortrait from "@/assets/dentist-portrait.jpg";
+import dentistPortrait from "@/assets/dentist-portrait.png";
 
 const steps = [
   {

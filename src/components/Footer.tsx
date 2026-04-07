@@ -8,8 +8,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="font-display font-bold text-xl">lopes</span>
-              <span className="text-xs opacity-70">Saúde e Odontologia</span>
+              <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-10 object-contain brightness-0 invert" />
             </div>
             <p className="text-sm opacity-80 leading-relaxed max-w-md">
               Nossa missão é transformar sorrisos, promovendo saúde, bem-estar, conforto e segurança por meio de tratamentos odontológicos humanizados e programas preventivos personalizados!
