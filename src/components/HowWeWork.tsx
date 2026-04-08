@@ -83,7 +83,7 @@ const HowWeWork = () => {
             <img
               src={dentistPortrait}
               alt="Dentista profissional da Clínica Lopes"
-              className="w-full h-[500px] object-cover rounded-2xl"
+              className="w-full h-[500px] rounded-2xl object-contain"
             />
           </motion.div>
         </div>
