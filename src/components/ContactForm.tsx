@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { saveLead } from "@/lib/leads";
+import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "551496684609";
 
@@ -15,6 +16,25 @@ const ContactForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Block submission when Particular = "Não"
+    if (formData.isParticular === "Não") {
+      // Still save lead for CRM metrics (marked as rejected)
+      saveLead({
+        name: formData.name,
+        whatsapp: formData.whatsapp,
+        city: formData.city,
+        message: formData.message,
+        isParticular: formData.isParticular,
+      });
+
+      toast.error("Atendimento apenas particular", {
+        description:
+          "Infelizmente, no momento realizamos apenas atendimentos particulares. Caso deseje prosseguir com nossa clínica, por favor reenvie o formulário selecionando \"Sim\" para atendimento particular.",
+        duration: 8000,
+      });
+      return;
+    }
 
     saveLead({
       name: formData.name,
@@ -71,7 +91,9 @@ const ContactForm = () => {
               </div>
 
               <a
-                href="#contato"
+                href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent("Olá, gostaria de mais informações!")}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block mt-8 bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
               >
                 Enviar agora mesmo
