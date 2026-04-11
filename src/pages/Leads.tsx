@@ -45,15 +45,15 @@ const Leads = () => {
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
       const d = new Date(lead.createdAt);
+      // Compare using local date parts to avoid timezone issues
+      const leadDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       if (startDate) {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        if (d < start) return false;
+        const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        if (leadDate < start) return false;
       }
       if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        if (d > end) return false;
+        const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+        if (leadDate > end) return false;
       }
       return true;
     });
