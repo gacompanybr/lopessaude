@@ -60,8 +60,8 @@ const ContactForm = () => {
     );
 
     // GTM: dispara evento apenas após envio bem-sucedido
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push({
       event: 'formulario_enviado',
       nome_formulario: 'lead_principal',
     });
