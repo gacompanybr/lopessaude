@@ -58,6 +58,13 @@ const ContactForm = () => {
       `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`,
       "_blank"
     );
+
+    // GTM: dispara evento apenas após envio bem-sucedido
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push({
+      event: 'formulario_enviado',
+      nome_formulario: 'lead_principal',
+    });
   };
 
   return (
