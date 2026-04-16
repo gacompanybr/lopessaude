@@ -11,8 +11,10 @@ import {
 } from "@/lib/leads";
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
-  CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle,
+  CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle, LogOut,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
