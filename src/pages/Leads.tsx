@@ -1,118 +1,185 @@
 import { useState, useEffect, useMemo } from "react";
-import { getLeads, deleteLead, type Lead } from "@/lib/leads";
-import { Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare, CalendarIcon, BarChart3 } from "lucide-react";
+import {
+  getLeads,
+  deleteLead,
+  updateLead,
+  type Lead,
+  type LeadStatus,
+  type LeadOrigem,
+  STATUS_LABELS,
+  ORIGEM_LABELS,
+} from "@/lib/leads";
+import {
+  Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
+  CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle,
+} from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
+import LeadFormDialog from "@/components/LeadFormDialog";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend,
 } from "recharts";
 
 const CHART_COLORS = [
-  "hsl(210, 80%, 50%)",
-  "hsl(210, 60%, 65%)",
-  "hsl(210, 40%, 75%)",
-  "hsl(210, 90%, 40%)",
-  "hsl(210, 70%, 55%)",
-  "hsl(200, 60%, 50%)",
-  "hsl(220, 60%, 50%)",
-  "hsl(190, 60%, 50%)",
+  "hsl(210, 80%, 50%)", "hsl(210, 60%, 65%)", "hsl(210, 40%, 75%)",
+  "hsl(210, 90%, 40%)", "hsl(210, 70%, 55%)", "hsl(200, 60%, 50%)",
+  "hsl(220, 60%, 50%)", "hsl(190, 60%, 50%)",
 ];
 
-const PIE_COLORS = ["hsl(142, 60%, 45%)", "hsl(0, 60%, 50%)", "hsl(210, 10%, 60%)"];
+const STATUS_COLORS: Record<LeadStatus, string> = {
+  novo: "bg-blue-100 text-blue-700",
+  em_contato: "bg-yellow-100 text-yellow-700",
+  agendado: "bg-purple-100 text-purple-700",
+  convertido: "bg-green-100 text-green-700",
+  perdido: "bg-red-100 text-red-700",
+};
+
+const STATUS_PIE_COLORS: Record<LeadStatus, string> = {
+  novo: "hsl(210, 80%, 50%)",
+  em_contato: "hsl(45, 90%, 55%)",
+  agendado: "hsl(270, 60%, 55%)",
+  convertido: "hsl(142, 60%, 45%)",
+  perdido: "hsl(0, 60%, 50%)",
+};
 
 const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
+  const [statusFilter, setStatusFilter] = useState<string>("todos");
+  const [origemFilter, setOrigemFilter] = useState<string>("todos");
+  const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<Lead | null>(null);
 
-  const refresh = () => setLeads(getLeads());
+  const refresh = async () => {
+    setLoading(true);
+    try {
+      const data = await getLeads();
+      setLeads(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao carregar leads");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     refresh();
   }, []);
 
-  const handleDelete = (id: string) => {
-    deleteLead(id);
-    refresh();
+  const handleDelete = async (id: string) => {
+    if (!confirm("Excluir este lead?")) return;
+    try {
+      await deleteLead(id);
+      toast.success("Lead excluído");
+      refresh();
+    } catch {
+      toast.error("Erro ao excluir");
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: LeadStatus) => {
+    try {
+      await updateLead(id, { status });
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+      toast.success("Status atualizado");
+    } catch {
+      toast.error("Erro ao atualizar status");
+    }
   };
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
-      const d = new Date(lead.createdAt);
-      // Compare using local date parts to avoid timezone issues
+      const d = new Date(lead.created_at);
       const leadDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       if (startDate) {
-        const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-        if (leadDate < start) return false;
+        const s = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        if (leadDate < s) return false;
       }
       if (endDate) {
-        const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-        if (leadDate > end) return false;
+        const e = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+        if (leadDate > e) return false;
+      }
+      if (statusFilter !== "todos" && lead.status !== statusFilter) return false;
+      if (origemFilter !== "todos" && lead.origem !== origemFilter) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        const hay = `${lead.name || ""} ${lead.whatsapp} ${lead.city} ${lead.message || ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [leads, startDate, endDate]);
+  }, [leads, startDate, endDate, statusFilter, origemFilter, search]);
 
-  const formatDate = (iso: string) => {
-    const d = new Date(iso);
-    return d.toLocaleDateString("pt-BR", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("pt-BR", {
+      day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
     });
-  };
 
-  // Chart data
+  // Charts
   const cityData = useMemo(() => {
     const map: Record<string, number> = {};
     filteredLeads.forEach((l) => {
-      const city = l.city || "Não informado";
-      map[city] = (map[city] || 0) + 1;
+      const c = l.city || "Não informado";
+      map[c] = (map[c] || 0) + 1;
     });
-    return Object.entries(map)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 8);
+    return Object.entries(map).map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value).slice(0, 8);
   }, [filteredLeads]);
 
-  const particularData = useMemo(() => {
-    let sim = 0, nao = 0, empty = 0;
+  const statusData = useMemo(() => {
+    const map: Record<string, number> = {};
     filteredLeads.forEach((l) => {
-      if (l.isParticular === "Sim") sim++;
-      else if (l.isParticular === "Não") nao++;
-      else empty++;
+      map[l.status] = (map[l.status] || 0) + 1;
     });
-    const data = [];
-    if (sim) data.push({ name: "Sim", value: sim });
-    if (nao) data.push({ name: "Não", value: nao });
-    if (empty) data.push({ name: "Não respondeu", value: empty });
-    return data;
+    return Object.entries(map).map(([k, value]) => ({
+      name: STATUS_LABELS[k as LeadStatus], value, key: k as LeadStatus,
+    }));
   }, [filteredLeads]);
 
   const dailyData = useMemo(() => {
     const map: Record<string, number> = {};
     filteredLeads.forEach((l) => {
-      const day = new Date(l.createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+      const day = new Date(l.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
       map[day] = (map[day] || 0) + 1;
     });
     return Object.entries(map).map(([date, leads]) => ({ date, leads }));
   }, [filteredLeads]);
 
+  const conversionRate = useMemo(() => {
+    if (filteredLeads.length === 0) return 0;
+    const c = filteredLeads.filter((l) => l.status === "convertido").length;
+    return Math.round((c / filteredLeads.length) * 100);
+  }, [filteredLeads]);
+
   const clearFilters = () => {
-    setStartDate(undefined);
-    setEndDate(undefined);
+    setStartDate(undefined); setEndDate(undefined);
+    setStatusFilter("todos"); setOrigemFilter("todos"); setSearch("");
   };
+
+  const openNew = () => { setEditing(null); setDialogOpen(true); };
+  const openEdit = (lead: Lead) => { setEditing(lead); setDialogOpen(true); };
+
+  const todayCount = filteredLeads.filter(
+    (l) => new Date(l.created_at).toDateString() === new Date().toDateString()
+  ).length;
 
   return (
     <div className="min-h-screen bg-background font-body">
-      {/* Header */}
       <div className="bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6" />
             <div>
@@ -120,25 +187,26 @@ const Leads = () => {
               <p className="text-sm opacity-80">Lopes Saúde e Odontologia</p>
             </div>
           </div>
-          <button
-            onClick={refresh}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-foreground/15 hover:bg-primary-foreground/25 transition-colors text-sm font-medium"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Atualizar
-          </button>
+          <div className="flex items-center gap-2">
+            <Button onClick={openNew} variant="secondary" size="sm" className="gap-2">
+              <Plus className="w-4 h-4" /> Novo Lead
+            </Button>
+            <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
+              <RefreshCw className="w-4 h-4" /> Atualizar
+            </Button>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {/* Stats bar */}
+        {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
-            { label: "Total de Leads", value: filteredLeads.length },
-            { label: "Particular (Sim)", value: filteredLeads.filter((l) => l.isParticular === "Sim").length },
-            { label: "Particular (Não)", value: filteredLeads.filter((l) => l.isParticular === "Não").length },
-            { label: "Não respondeu", value: filteredLeads.filter((l) => !l.isParticular).length },
-            { label: "Hoje", value: filteredLeads.filter((l) => new Date(l.createdAt).toDateString() === new Date().toDateString()).length },
+            { label: "Total", value: filteredLeads.length },
+            { label: "Novos", value: filteredLeads.filter((l) => l.status === "novo").length },
+            { label: "Agendados", value: filteredLeads.filter((l) => l.status === "agendado").length },
+            { label: "Convertidos", value: filteredLeads.filter((l) => l.status === "convertido").length },
+            { label: "Hoje", value: todayCount },
           ].map((s) => (
             <div key={s.label} className="bg-card rounded-xl border border-border p-4">
               <p className="text-2xl font-display font-bold text-foreground">{s.value}</p>
@@ -147,42 +215,74 @@ const Leads = () => {
           ))}
         </div>
 
-        {/* Date filter */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-foreground">Filtrar por data:</span>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className={cn("w-[180px] justify-start text-left font-normal", !startDate && "text-muted-foreground")}>
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {startDate ? format(startDate, "dd/MM/yyyy") : "Data início"}
+        {/* Filters */}
+        <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative flex-1 min-w-[220px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar nome, WhatsApp, cidade..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos status</SelectItem>
+                {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={origemFilter} onValueChange={setOrigemFilter}>
+              <SelectTrigger className="w-[160px]"><SelectValue placeholder="Origem" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todas origens</SelectItem>
+                {Object.entries(ORIGEM_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("w-[170px] justify-start text-left font-normal", !startDate && "text-muted-foreground")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "dd/MM/yyyy") : "Data início"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={startDate} onSelect={setStartDate} locale={ptBR} initialFocus className="p-3 pointer-events-auto" />
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("w-[170px] justify-start text-left font-normal", !endDate && "text-muted-foreground")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "dd/MM/yyyy") : "Data fim"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={endDate} onSelect={setEndDate} locale={ptBR} initialFocus className="p-3 pointer-events-auto" />
+              </PopoverContent>
+            </Popover>
+            {(startDate || endDate || statusFilter !== "todos" || origemFilter !== "todos" || search) && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
+                Limpar filtros
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={startDate} onSelect={setStartDate} locale={ptBR} initialFocus className="p-3 pointer-events-auto" />
-            </PopoverContent>
-          </Popover>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className={cn("w-[180px] justify-start text-left font-normal", !endDate && "text-muted-foreground")}>
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate ? format(endDate, "dd/MM/yyyy") : "Data fim"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={endDate} onSelect={setEndDate} locale={ptBR} initialFocus className="p-3 pointer-events-auto" />
-            </PopoverContent>
-          </Popover>
-          {(startDate || endDate) && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
-              Limpar filtros
-            </Button>
-          )}
+            )}
+            <span className="text-sm text-muted-foreground ml-auto">
+              Taxa de conversão: <span className="font-bold text-foreground">{conversionRate}%</span>
+            </span>
+          </div>
         </div>
 
         {/* Charts */}
         {filteredLeads.length > 0 && (
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Leads por dia */}
             <div className="bg-card rounded-xl border border-border p-5">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-4 h-4 text-primary" />
@@ -201,7 +301,6 @@ const Leads = () => {
               </div>
             </div>
 
-            {/* Leads por cidade */}
             <div className="bg-card rounded-xl border border-border p-5">
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-4 h-4 text-primary" />
@@ -224,18 +323,17 @@ const Leads = () => {
               </div>
             </div>
 
-            {/* Particular vs Não */}
             <div className="bg-card rounded-xl border border-border p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Users className="w-4 h-4 text-primary" />
-                <h3 className="font-display font-bold text-foreground text-sm">Particular</h3>
+                <h3 className="font-display font-bold text-foreground text-sm">Por status</h3>
               </div>
               <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={particularData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, value }) => `${name}: ${value}`}>
-                      {particularData.map((_, i) => (
-                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                    <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, value }) => `${name}: ${value}`}>
+                      {statusData.map((d, i) => (
+                        <Cell key={i} fill={STATUS_PIE_COLORS[d.key]} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -247,76 +345,96 @@ const Leads = () => {
           </div>
         )}
 
-        {/* Leads list */}
-        {filteredLeads.length === 0 ? (
+        {/* Lista */}
+        {loading ? (
+          <div className="text-center py-20 text-muted-foreground">Carregando...</div>
+        ) : filteredLeads.length === 0 ? (
           <div className="text-center py-20">
             <Users className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
             <p className="text-lg font-medium text-muted-foreground">Nenhum lead encontrado</p>
             <p className="text-sm text-muted-foreground/70 mt-1">
-              {startDate || endDate
-                ? "Nenhum lead no período selecionado. Tente alterar as datas."
-                : "Os leads aparecerão aqui quando alguém preencher o formulário no site."}
+              Ajuste os filtros ou cadastre um lead manualmente.
             </p>
           </div>
         ) : (
           <div>
-            <p className="text-sm text-muted-foreground mb-3">{filteredLeads.length} lead(s) encontrado(s)</p>
-            <ScrollArea className="h-[500px] rounded-xl border border-border">
-              <div className="space-y-4 p-4">
+            <p className="text-sm text-muted-foreground mb-3">{filteredLeads.length} lead(s)</p>
+            <ScrollArea className="h-[600px] rounded-xl border border-border">
+              <div className="space-y-3 p-4">
                 {filteredLeads.map((lead) => (
-                  <div
-                    key={lead.id}
-                    className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow"
-                  >
+                  <div key={lead.id} className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-3 mb-3 flex-wrap">
                           <h3 className="font-display font-bold text-foreground text-lg truncate">
                             {lead.name || "Sem nome"}
                           </h3>
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              lead.isParticular === "Sim"
-                                ? "bg-green-100 text-green-700"
-                                : lead.isParticular === "Não"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-muted text-muted-foreground"
-                            }`}
-                          >
-                            {lead.isParticular ? `Particular: ${lead.isParticular}` : "Não respondeu"}
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status]}`}>
+                            {STATUS_LABELS[lead.status]}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                            {ORIGEM_LABELS[lead.origem]}
                           </span>
                         </div>
-
                         <div className="grid sm:grid-cols-3 gap-3 text-sm">
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <Phone className="w-3.5 h-3.5" />
-                            <span>{lead.whatsapp || "—"}</span>
+                            <Phone className="w-3.5 h-3.5" /><span>{lead.whatsapp || "—"}</span>
                           </div>
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <MapPin className="w-3.5 h-3.5" />
-                            <span>{lead.city || "—"}</span>
+                            <MapPin className="w-3.5 h-3.5" /><span>{lead.city || "—"}</span>
                           </div>
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>{formatDate(lead.createdAt)}</span>
+                            <Clock className="w-3.5 h-3.5" /><span>{formatDate(lead.created_at)}</span>
                           </div>
                         </div>
-
                         {lead.message && (
                           <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
                             <MessageSquare className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                             <p className="line-clamp-2">{lead.message}</p>
                           </div>
                         )}
+                        {lead.notes && (
+                          <div className="mt-2 text-xs text-muted-foreground/80 italic border-l-2 border-primary/30 pl-2">
+                            {lead.notes}
+                          </div>
+                        )}
                       </div>
-
-                      <button
-                        onClick={() => handleDelete(lead.id)}
-                        className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                        title="Excluir lead"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex flex-col items-end gap-2 shrink-0">
+                        <Select value={lead.status} onValueChange={(v) => handleStatusChange(lead.id, v as LeadStatus)}>
+                          <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                              <SelectItem key={k} value={k}>{v}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="flex gap-1">
+                          {lead.whatsapp && (
+                            <a
+                              href={`https://api.whatsapp.com/send?phone=${lead.whatsapp.replace(/\D/g, "")}`}
+                              target="_blank" rel="noopener noreferrer"
+                              className="p-2 rounded-lg text-muted-foreground hover:text-green-600 hover:bg-green-50 transition-colors"
+                              title="Abrir WhatsApp"
+                            >
+                              <MessageCircle className="w-4 h-4" />
+                            </a>
+                          )}
+                          <button
+                            onClick={() => openEdit(lead)}
+                            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                            title="Editar"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(lead.id)}
+                            className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -325,6 +443,8 @@ const Leads = () => {
           </div>
         )}
       </div>
+
+      <LeadFormDialog open={dialogOpen} onOpenChange={setDialogOpen} lead={editing} onSaved={refresh} />
     </div>
   );
 };
