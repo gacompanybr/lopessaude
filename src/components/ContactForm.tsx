@@ -14,20 +14,13 @@ const ContactForm = () => {
     isParticular: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Block submission when Particular = "Não"
+    // Block submission when Particular = "Não" (não salva no banco)
     if (formData.isParticular === "Não") {
-      // Still save lead for CRM metrics (marked as rejected)
-      saveLead({
-        name: formData.name,
-        whatsapp: formData.whatsapp,
-        city: formData.city,
-        message: formData.message,
-        isParticular: formData.isParticular,
-      });
-
       toast.error("Atendimento apenas particular", {
         description:
           "Infelizmente, no momento realizamos apenas atendimentos particulares. Caso deseje prosseguir com nossa clínica, por favor reenvie o formulário selecionando \"Sim\" para atendimento particular.",
@@ -36,35 +29,47 @@ const ContactForm = () => {
       return;
     }
 
-    saveLead({
-      name: formData.name,
-      whatsapp: formData.whatsapp,
-      city: formData.city,
-      message: formData.message,
-      isParticular: formData.isParticular,
-    });
+    setSubmitting(true);
+    try {
+      await saveLead({
+        name: formData.name || null,
+        whatsapp: formData.whatsapp,
+        city: formData.city,
+        message: formData.message || null,
+        origem: "site",
+        status: "novo",
+      });
 
-    const lines = [
-      `*Nova solicitação de contato*`,
-      ``,
-      `*Nome:* ${formData.name || "Não informado"}`,
-      `*WhatsApp:* ${formData.whatsapp}`,
-      `*Cidade:* ${formData.city}`,
-      `*Atendimento particular:* ${formData.isParticular || "Não respondeu"}`,
-      `*Condição odontológica:* ${formData.message || "Não informado"}`,
-    ];
-    const text = lines.join("\n");
-    window.open(
-      `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
+      const lines = [
+        `*Nova solicitação de contato*`,
+        ``,
+        `*Nome:* ${formData.name || "Não informado"}`,
+        `*WhatsApp:* ${formData.whatsapp}`,
+        `*Cidade:* ${formData.city}`,
+        `*Condição odontológica:* ${formData.message || "Não informado"}`,
+      ];
+      const text = lines.join("\n");
+      window.open(
+        `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`,
+        "_blank"
+      );
 
-    // GTM: dispara evento apenas após envio bem-sucedido
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    (window as any).dataLayer.push({
-      event: 'formulario_enviado',
-      nome_formulario: 'lead_principal',
-    });
+      // GTM: dispara evento apenas após envio bem-sucedido
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({
+        event: 'formulario_enviado',
+        nome_formulario: 'lead_principal',
+      });
+
+      toast.success("Solicitação enviada com sucesso!");
+    } catch (err) {
+      console.error("Erro ao salvar lead:", err);
+      toast.error("Erro ao enviar", {
+        description: "Tente novamente em instantes ou fale conosco pelo WhatsApp.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
