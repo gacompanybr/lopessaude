@@ -54,6 +54,8 @@ const STATUS_PIE_COLORS: Record<LeadStatus, string> = {
 };
 
 const Leads = () => {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState<Date | undefined>();
@@ -63,6 +65,11 @@ const Leads = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth", { replace: true });
+  };
 
   const refresh = async () => {
     setLoading(true);
@@ -195,6 +202,9 @@ const Leads = () => {
             </Button>
             <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" /> Atualizar
+            </Button>
+            <Button onClick={handleSignOut} variant="secondary" size="sm" className="gap-2">
+              <LogOut className="w-4 h-4" /> Sair
             </Button>
           </div>
         </div>
