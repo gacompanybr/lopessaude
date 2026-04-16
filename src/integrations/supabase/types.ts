@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leads: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          message: string | null
+          name: string | null
+          notes: string | null
+          origem: Database["public"]["Enums"]["lead_origem"]
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          origem?: Database["public"]["Enums"]["lead_origem"]
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          origem?: Database["public"]["Enums"]["lead_origem"]
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +61,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      lead_origem: "site" | "manual" | "whatsapp" | "indicacao" | "outro"
+      lead_status: "novo" | "em_contato" | "agendado" | "convertido" | "perdido"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +189,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      lead_origem: ["site", "manual", "whatsapp", "indicacao", "outro"],
+      lead_status: ["novo", "em_contato", "agendado", "convertido", "perdido"],
+    },
   },
 } as const
