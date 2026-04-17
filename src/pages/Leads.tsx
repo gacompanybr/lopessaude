@@ -78,7 +78,6 @@ const PremiumTooltip = ({ active, payload, label }: any) => {
 };
 
 const Leads = () => {
-  const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState<Date | undefined>();
