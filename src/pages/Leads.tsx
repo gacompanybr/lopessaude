@@ -214,11 +214,11 @@ const Leads = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
-            { label: "Total", value: filteredLeads.length },
+            { label: "Total de leads", value: filteredLeads.length },
             { label: "Novos", value: filteredLeads.filter((l) => l.status === "novo").length },
-            { label: "Agendados", value: filteredLeads.filter((l) => l.status === "agendado").length },
             { label: "Convertidos", value: filteredLeads.filter((l) => l.status === "convertido").length },
-            { label: "Hoje", value: todayCount },
+            { label: "Perdidos", value: filteredLeads.filter((l) => l.status === "perdido").length },
+            { label: "Taxa de conversão", value: `${conversionRate}%` },
           ].map((s) => (
             <div key={s.label} className="bg-card rounded-xl border border-border p-4">
               <p className="text-2xl font-display font-bold text-foreground">{s.value}</p>
