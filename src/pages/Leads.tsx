@@ -28,14 +28,17 @@ import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend,
+  PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
 } from "recharts";
 
-const CHART_COLORS = [
-  "hsl(210, 80%, 50%)", "hsl(210, 60%, 65%)", "hsl(210, 40%, 75%)",
-  "hsl(210, 90%, 40%)", "hsl(210, 70%, 55%)", "hsl(200, 60%, 50%)",
-  "hsl(220, 60%, 50%)", "hsl(190, 60%, 50%)",
-];
+const ORIGEM_COLORS: Record<LeadOrigem, string> = {
+  site: "hsl(213, 80%, 45%)",
+  whatsapp: "hsl(142, 60%, 45%)",
+  indicacao: "hsl(270, 60%, 55%)",
+  redes_sociais: "hsl(330, 70%, 55%)",
+  manual: "hsl(210, 15%, 50%)",
+  outro: "hsl(35, 85%, 55%)",
+};
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
   novo: "bg-blue-100 text-blue-700",
@@ -51,6 +54,25 @@ const STATUS_PIE_COLORS: Record<LeadStatus, string> = {
   agendado: "hsl(270, 60%, 55%)",
   convertido: "hsl(142, 60%, 45%)",
   perdido: "hsl(0, 60%, 50%)",
+};
+
+// Tooltip premium reutilizável
+const PremiumTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-xl border border-border bg-card/95 backdrop-blur shadow-lg px-3 py-2 text-xs">
+      {label && <p className="font-display font-semibold text-foreground mb-1">{label}</p>}
+      <div className="space-y-1">
+        {payload.map((p: any, i: number) => (
+          <div key={i} className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: p.color || p.payload?.fill }} />
+            <span className="text-muted-foreground">{p.name}:</span>
+            <span className="font-semibold text-foreground tabular-nums">{p.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const Leads = () => {
@@ -158,13 +180,33 @@ const Leads = () => {
     }));
   }, [filteredLeads]);
 
-  const dailyData = useMemo(() => {
+  const monthlyData = useMemo(() => {
+    const map: Record<string, { key: string; label: string; total: number; convertidos: number }> = {};
+    filteredLeads.forEach((l) => {
+      const d = new Date(l.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const label = d.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }).replace(".", "");
+      if (!map[key]) map[key] = { key, label, total: 0, convertidos: 0 };
+      map[key].total += 1;
+      if (l.status === "convertido") map[key].convertidos += 1;
+    });
+    return Object.values(map).sort((a, b) => a.key.localeCompare(b.key));
+  }, [filteredLeads]);
+
+  const origemData = useMemo(() => {
     const map: Record<string, number> = {};
     filteredLeads.forEach((l) => {
-      const day = new Date(l.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-      map[day] = (map[day] || 0) + 1;
+      map[l.origem] = (map[l.origem] || 0) + 1;
     });
-    return Object.entries(map).map(([date, leads]) => ({ date, leads }));
+    const total = filteredLeads.length || 1;
+    return Object.entries(map)
+      .map(([k, value]) => ({
+        key: k as LeadOrigem,
+        name: ORIGEM_LABELS[k as LeadOrigem] || k,
+        value,
+        percent: Math.round((value / total) * 100),
+      }))
+      .sort((a, b) => b.value - a.value);
   }, [filteredLeads]);
 
   const conversionRate = useMemo(() => {
