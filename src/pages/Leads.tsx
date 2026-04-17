@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import UserMenu from "@/components/UserMenu";
 import { exportLeadsToPdf } from "@/lib/exportLeadsPdf";
-import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
