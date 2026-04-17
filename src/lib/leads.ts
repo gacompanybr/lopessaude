@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type LeadStatus = "novo" | "em_contato" | "agendado" | "convertido" | "perdido";
-export type LeadOrigem = "site" | "manual" | "whatsapp" | "indicacao" | "outro";
+export type LeadOrigem = "site" | "manual" | "whatsapp" | "indicacao" | "redes_sociais" | "outro";
 
 export interface Lead {
   id: string;
@@ -85,5 +85,6 @@ export const ORIGEM_LABELS: Record<LeadOrigem, string> = {
   manual: "Manual",
   whatsapp: "WhatsApp",
   indicacao: "Indicação",
+  redes_sociais: "Redes sociais",
   outro: "Outro",
 };
