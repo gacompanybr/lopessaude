@@ -85,7 +85,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      lead_origem: "site" | "manual" | "whatsapp" | "indicacao" | "outro"
+      lead_origem:
+        | "site"
+        | "manual"
+        | "whatsapp"
+        | "indicacao"
+        | "outro"
+        | "redes_sociais"
       lead_status: "novo" | "em_contato" | "agendado" | "convertido" | "perdido"
     }
     CompositeTypes: {
@@ -214,7 +220,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      lead_origem: ["site", "manual", "whatsapp", "indicacao", "outro"],
+      lead_origem: [
+        "site",
+        "manual",
+        "whatsapp",
+        "indicacao",
+        "outro",
+        "redes_sociais",
+      ],
       lead_status: ["novo", "em_contato", "agendado", "convertido", "perdido"],
     },
   },
