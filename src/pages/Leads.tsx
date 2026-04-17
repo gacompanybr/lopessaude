@@ -28,14 +28,17 @@ import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend,
+  PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
 } from "recharts";
 
-const CHART_COLORS = [
-  "hsl(210, 80%, 50%)", "hsl(210, 60%, 65%)", "hsl(210, 40%, 75%)",
-  "hsl(210, 90%, 40%)", "hsl(210, 70%, 55%)", "hsl(200, 60%, 50%)",
-  "hsl(220, 60%, 50%)", "hsl(190, 60%, 50%)",
-];
+const ORIGEM_COLORS: Record<LeadOrigem, string> = {
+  site: "hsl(213, 80%, 45%)",
+  whatsapp: "hsl(142, 60%, 45%)",
+  indicacao: "hsl(270, 60%, 55%)",
+  redes_sociais: "hsl(330, 70%, 55%)",
+  manual: "hsl(210, 15%, 50%)",
+  outro: "hsl(35, 85%, 55%)",
+};
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
   novo: "bg-blue-100 text-blue-700",
@@ -51,6 +54,25 @@ const STATUS_PIE_COLORS: Record<LeadStatus, string> = {
   agendado: "hsl(270, 60%, 55%)",
   convertido: "hsl(142, 60%, 45%)",
   perdido: "hsl(0, 60%, 50%)",
+};
+
+// Tooltip premium reutilizável
+const PremiumTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-xl border border-border bg-card/95 backdrop-blur shadow-lg px-3 py-2 text-xs">
+      {label && <p className="font-display font-semibold text-foreground mb-1">{label}</p>}
+      <div className="space-y-1">
+        {payload.map((p: any, i: number) => (
+          <div key={i} className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: p.color || p.payload?.fill }} />
+            <span className="text-muted-foreground">{p.name}:</span>
+            <span className="font-semibold text-foreground tabular-nums">{p.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const Leads = () => {
@@ -158,13 +180,33 @@ const Leads = () => {
     }));
   }, [filteredLeads]);
 
-  const dailyData = useMemo(() => {
+  const monthlyData = useMemo(() => {
+    const map: Record<string, { key: string; label: string; total: number; convertidos: number }> = {};
+    filteredLeads.forEach((l) => {
+      const d = new Date(l.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const label = d.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }).replace(".", "");
+      if (!map[key]) map[key] = { key, label, total: 0, convertidos: 0 };
+      map[key].total += 1;
+      if (l.status === "convertido") map[key].convertidos += 1;
+    });
+    return Object.values(map).sort((a, b) => a.key.localeCompare(b.key));
+  }, [filteredLeads]);
+
+  const origemData = useMemo(() => {
     const map: Record<string, number> = {};
     filteredLeads.forEach((l) => {
-      const day = new Date(l.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-      map[day] = (map[day] || 0) + 1;
+      map[l.origem] = (map[l.origem] || 0) + 1;
     });
-    return Object.entries(map).map(([date, leads]) => ({ date, leads }));
+    const total = filteredLeads.length || 1;
+    return Object.entries(map)
+      .map(([k, value]) => ({
+        key: k as LeadOrigem,
+        name: ORIGEM_LABELS[k as LeadOrigem] || k,
+        value,
+        percent: Math.round((value / total) * 100),
+      }))
+      .sort((a, b) => b.value - a.value);
   }, [filteredLeads]);
 
   const conversionRate = useMemo(() => {
@@ -294,64 +336,120 @@ const Leads = () => {
 
         {/* Charts */}
         {filteredLeads.length > 0 && (
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="bg-card rounded-xl border border-border p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="w-4 h-4 text-primary" />
-                <h3 className="font-display font-bold text-foreground text-sm">Leads por dia</h3>
+          <div className="space-y-6">
+            {/* Linha 1: Evolução mensal (2/3) + Status (1/3) */}
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-primary" />
+                    <h3 className="font-display font-bold text-foreground text-sm">Evolução mensal de leads</h3>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" />Total</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(142, 60%, 45%)" }} />Convertidos</span>
+                  </div>
+                </div>
+                <div className="h-[260px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="gradTotal" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.35} />
+                          <stop offset="100%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0} />
+                        </linearGradient>
+                        <linearGradient id="gradConv" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 92%)" vertical={false} />
+                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} width={32} />
+                      <Tooltip content={<PremiumTooltip />} cursor={{ stroke: "hsl(213, 80%, 45%)", strokeOpacity: 0.15, strokeWidth: 40 }} />
+                      <Area type="monotone" dataKey="total" name="Total" stroke="hsl(213, 80%, 45%)" strokeWidth={2.5} fill="url(#gradTotal)" activeDot={{ r: 5 }}>
+                        <LabelList dataKey="total" position="top" style={{ fontSize: 11, fill: "hsl(215, 30%, 18%)", fontWeight: 600 }} />
+                      </Area>
+                      <Area type="monotone" dataKey="convertidos" name="Convertidos" stroke="hsl(142, 60%, 45%)" strokeWidth={2} fill="url(#gradConv)" activeDot={{ r: 4 }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={dailyData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(210, 10%, 90%)" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="leads" stroke="hsl(210, 80%, 50%)" strokeWidth={2} dot={{ r: 4 }} name="Leads" />
-                  </LineChart>
-                </ResponsiveContainer>
+
+              <div className="bg-card rounded-2xl border border-border p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <Users className="w-4 h-4 text-primary" />
+                  <h3 className="font-display font-bold text-foreground text-sm">Por status</h3>
+                </div>
+                <div className="h-[260px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={2} stroke="hsl(0 0% 100%)" strokeWidth={2}>
+                        {statusData.map((d, i) => (
+                          <Cell key={i} fill={STATUS_PIE_COLORS[d.key]} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<PremiumTooltip />} />
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
 
-            <div className="bg-card rounded-xl border border-border p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-4 h-4 text-primary" />
-                <h3 className="font-display font-bold text-foreground text-sm">Leads por cidade</h3>
+            {/* Linha 2: Origem (donut) + Cidades (barras horizontais) */}
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="bg-card rounded-2xl border border-border p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <MessageCircle className="w-4 h-4 text-primary" />
+                  <h3 className="font-display font-bold text-foreground text-sm">Origem dos leads</h3>
+                </div>
+                <div className="h-[220px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={origemData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={2} stroke="hsl(0 0% 100%)" strokeWidth={2}>
+                        {origemData.map((d, i) => (
+                          <Cell key={i} fill={ORIGEM_COLORS[d.key] || "hsl(210, 20%, 60%)"} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<PremiumTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-3 space-y-1.5">
+                  {origemData.map((o) => (
+                    <div key={o.key} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: ORIGEM_COLORS[o.key] || "hsl(210, 20%, 60%)" }} />
+                        <span className="text-foreground truncate">{o.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="font-semibold text-foreground tabular-nums">{o.value}</span>
+                        <span className="text-muted-foreground tabular-nums w-9 text-right">{o.percent}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={cityData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(210, 10%, 90%)" />
-                    <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="value" name="Leads" radius={[0, 4, 4, 0]}>
-                      {cityData.map((_, i) => (
-                        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
 
-            <div className="bg-card rounded-xl border border-border p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Users className="w-4 h-4 text-primary" />
-                <h3 className="font-display font-bold text-foreground text-sm">Por status</h3>
-              </div>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, value }) => `${name}: ${value}`}>
-                      {statusData.map((d, i) => (
-                        <Cell key={i} fill={STATUS_PIE_COLORS[d.key]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
+              <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <h3 className="font-display font-bold text-foreground text-sm">Leads por cidade</h3>
+                </div>
+                <div style={{ height: Math.max(220, cityData.length * 38) }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={cityData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }} barCategoryGap={10}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 92%)" horizontal={false} />
+                      <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} />
+                      <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 12, fill: "hsl(215, 30%, 18%)" }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<PremiumTooltip />} cursor={{ fill: "hsl(213, 80%, 45%)", fillOpacity: 0.05 }} />
+                      <Bar dataKey="value" name="Leads" fill="hsl(213, 80%, 45%)" radius={[0, 8, 8, 0]} barSize={20}>
+                        <LabelList dataKey="value" position="right" style={{ fontSize: 11, fill: "hsl(215, 30%, 18%)", fontWeight: 600 }} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
           </div>
