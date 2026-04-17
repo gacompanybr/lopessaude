@@ -11,10 +11,11 @@ import {
 } from "@/lib/leads";
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
-  CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle, LogOut,
+  CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle, FileDown,
+  ChevronLeft, ChevronRight,
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import UserMenu from "@/components/UserMenu";
+import { exportLeadsToPdf } from "@/lib/exportLeadsPdf";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,8 +77,6 @@ const PremiumTooltip = ({ active, payload, label }: any) => {
 };
 
 const Leads = () => {
-  const { signOut } = useAuth();
-  const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState<Date | undefined>();
@@ -87,11 +86,8 @@ const Leads = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth", { replace: true });
-  };
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const refresh = async () => {
     setLoading(true);
@@ -223,9 +219,29 @@ const Leads = () => {
   const openNew = () => { setEditing(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => { setEditing(lead); setDialogOpen(true); };
 
-  const todayCount = filteredLeads.filter(
-    (l) => new Date(l.created_at).toDateString() === new Date().toDateString()
-  ).length;
+  // Reset to page 1 whenever filters or page size change
+  useEffect(() => { setPage(1); }, [search, statusFilter, origemFilter, startDate, endDate, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
+  const paginatedLeads = useMemo(
+    () => filteredLeads.slice((page - 1) * pageSize, page * pageSize),
+    [filteredLeads, page, pageSize]
+  );
+
+  const handleExportPdf = () => {
+    if (filteredLeads.length === 0) {
+      toast.info("Nenhum lead para exportar");
+      return;
+    }
+    const parts: string[] = [];
+    if (search) parts.push(`busca="${search}"`);
+    if (statusFilter !== "todos") parts.push(`status=${STATUS_LABELS[statusFilter as LeadStatus]}`);
+    if (origemFilter !== "todos") parts.push(`origem=${ORIGEM_LABELS[origemFilter as LeadOrigem]}`);
+    if (startDate) parts.push(`de ${format(startDate, "dd/MM/yyyy")}`);
+    if (endDate) parts.push(`até ${format(endDate, "dd/MM/yyyy")}`);
+    exportLeadsToPdf(filteredLeads, parts.join(" · ") || undefined);
+    toast.success("PDF gerado");
+  };
 
   return (
     <div className="min-h-screen bg-background font-body">
@@ -245,9 +261,10 @@ const Leads = () => {
             <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
-            <Button onClick={handleSignOut} variant="secondary" size="sm" className="gap-2">
-              <LogOut className="w-4 h-4" /> Sair
+            <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
+              <FileDown className="w-4 h-4" /> Exportar PDF
             </Button>
+            <UserMenu />
           </div>
         </div>
       </div>
@@ -468,88 +485,132 @@ const Leads = () => {
           </div>
         ) : (
           <div>
-            <p className="text-sm text-muted-foreground mb-3">{filteredLeads.length} lead(s)</p>
-            <ScrollArea className="h-[600px] rounded-xl border border-border">
-              <div className="space-y-3 p-4">
-                {filteredLeads.map((lead) => (
-                  <div key={lead.id} className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-3 flex-wrap">
-                          <h3 className="font-display font-bold text-foreground text-lg truncate">
-                            {lead.name || "Sem nome"}
-                          </h3>
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status]}`}>
-                            {STATUS_LABELS[lead.status]}
-                          </span>
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                            {ORIGEM_LABELS[lead.origem]}
-                          </span>
-                        </div>
-                        <div className="grid sm:grid-cols-3 gap-3 text-sm">
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Phone className="w-3.5 h-3.5" /><span>{lead.whatsapp || "—"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <MapPin className="w-3.5 h-3.5" /><span>{lead.city || "—"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Clock className="w-3.5 h-3.5" /><span>{formatDate(lead.created_at)}</span>
-                          </div>
-                        </div>
-                        {lead.message && (
-                          <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
-                            <MessageSquare className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                            <p className="line-clamp-2">{lead.message}</p>
-                          </div>
-                        )}
-                        {lead.notes && (
-                          <div className="mt-2 text-xs text-muted-foreground/80 italic border-l-2 border-primary/30 pl-2">
-                            {lead.notes}
-                          </div>
-                        )}
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                <h2 className="font-display font-bold text-foreground text-lg">Leads recentes</h2>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+                  {filteredLeads.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Por página:</span>
+                <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                  <SelectTrigger className="w-[80px] h-8"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {paginatedLeads.map((lead) => (
+                <div key={lead.id} className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-3 flex-wrap">
+                        <h3 className="font-display font-bold text-foreground text-lg truncate">
+                          {lead.name || "Sem nome"}
+                        </h3>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status]}`}>
+                          {STATUS_LABELS[lead.status]}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                          {ORIGEM_LABELS[lead.origem]}
+                        </span>
                       </div>
-                      <div className="flex flex-col items-end gap-2 shrink-0">
-                        <Select value={lead.status} onValueChange={(v) => handleStatusChange(lead.id, v as LeadStatus)}>
-                          <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {Object.entries(STATUS_LABELS).map(([k, v]) => (
-                              <SelectItem key={k} value={k}>{v}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <div className="flex gap-1">
-                          {lead.whatsapp && (
-                            <a
-                              href={`https://api.whatsapp.com/send?phone=${lead.whatsapp.replace(/\D/g, "")}`}
-                              target="_blank" rel="noopener noreferrer"
-                              className="p-2 rounded-lg text-muted-foreground hover:text-green-600 hover:bg-green-50 transition-colors"
-                              title="Abrir WhatsApp"
-                            >
-                              <MessageCircle className="w-4 h-4" />
-                            </a>
-                          )}
-                          <button
-                            onClick={() => openEdit(lead)}
-                            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                            title="Editar"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(lead.id)}
-                            className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                            title="Excluir"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                      <div className="grid sm:grid-cols-3 gap-3 text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Phone className="w-3.5 h-3.5" /><span>{lead.whatsapp || "—"}</span>
                         </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <MapPin className="w-3.5 h-3.5" /><span>{lead.city || "—"}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="w-3.5 h-3.5" /><span>{formatDate(lead.created_at)}</span>
+                        </div>
+                      </div>
+                      {lead.message && (
+                        <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                          <MessageSquare className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                          <p className="line-clamp-2">{lead.message}</p>
+                        </div>
+                      )}
+                      {lead.notes && (
+                        <div className="mt-2 text-xs text-muted-foreground/80 italic border-l-2 border-primary/30 pl-2">
+                          {lead.notes}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <Select value={lead.status} onValueChange={(v) => handleStatusChange(lead.id, v as LeadStatus)}>
+                        <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                            <SelectItem key={k} value={k}>{v}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex gap-1">
+                        {lead.whatsapp && (
+                          <a
+                            href={`https://api.whatsapp.com/send?phone=${lead.whatsapp.replace(/\D/g, "")}`}
+                            target="_blank" rel="noopener noreferrer"
+                            className="p-2 rounded-lg text-muted-foreground hover:text-green-600 hover:bg-green-50 transition-colors"
+                            title="Abrir WhatsApp"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => openEdit(lead)}
+                          className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                          title="Editar"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </div>
-                ))}
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination footer */}
+            <div className="flex items-center justify-between mt-5 flex-wrap gap-3">
+              <p className="text-xs text-muted-foreground">
+                Página {page} de {totalPages} · Mostrando{" "}
+                {Math.min((page - 1) * pageSize + 1, filteredLeads.length)}–
+                {Math.min(page * pageSize, filteredLeads.length)} de {filteredLeads.length}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline" size="sm"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" /> Anterior
+                </Button>
+                <Button
+                  variant="outline" size="sm"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="gap-1"
+                >
+                  Próxima <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-            </ScrollArea>
+            </div>
           </div>
         )}
       </div>
