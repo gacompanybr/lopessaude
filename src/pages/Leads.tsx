@@ -78,7 +78,6 @@ const PremiumTooltip = ({ active, payload, label }: any) => {
 };
 
 const Leads = () => {
-  const { signOut } = useAuth();
   const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,11 +88,8 @@ const Leads = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth", { replace: true });
-  };
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const refresh = async () => {
     setLoading(true);
