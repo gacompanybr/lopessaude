@@ -219,9 +219,29 @@ const Leads = () => {
   const openNew = () => { setEditing(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => { setEditing(lead); setDialogOpen(true); };
 
-  const todayCount = filteredLeads.filter(
-    (l) => new Date(l.created_at).toDateString() === new Date().toDateString()
-  ).length;
+  // Reset to page 1 whenever filters or page size change
+  useEffect(() => { setPage(1); }, [search, statusFilter, origemFilter, startDate, endDate, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
+  const paginatedLeads = useMemo(
+    () => filteredLeads.slice((page - 1) * pageSize, page * pageSize),
+    [filteredLeads, page, pageSize]
+  );
+
+  const handleExportPdf = () => {
+    if (filteredLeads.length === 0) {
+      toast.info("Nenhum lead para exportar");
+      return;
+    }
+    const parts: string[] = [];
+    if (search) parts.push(`busca="${search}"`);
+    if (statusFilter !== "todos") parts.push(`status=${STATUS_LABELS[statusFilter as LeadStatus]}`);
+    if (origemFilter !== "todos") parts.push(`origem=${ORIGEM_LABELS[origemFilter as LeadOrigem]}`);
+    if (startDate) parts.push(`de ${format(startDate, "dd/MM/yyyy")}`);
+    if (endDate) parts.push(`até ${format(endDate, "dd/MM/yyyy")}`);
+    exportLeadsToPdf(filteredLeads, parts.join(" · ") || undefined);
+    toast.success("PDF gerado");
+  };
 
   return (
     <div className="min-h-screen bg-background font-body">
@@ -241,9 +261,10 @@ const Leads = () => {
             <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
-            <Button onClick={handleSignOut} variant="secondary" size="sm" className="gap-2">
-              <LogOut className="w-4 h-4" /> Sair
+            <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
+              <FileDown className="w-4 h-4" /> Exportar PDF
             </Button>
+            <UserMenu />
           </div>
         </div>
       </div>
