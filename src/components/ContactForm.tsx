@@ -103,7 +103,7 @@ const ContactForm = () => {
               </div>
 
               <a
-                href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent("Olá, gostaria de mais informações!")}`}
+                href={`https://api.whatsapp.com/send?phone=5514996684609&text=${encodeURIComponent("Olá, vim pelo Google e gostaria de saber mais informações")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block mt-8 bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
