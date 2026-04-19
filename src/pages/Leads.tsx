@@ -258,10 +258,10 @@ const Leads = () => {
       <div className="bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <Users className="w-6 h-6" />
+            <Users className="w-6 h-6 dark:text-white" />
             <div>
-              <h1 className="font-display font-bold text-xl">CRM de Leads</h1>
-              <p className="text-sm opacity-80">Lopes Saúde e Odontologia</p>
+              <h1 className="font-display font-bold text-xl dark:text-white">CRM de Leads</h1>
+              <p className="text-sm opacity-80 dark:text-white">Lopes Saúde e Odontologia</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
