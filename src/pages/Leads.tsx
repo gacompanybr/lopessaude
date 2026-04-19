@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import UserMenu from "@/components/UserMenu";
 import { exportLeadsToPdf } from "@/lib/exportLeadsPdf";
+import { exportLeadsToExcel } from "@/lib/exportLeadsExcel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -243,6 +244,15 @@ const Leads = () => {
     toast.success("PDF gerado");
   };
 
+  const handleExportExcel = () => {
+    if (filteredLeads.length === 0) {
+      toast.info("Nenhum lead para exportar");
+      return;
+    }
+    exportLeadsToExcel(filteredLeads);
+    toast.success("Excel gerado");
+  };
+
   return (
     <div className="min-h-screen bg-background font-body">
       <div className="bg-primary text-primary-foreground">
@@ -263,6 +273,9 @@ const Leads = () => {
             </Button>
             <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
               <FileDown className="w-4 h-4" /> Exportar PDF
+            </Button>
+            <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
+              <FileDown className="w-4 h-4" /> Exportar Excel
             </Button>
             <UserMenu />
           </div>
