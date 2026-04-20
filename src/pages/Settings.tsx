@@ -76,6 +76,41 @@ const Settings = () => {
 
   const [users, setUsers] = useState<UserRow[]>([]);
 
+  // Novo usuário
+  const [newUserOpen, setNewUserOpen] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [nuName, setNuName] = useState("");
+  const [nuEmail, setNuEmail] = useState("");
+  const [nuPassword, setNuPassword] = useState("");
+  const [nuProfileId, setNuProfileId] = useState<string>("");
+
+  const createUser = async () => {
+    if (!nuEmail || !nuPassword || nuPassword.length < 6) {
+      return toast.error("Informe e-mail e senha (mín. 6 caracteres)");
+    }
+    setCreatingUser(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-user", {
+        body: {
+          email: nuEmail.trim(),
+          password: nuPassword,
+          display_name: nuName.trim() || undefined,
+          profile_type_id: nuProfileId || undefined,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success("Usuário cadastrado");
+      setNewUserOpen(false);
+      setNuName(""); setNuEmail(""); setNuPassword(""); setNuProfileId("");
+      loadAll();
+    } catch (e: any) {
+      toast.error(e.message ?? "Erro ao cadastrar usuário");
+    } finally {
+      setCreatingUser(false);
+    }
+  };
+
   const loadAll = async () => {
     const [{ data: comp }, { data: profs }, { data: profUsers }, { data: assignments }] = await Promise.all([
       supabase.from("company_settings").select("*").maybeSingle(),
