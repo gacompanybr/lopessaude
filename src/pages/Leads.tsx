@@ -483,6 +483,9 @@ const Leads = () => {
           </div>
         )}
 
+        {/* Importar planilha */}
+        <ImportLeadsCard onImported={refresh} />
+
         {/* Lista */}
         {loading ? (
           <div className="text-center py-20 text-muted-foreground">Carregando...</div>
