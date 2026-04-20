@@ -7,11 +7,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { LogOut, Moon, Sun, Settings } from "lucide-react";
+import { LogOut, Moon, Sun, Settings, Cog } from "lucide-react";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { isAdmin } = useUserRole();
   const navigate = useNavigate();
 
   const displayName =
@@ -74,6 +76,11 @@ const UserMenu = () => {
           <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} />
         </div>
         <DropdownMenuSeparator />
+        {isAdmin && (
+          <DropdownMenuItem onClick={() => navigate("/settings")}>
+            <Cog className="w-4 h-4 mr-2" /> Configurações
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
           <LogOut className="w-4 h-4 mr-2" /> Sair
         </DropdownMenuItem>
