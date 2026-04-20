@@ -482,8 +482,53 @@ const Settings = () => {
             </Card>
 
             <Card className="rounded-xl">
-              <CardHeader>
+              <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-lg">Usuários da plataforma</CardTitle>
+                <Dialog open={newUserOpen} onOpenChange={setNewUserOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2"><UserPlus className="w-4 h-4" /> Adicionar usuário</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader><DialogTitle>Cadastrar novo usuário</DialogTitle></DialogHeader>
+                    <div className="space-y-4 py-2">
+                      <div className="space-y-1.5">
+                        <Label>Nome</Label>
+                        <Input value={nuName} onChange={(e) => setNuName(e.target.value)} placeholder="Nome completo" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>E-mail</Label>
+                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Senha</Label>
+                        <Input type="password" value={nuPassword} onChange={(e) => setNuPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Perfil de acesso</Label>
+                        <Select value={nuProfileId} onValueChange={setNuProfileId}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Padrão: Atendente" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {profiles.filter((p) => p.active).map((p) => (
+                              <SelectItem key={p.id} value={p.id}>
+                                {p.name} · {CATEGORIES.find((c) => c.value === p.type)?.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">Se nenhum perfil for selecionado, o usuário recebe automaticamente o perfil <strong>Atendente</strong>.</p>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setNewUserOpen(false)}>Cancelar</Button>
+                      <Button onClick={createUser} disabled={creatingUser} className="gap-2">
+                        {creatingUser ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                        Cadastrar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardHeader>
               <CardContent>
                 <Table>
