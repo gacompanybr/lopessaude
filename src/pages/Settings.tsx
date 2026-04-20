@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, Loader2, Mail, MapPin, MessageSquare, Plus, Save, ShieldCheck, Trash2, Upload, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Building2, Loader2, Mail, MapPin, MessageSquare, Pencil, Plus, Save, ShieldCheck, Trash2, Upload, Users, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import UserMenu from "@/components/UserMenu";
 
+type ProfileCategory = "administrador" | "atendente" | "comercial" | "gerente" | "outro";
+
+const CATEGORIES: { value: ProfileCategory; label: string }[] = [
+  { value: "administrador", label: "Administrador" },
+  { value: "atendente", label: "Atendente" },
+  { value: "comercial", label: "Comercial" },
+  { value: "gerente", label: "Gerente" },
+  { value: "outro", label: "Outro" },
+];
+
 type CompanySettings = {
   id?: string;
   logo_url: string | null;
@@ -28,14 +38,15 @@ type CompanySettings = {
 type ProfileType = {
   id: string;
   name: string;
+  type: ProfileCategory;
   active: boolean;
 };
 
-type UserWithRoles = {
+type UserRow = {
   id: string;
   display_name: string | null;
   email: string | null;
-  roles: ("admin" | "atendente")[];
+  profile_type_id: string | null;
 };
 
 const Settings = () => {
@@ -55,15 +66,20 @@ const Settings = () => {
   const [uploading, setUploading] = useState(false);
 
   const [profiles, setProfiles] = useState<ProfileType[]>([]);
-  const [newProfile, setNewProfile] = useState("");
-  const [users, setUsers] = useState<UserWithRoles[]>([]);
+  const [newProfileName, setNewProfileName] = useState("");
+  const [newProfileType, setNewProfileType] = useState<ProfileCategory>("atendente");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editType, setEditType] = useState<ProfileCategory>("outro");
+
+  const [users, setUsers] = useState<UserRow[]>([]);
 
   const loadAll = async () => {
-    const [{ data: comp }, { data: profs }, { data: profUsers }, { data: rolesRows }] = await Promise.all([
+    const [{ data: comp }, { data: profs }, { data: profUsers }, { data: assignments }] = await Promise.all([
       supabase.from("company_settings").select("*").maybeSingle(),
       supabase.from("profile_types").select("*").order("created_at", { ascending: true }),
       supabase.from("profiles").select("id, display_name, email"),
-      supabase.from("user_roles").select("user_id, role"),
+      supabase.from("user_profile_assignments").select("user_id, profile_type_id"),
     ]);
 
     if (comp) {
@@ -79,18 +95,14 @@ const Settings = () => {
     }
     setProfiles((profs ?? []) as ProfileType[]);
 
-    const rolesByUser = new Map<string, ("admin" | "atendente")[]>();
-    (rolesRows ?? []).forEach((r: any) => {
-      const arr = rolesByUser.get(r.user_id) ?? [];
-      arr.push(r.role);
-      rolesByUser.set(r.user_id, arr);
-    });
+    const map = new Map<string, string>();
+    (assignments ?? []).forEach((a: any) => map.set(a.user_id, a.profile_type_id));
     setUsers(
       (profUsers ?? []).map((u: any) => ({
         id: u.id,
         display_name: u.display_name,
         email: u.email,
-        roles: rolesByUser.get(u.id) ?? [],
+        profile_type_id: map.get(u.id) ?? null,
       }))
     );
   };
@@ -143,36 +155,79 @@ const Settings = () => {
 
   // ----- Perfis -----
   const addProfile = async () => {
-    if (!newProfile.trim()) return;
-    const { error } = await supabase.from("profile_types").insert({ name: newProfile.trim() });
+    if (!newProfileName.trim()) {
+      toast.error("Informe o nome do perfil");
+      return;
+    }
+    const { error } = await supabase
+      .from("profile_types")
+      .insert({ name: newProfileName.trim(), type: newProfileType });
     if (error) return toast.error(error.message);
-    setNewProfile("");
+    setNewProfileName("");
+    setNewProfileType("atendente");
     toast.success("Perfil criado");
     loadAll();
   };
 
-  const updateProfile = async (id: string, patch: Partial<ProfileType>) => {
-    const { error } = await supabase.from("profile_types").update(patch).eq("id", id);
+  const startEdit = (p: ProfileType) => {
+    setEditingId(p.id);
+    setEditName(p.name);
+    setEditType(p.type);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditName("");
+  };
+
+  const saveEdit = async (id: string) => {
+    if (!editName.trim()) return toast.error("Nome obrigatório");
+    const { error } = await supabase
+      .from("profile_types")
+      .update({ name: editName.trim(), type: editType })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Perfil atualizado");
+    cancelEdit();
+    loadAll();
+  };
+
+  const toggleActive = async (id: string, active: boolean) => {
+    const { error } = await supabase.from("profile_types").update({ active }).eq("id", id);
     if (error) return toast.error(error.message);
     loadAll();
   };
 
   const removeProfile = async (id: string) => {
-    if (!confirm("Remover este perfil?")) return;
+    if (!confirm("Remover este perfil? Os vínculos de usuários a ele também serão removidos.")) return;
     const { error } = await supabase.from("profile_types").delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Perfil removido");
     loadAll();
   };
 
-  // ----- Vínculo usuário ↔ role -----
-  const setUserRole = async (userId: string, role: "admin" | "atendente") => {
-    // remove roles anteriores e insere a nova (perfil único por usuário nesta etapa)
-    await supabase.from("user_roles").delete().eq("user_id", userId);
-    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
+  // ----- Vínculo usuário ↔ perfil -----
+  const assignUser = async (userId: string, profileTypeId: string) => {
+    const { error } = await supabase
+      .from("user_profile_assignments")
+      .upsert({ user_id: userId, profile_type_id: profileTypeId }, { onConflict: "user_id" });
     if (error) return toast.error(error.message);
+
+    // Espelha admin/atendente em user_roles quando aplicável
+    const profile = profiles.find((p) => p.id === profileTypeId);
+    if (profile && (profile.type === "administrador" || profile.type === "atendente")) {
+      const role = profile.type === "administrador" ? "admin" : "atendente";
+      await supabase.from("user_roles").delete().eq("user_id", userId);
+      await supabase.from("user_roles").insert({ user_id: userId, role });
+    }
+
     toast.success("Perfil vinculado");
     loadAll();
+  };
+
+  const profileLabel = (id: string | null) => {
+    if (!id) return null;
+    return profiles.find((p) => p.id === id) ?? null;
   };
 
   return (
@@ -279,48 +334,110 @@ const Settings = () => {
           <TabsContent value="profiles" className="space-y-6">
             <Card className="rounded-xl">
               <CardHeader>
-                <CardTitle className="text-lg">Perfis de acesso</CardTitle>
+                <CardTitle className="text-lg">Cadastrar perfil de acesso</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Nome do perfil (ex: Gerente)"
-                    value={newProfile}
-                    onChange={(e) => setNewProfile(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addProfile()}
-                  />
-                  <Button onClick={addProfile} className="gap-2"><Plus className="w-4 h-4" /> Adicionar</Button>
+                <div className="grid md:grid-cols-[1fr_220px_auto] gap-2">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Nome do perfil</Label>
+                    <Input
+                      placeholder="ex: Atendente Recepção"
+                      value={newProfileName}
+                      onChange={(e) => setNewProfileName(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && addProfile()}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Tipo</Label>
+                    <Select value={newProfileType} onValueChange={(v) => setNewProfileType(v as ProfileCategory)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {CATEGORIES.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={addProfile} className="gap-2 w-full md:w-auto">
+                      <Plus className="w-4 h-4" /> Adicionar
+                    </Button>
+                  </div>
                 </div>
+              </CardContent>
+            </Card>
 
+            <Card className="rounded-xl">
+              <CardHeader>
+                <CardTitle className="text-lg">Perfis cadastrados</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Nome</TableHead>
-                      <TableHead className="w-32">Ativo</TableHead>
-                      <TableHead className="w-20"></TableHead>
+                      <TableHead className="w-44">Tipo</TableHead>
+                      <TableHead className="w-24">Ativo</TableHead>
+                      <TableHead className="w-28 text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {profiles.map((p) => (
-                      <TableRow key={p.id}>
-                        <TableCell>
-                          <Input
-                            defaultValue={p.name}
-                            onBlur={(e) => e.target.value !== p.name && updateProfile(p.id, { name: e.target.value })}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Switch checked={p.active} onCheckedChange={(v) => updateProfile(p.id, { active: v })} />
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon" onClick={() => removeProfile(p.id)}>
-                            <Trash2 className="w-4 h-4 text-destructive" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {profiles.map((p) => {
+                      const isEditing = editingId === p.id;
+                      return (
+                        <TableRow key={p.id}>
+                          <TableCell>
+                            {isEditing ? (
+                              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+                            ) : (
+                              <span className="font-medium">{p.name}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isEditing ? (
+                              <Select value={editType} onValueChange={(v) => setEditType(v as ProfileCategory)}>
+                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  {CATEGORIES.map((c) => (
+                                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <Badge variant="secondary" className="capitalize">
+                                {CATEGORIES.find((c) => c.value === p.type)?.label ?? p.type}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Switch checked={p.active} onCheckedChange={(v) => toggleActive(p.id, v)} />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {isEditing ? (
+                              <div className="flex justify-end gap-1">
+                                <Button size="icon" variant="ghost" onClick={() => saveEdit(p.id)}>
+                                  <Check className="w-4 h-4 text-primary" />
+                                </Button>
+                                <Button size="icon" variant="ghost" onClick={cancelEdit}>
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="flex justify-end gap-1">
+                                <Button size="icon" variant="ghost" onClick={() => startEdit(p)}>
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                <Button size="icon" variant="ghost" onClick={() => removeProfile(p.id)}>
+                                  <Trash2 className="w-4 h-4 text-destructive" />
+                                </Button>
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                     {profiles.length === 0 && (
-                      <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-6">Nenhum perfil cadastrado</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Nenhum perfil cadastrado</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
@@ -329,7 +446,7 @@ const Settings = () => {
 
             <Card className="rounded-xl">
               <CardHeader>
-                <CardTitle className="text-lg">Vincular usuários a perfis</CardTitle>
+                <CardTitle className="text-lg">Usuários da plataforma</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -338,34 +455,52 @@ const Settings = () => {
                       <TableHead>Usuário</TableHead>
                       <TableHead>E-mail</TableHead>
                       <TableHead>Perfil atual</TableHead>
-                      <TableHead className="w-48">Definir perfil</TableHead>
+                      <TableHead className="w-56">Definir perfil</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((u) => (
-                      <TableRow key={u.id}>
-                        <TableCell className="font-medium">{u.display_name ?? "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{u.email}</TableCell>
-                        <TableCell>
-                          {u.roles.length === 0 ? (
-                            <Badge variant="outline">sem perfil</Badge>
-                          ) : (
-                            u.roles.map((r) => (
-                              <Badge key={r} variant={r === "admin" ? "default" : "secondary"} className="mr-1 capitalize">{r}</Badge>
-                            ))
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Select onValueChange={(v) => setUserRole(u.id, v as any)}>
-                            <SelectTrigger><SelectValue placeholder="Selecionar..." /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="admin">Administrador</SelectItem>
-                              <SelectItem value="atendente">Atendente</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {users.map((u) => {
+                      const current = profileLabel(u.profile_type_id);
+                      return (
+                        <TableRow key={u.id}>
+                          <TableCell className="font-medium">{u.display_name ?? "—"}</TableCell>
+                          <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                          <TableCell>
+                            {current ? (
+                              <div className="flex items-center gap-2">
+                                <Badge>{current.name}</Badge>
+                                <span className="text-xs text-muted-foreground capitalize">
+                                  {CATEGORIES.find((c) => c.value === current.type)?.label}
+                                </span>
+                              </div>
+                            ) : (
+                              <Badge variant="outline">sem perfil</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={u.profile_type_id ?? undefined}
+                              onValueChange={(v) => assignUser(u.id, v)}
+                            >
+                              <SelectTrigger><SelectValue placeholder="Selecionar perfil..." /></SelectTrigger>
+                              <SelectContent>
+                                {profiles.filter((p) => p.active).map((p) => (
+                                  <SelectItem key={p.id} value={p.id}>
+                                    {p.name} · {CATEGORIES.find((c) => c.value === p.type)?.label}
+                                  </SelectItem>
+                                ))}
+                                {profiles.filter((p) => p.active).length === 0 && (
+                                  <div className="px-2 py-1.5 text-sm text-muted-foreground">Cadastre um perfil ativo</div>
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {users.length === 0 && (
+                      <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
