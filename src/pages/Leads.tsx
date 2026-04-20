@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
+import ImportLeadsCard from "@/components/ImportLeadsCard";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
@@ -482,6 +483,9 @@ const Leads = () => {
             </div>
           </div>
         )}
+
+        {/* Importar planilha */}
+        <ImportLeadsCard onImported={refresh} />
 
         {/* Lista */}
         {loading ? (
