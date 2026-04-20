@@ -1,0 +1,20 @@
+import { Navigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
+
+export default function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { session, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useUserRole();
+
+  if (authLoading || roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  if (!session) return <Navigate to="/auth" replace />;
+  if (!isAdmin) return <Navigate to="/leads" replace />;
+  return <>{children}</>;
+}
