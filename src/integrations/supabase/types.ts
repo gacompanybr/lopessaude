@@ -95,6 +95,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          type: Database["public"]["Enums"]["profile_category"]
           updated_at: string
         }
         Insert: {
@@ -102,6 +103,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          type?: Database["public"]["Enums"]["profile_category"]
           updated_at?: string
         }
         Update: {
@@ -109,6 +111,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          type?: Database["public"]["Enums"]["profile_category"]
           updated_at?: string
         }
         Relationships: []
@@ -136,6 +139,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      user_profile_assignments: {
+        Row: {
+          created_at: string
+          id: string
+          profile_type_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_type_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_type_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profile_assignments_profile_type_id_fkey"
+            columns: ["profile_type_id"]
+            isOneToOne: false
+            referencedRelation: "profile_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -181,6 +216,12 @@ export type Database = {
         | "outro"
         | "redes_sociais"
       lead_status: "novo" | "em_contato" | "agendado" | "convertido" | "perdido"
+      profile_category:
+        | "administrador"
+        | "atendente"
+        | "comercial"
+        | "gerente"
+        | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -318,6 +359,13 @@ export const Constants = {
         "redes_sociais",
       ],
       lead_status: ["novo", "em_contato", "agendado", "convertido", "perdido"],
+      profile_category: [
+        "administrador",
+        "atendente",
+        "comercial",
+        "gerente",
+        "outro",
+      ],
     },
   },
 } as const
