@@ -382,25 +382,23 @@ const Leads = () => {
                 </div>
                 <div className="h-[260px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                    <AreaChart data={monthlyData} margin={{ top: 15, right: 15, left: -10, bottom: 0 }}>
                       <defs>
                         <linearGradient id="gradTotal" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.35} />
-                          <stop offset="100%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0} />
+                          <stop offset="0%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.45} />
+                          <stop offset="100%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.02} />
                         </linearGradient>
                         <linearGradient id="gradConv" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0} />
+                          <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.4} />
+                          <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 92%)" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} padding={{ left: 10, right: 10 }} />
                       <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} width={32} />
                       <Tooltip content={<PremiumTooltip />} cursor={{ stroke: "hsl(213, 80%, 45%)", strokeOpacity: 0.15, strokeWidth: 40 }} />
-                      <Area type="monotone" dataKey="total" name="Total" stroke="hsl(213, 80%, 45%)" strokeWidth={2.5} fill="url(#gradTotal)" activeDot={{ r: 5 }}>
-                        <LabelList dataKey="total" position="top" style={{ fontSize: 11, fill: "hsl(215, 30%, 18%)", fontWeight: 600 }} />
-                      </Area>
-                      <Area type="monotone" dataKey="convertidos" name="Convertidos" stroke="hsl(142, 60%, 45%)" strokeWidth={2} fill="url(#gradConv)" activeDot={{ r: 4 }} />
+                      <Area type="natural" dataKey="total" name="Total" stroke="hsl(213, 80%, 45%)" strokeWidth={2.5} fill="url(#gradTotal)" dot={false} activeDot={{ r: 5, strokeWidth: 2, stroke: "hsl(0 0% 100%)" }} />
+                      <Area type="natural" dataKey="convertidos" name="Convertidos" stroke="hsl(142, 60%, 45%)" strokeWidth={2.5} fill="url(#gradConv)" dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "hsl(0 0% 100%)" }} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
