@@ -250,13 +250,12 @@ const Settings = () => {
       .upsert({ user_id: userId, profile_type_id: profileTypeId }, { onConflict: "user_id" });
     if (error) return toast.error(error.message);
 
-    // Espelha admin/atendente em user_roles quando aplicável
+    // Espelha o papel do usuário com base no TIPO do perfil vinculado.
+    // Tipo "administrador" => admin; qualquer outro tipo => atendente (acesso padrão ao CRM).
     const profile = profiles.find((p) => p.id === profileTypeId);
-    if (profile && (profile.type === "administrador" || profile.type === "atendente")) {
-      const role = profile.type === "administrador" ? "admin" : "atendente";
-      await supabase.from("user_roles").delete().eq("user_id", userId);
-      await supabase.from("user_roles").insert({ user_id: userId, role });
-    }
+    const role: "admin" | "atendente" = profile?.type === "administrador" ? "admin" : "atendente";
+    await supabase.from("user_roles").delete().eq("user_id", userId);
+    await supabase.from("user_roles").insert({ user_id: userId, role });
 
     toast.success("Perfil vinculado");
     loadAll();
