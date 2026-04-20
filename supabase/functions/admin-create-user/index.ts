@@ -89,11 +89,9 @@ Deno.serve(async (req) => {
       );
 
       const { data: prof } = await admin.from("profile_types").select("type").eq("id", assignedProfileId).maybeSingle();
-      if (prof && (prof.type === "administrador" || prof.type === "atendente")) {
-        const role = prof.type === "administrador" ? "admin" : "atendente";
-        await admin.from("user_roles").delete().eq("user_id", newUserId);
-        await admin.from("user_roles").insert({ user_id: newUserId, role });
-      }
+      const role = prof?.type === "administrador" ? "admin" : "atendente";
+      await admin.from("user_roles").delete().eq("user_id", newUserId);
+      await admin.from("user_roles").insert({ user_id: newUserId, role });
     } else {
       // sem perfil disponível — coloca como atendente por padrão no user_roles
       await admin.from("user_roles").insert({ user_id: newUserId, role: "atendente" });
