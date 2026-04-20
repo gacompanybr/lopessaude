@@ -6,8 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminRoute from "@/components/AdminRoute";
 import Index from "./pages/Index.tsx";
 import Leads from "./pages/Leads.tsx";
+import Settings from "./pages/Settings.tsx";
 import Auth from "./pages/Auth.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -30,6 +32,14 @@ const App = () => (
                   <ProtectedRoute>
                     <Leads />
                   </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <AdminRoute>
+                    <Settings />
+                  </AdminRoute>
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
