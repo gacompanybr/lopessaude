@@ -10,6 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -73,6 +75,41 @@ const Settings = () => {
   const [editType, setEditType] = useState<ProfileCategory>("outro");
 
   const [users, setUsers] = useState<UserRow[]>([]);
+
+  // Novo usuário
+  const [newUserOpen, setNewUserOpen] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [nuName, setNuName] = useState("");
+  const [nuEmail, setNuEmail] = useState("");
+  const [nuPassword, setNuPassword] = useState("");
+  const [nuProfileId, setNuProfileId] = useState<string>("");
+
+  const createUser = async () => {
+    if (!nuEmail || !nuPassword || nuPassword.length < 6) {
+      return toast.error("Informe e-mail e senha (mín. 6 caracteres)");
+    }
+    setCreatingUser(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-user", {
+        body: {
+          email: nuEmail.trim(),
+          password: nuPassword,
+          display_name: nuName.trim() || undefined,
+          profile_type_id: nuProfileId || undefined,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success("Usuário cadastrado");
+      setNewUserOpen(false);
+      setNuName(""); setNuEmail(""); setNuPassword(""); setNuProfileId("");
+      loadAll();
+    } catch (e: any) {
+      toast.error(e.message ?? "Erro ao cadastrar usuário");
+    } finally {
+      setCreatingUser(false);
+    }
+  };
 
   const loadAll = async () => {
     const [{ data: comp }, { data: profs }, { data: profUsers }, { data: assignments }] = await Promise.all([
@@ -445,8 +482,53 @@ const Settings = () => {
             </Card>
 
             <Card className="rounded-xl">
-              <CardHeader>
+              <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-lg">Usuários da plataforma</CardTitle>
+                <Dialog open={newUserOpen} onOpenChange={setNewUserOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2"><UserPlus className="w-4 h-4" /> Adicionar usuário</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader><DialogTitle>Cadastrar novo usuário</DialogTitle></DialogHeader>
+                    <div className="space-y-4 py-2">
+                      <div className="space-y-1.5">
+                        <Label>Nome</Label>
+                        <Input value={nuName} onChange={(e) => setNuName(e.target.value)} placeholder="Nome completo" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>E-mail</Label>
+                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Senha</Label>
+                        <Input type="password" value={nuPassword} onChange={(e) => setNuPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Perfil de acesso</Label>
+                        <Select value={nuProfileId} onValueChange={setNuProfileId}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Padrão: Atendente" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {profiles.filter((p) => p.active).map((p) => (
+                              <SelectItem key={p.id} value={p.id}>
+                                {p.name} · {CATEGORIES.find((c) => c.value === p.type)?.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">Se nenhum perfil for selecionado, o usuário recebe automaticamente o perfil <strong>Atendente</strong>.</p>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setNewUserOpen(false)}>Cancelar</Button>
+                      <Button onClick={createUser} disabled={creatingUser} className="gap-2">
+                        {creatingUser ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                        Cadastrar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardHeader>
               <CardContent>
                 <Table>
