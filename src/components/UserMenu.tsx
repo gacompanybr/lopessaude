@@ -62,9 +62,6 @@ const UserMenu = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs text-muted-foreground font-normal flex items-center gap-2">
-          <Settings className="w-3.5 h-3.5" /> Configurações
-        </DropdownMenuLabel>
         <div
           className="flex items-center justify-between px-2 py-2 rounded-sm hover:bg-accent/40 cursor-pointer"
           onClick={(e) => { e.preventDefault(); toggleTheme(); }}
