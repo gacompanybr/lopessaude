@@ -11,23 +11,12 @@ const ContactForm = () => {
     whatsapp: "",
     city: "",
     message: "",
-    isParticular: "",
   });
 
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Block submission when Particular = "Não" (não salva no banco)
-    if (formData.isParticular === "Não") {
-      toast.error("Atendimento apenas particular", {
-        description:
-          "Infelizmente, no momento realizamos apenas atendimentos particulares. Caso deseje prosseguir com nossa clínica, por favor reenvie o formulário selecionando \"Sim\" para atendimento particular.",
-        duration: 8000,
-      });
-      return;
-    }
 
     setSubmitting(true);
     try {
@@ -120,28 +109,6 @@ const ContactForm = () => {
               className="px-8 lg:px-12 py-10 lg:py-14 bg-background/50"
             >
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Particular question */}
-                <div>
-                  <p className="text-sm text-foreground mb-3">
-                    <span className="text-destructive">*</span> A clínica realiza atendimento particular. Deseja continuar?
-                  </p>
-                  <div className="flex gap-4">
-                    {["Sim", "Não"].map((opt) => (
-                      <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="particular"
-                          value={opt}
-                          checked={formData.isParticular === opt}
-                          onChange={() => setFormData({ ...formData, isParticular: opt })}
-                          className="w-4 h-4 text-primary accent-primary"
-                        />
-                        <span className="text-sm text-foreground">{opt}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
                 <input
                   type="text"
                   placeholder="Nome"
@@ -178,10 +145,15 @@ const ContactForm = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
+                  disabled={submitting}
+                  className="w-full bg-primary text-primary-foreground py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl disabled:opacity-60"
                 >
-                  Enviar agora mesmo
+                  {submitting ? "Enviando..." : "Enviar agora mesmo"}
                 </button>
+
+                <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                  Atendimento particular. Valores e opções informados pela equipe após o contato.
+                </p>
               </form>
             </motion.div>
           </div>
