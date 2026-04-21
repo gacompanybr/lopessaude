@@ -29,7 +29,7 @@ export function useUserRole() {
 
     // Realtime: refetch quando os papéis do usuário mudarem
     const channel = supabase
-      .channel(`user_roles:${user.id}`)
+      .channel(`user_roles:${user.id}:${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "user_roles", filter: `user_id=eq.${user.id}` },
