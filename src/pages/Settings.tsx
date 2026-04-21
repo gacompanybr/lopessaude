@@ -250,9 +250,22 @@ const Settings = () => {
       .upsert({ user_id: userId, profile_type_id: profileTypeId }, { onConflict: "user_id" });
     if (error) return toast.error(error.message);
 
+    let profile = profiles.find((p) => p.id === profileTypeId);
+
+    // Se o perfil se chama "Administrador" mas o tipo ainda não é "administrador",
+    // sincroniza automaticamente o tipo para administrador.
+    if (profile && profile.name.trim().toLowerCase() === "administrador" && profile.type !== "administrador") {
+      const { error: typeErr } = await supabase
+        .from("profile_types")
+        .update({ type: "administrador" })
+        .eq("id", profile.id);
+      if (!typeErr) {
+        profile = { ...profile, type: "administrador" };
+      }
+    }
+
     // Espelha o papel do usuário com base no TIPO do perfil vinculado.
     // Tipo "administrador" => admin; qualquer outro tipo => atendente (acesso padrão ao CRM).
-    const profile = profiles.find((p) => p.id === profileTypeId);
     const role: "admin" | "atendente" = profile?.type === "administrador" ? "admin" : "atendente";
     await supabase.from("user_roles").delete().eq("user_id", userId);
     await supabase.from("user_roles").insert({ user_id: userId, role });
