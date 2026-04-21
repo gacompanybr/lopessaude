@@ -274,7 +274,20 @@ const Settings = () => {
     loadAll();
   };
 
-  const profileLabel = (id: string | null) => {
+  const deleteUser = async (userId: string, label: string) => {
+    if (!confirm(`Excluir ${label}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+        body: { user_id: userId },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success("Usuário excluído");
+      loadAll();
+    } catch (e: any) {
+      toast.error(e.message ?? "Erro ao excluir usuário");
+    }
+  };
     if (!id) return null;
     return profiles.find((p) => p.id === id) ?? null;
   };
