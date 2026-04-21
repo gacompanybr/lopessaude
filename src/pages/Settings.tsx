@@ -550,11 +550,13 @@ const Settings = () => {
                       <TableHead>E-mail</TableHead>
                       <TableHead>Perfil atual</TableHead>
                       <TableHead className="w-56">Definir perfil</TableHead>
+                      <TableHead className="w-20 text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {users.map((u) => {
                       const current = profileLabel(u.profile_type_id);
+                      const isSelf = u.id === user?.id;
                       return (
                         <TableRow key={u.id}>
                           <TableCell className="font-medium">{u.display_name ?? "—"}</TableCell>
@@ -589,11 +591,23 @@ const Settings = () => {
                               </SelectContent>
                             </Select>
                           </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              disabled={isSelf}
+                              title={isSelf ? "Você não pode excluir a si mesmo" : "Excluir usuário"}
+                              onClick={() => deleteUser(u.id, u.display_name ?? u.email ?? "este usuário")}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       );
                     })}
                     {users.length === 0 && (
-                      <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
