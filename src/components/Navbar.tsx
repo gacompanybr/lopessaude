@@ -25,10 +25,15 @@ const Navbar = () => {
       {/* Top bar */}
       <div className="border-b border-border py-2.5">
         <div className="section-container flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+          <a
+            href="https://www.google.com/maps/place/Dra.+Karen+Lopes+-+Dentista+-+Bauru-SP/@-22.3303687,-49.2437992,11z/data=!3m1!4b1!4m6!3m5!1s0x94bf67a8714f8569:0x722278f7ec621d79!8m2!3d-22.3307696!4d-49.0789851!16s%2Fg%2F11hfpqqjg1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 hover:text-primary transition-colors"
+          >
             <MapPin className="w-4 h-4 text-primary" />
-            <span className="hidden sm:inline">Av. São Paulo, 227 – Centro, Duartina - SP</span>
-          </div>
+            <span className="hidden sm:inline">Bauru - SP</span>
+          </a>
           <a href="tel:+5514996684609" className="flex items-center gap-2 hover:text-primary transition-colors">
             <Phone className="w-4 h-4 text-primary" />
             +55 (14)99668-4609
