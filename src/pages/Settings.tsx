@@ -288,6 +288,8 @@ const Settings = () => {
       toast.error(e.message ?? "Erro ao excluir usuário");
     }
   };
+
+  const profileLabel = (id: string | null) => {
     if (!id) return null;
     return profiles.find((p) => p.id === id) ?? null;
   };
