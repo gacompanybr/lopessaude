@@ -2,6 +2,8 @@ import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import type { LeadOrigem, LeadStatus, NewLeadInput } from "@/lib/leads";
 
+type InsertableLead = Omit<NewLeadInput, "tracking">;
+
 const STATUS_VALUES: LeadStatus[] = ["novo", "em_contato", "agendado", "convertido", "perdido"];
 const ORIGEM_VALUES: LeadOrigem[] = ["site", "manual", "whatsapp", "indicacao", "redes_sociais", "outro"];
 
