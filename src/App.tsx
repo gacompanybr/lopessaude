@@ -12,6 +12,7 @@ import Leads from "./pages/Leads.tsx";
 import Settings from "./pages/Settings.tsx";
 import Auth from "./pages/Auth.tsx";
 import MetaIntegration from "./pages/MetaIntegration.tsx";
+import WhatsAppRedirect from "./pages/WhatsAppRedirect.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/wa" element={<WhatsAppRedirect />} />
               <Route
                 path="/leads"
                 element={
