@@ -50,6 +50,44 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_origem_history: {
+        Row: {
+          automatic: boolean
+          changed_at: string
+          changed_by: string | null
+          id: string
+          lead_id: string
+          new_tag: string
+          old_tag: string | null
+        }
+        Insert: {
+          automatic?: boolean
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id: string
+          new_tag: string
+          old_tag?: string | null
+        }
+        Update: {
+          automatic?: boolean
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id?: string
+          new_tag?: string
+          old_tag?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_origem_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_status_history: {
         Row: {
           changed_at: string
@@ -91,22 +129,43 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          landing_page: string | null
           message: string | null
+          meta_ad_id: string | null
+          meta_ad_name: string | null
+          meta_adset_id: string | null
+          meta_adset_name: string | null
+          meta_campaign_id: string | null
+          meta_campaign_name: string | null
           meta_ctwa_clid: string | null
           meta_fbc: string | null
           meta_fbp: string | null
+          meta_form_id: string | null
+          meta_form_name: string | null
           meta_lead_id: string | null
+          meta_page_id: string | null
           name: string | null
           notes: string | null
           origem: Database["public"]["Enums"]["lead_origem"]
+          plataforma_origem: string | null
+          referrer: string | null
           sincronizado_meta: boolean
           state: string | null
           status: Database["public"]["Enums"]["lead_status"]
+          tag_origem: Database["public"]["Enums"]["lead_tag_origem"]
+          tag_origem_alterada_em: string | null
+          tag_origem_alterada_por: string | null
+          tag_origem_manual: boolean
           ultimo_envio_meta_em: string | null
           ultimo_erro_meta: string | null
           ultimo_retorno_meta: Json | null
           ultimo_status_enviado_meta: string | null
           updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
           whatsapp: string
         }
         Insert: {
@@ -114,22 +173,43 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          landing_page?: string | null
           message?: string | null
+          meta_ad_id?: string | null
+          meta_ad_name?: string | null
+          meta_adset_id?: string | null
+          meta_adset_name?: string | null
+          meta_campaign_id?: string | null
+          meta_campaign_name?: string | null
           meta_ctwa_clid?: string | null
           meta_fbc?: string | null
           meta_fbp?: string | null
+          meta_form_id?: string | null
+          meta_form_name?: string | null
           meta_lead_id?: string | null
+          meta_page_id?: string | null
           name?: string | null
           notes?: string | null
           origem?: Database["public"]["Enums"]["lead_origem"]
+          plataforma_origem?: string | null
+          referrer?: string | null
           sincronizado_meta?: boolean
           state?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
+          tag_origem?: Database["public"]["Enums"]["lead_tag_origem"]
+          tag_origem_alterada_em?: string | null
+          tag_origem_alterada_por?: string | null
+          tag_origem_manual?: boolean
           ultimo_envio_meta_em?: string | null
           ultimo_erro_meta?: string | null
           ultimo_retorno_meta?: Json | null
           ultimo_status_enviado_meta?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           whatsapp: string
         }
         Update: {
@@ -137,22 +217,43 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          landing_page?: string | null
           message?: string | null
+          meta_ad_id?: string | null
+          meta_ad_name?: string | null
+          meta_adset_id?: string | null
+          meta_adset_name?: string | null
+          meta_campaign_id?: string | null
+          meta_campaign_name?: string | null
           meta_ctwa_clid?: string | null
           meta_fbc?: string | null
           meta_fbp?: string | null
+          meta_form_id?: string | null
+          meta_form_name?: string | null
           meta_lead_id?: string | null
+          meta_page_id?: string | null
           name?: string | null
           notes?: string | null
           origem?: Database["public"]["Enums"]["lead_origem"]
+          plataforma_origem?: string | null
+          referrer?: string | null
           sincronizado_meta?: boolean
           state?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
+          tag_origem?: Database["public"]["Enums"]["lead_tag_origem"]
+          tag_origem_alterada_em?: string | null
+          tag_origem_alterada_por?: string | null
+          tag_origem_manual?: boolean
           ultimo_envio_meta_em?: string | null
           ultimo_erro_meta?: string | null
           ultimo_retorno_meta?: Json | null
           ultimo_status_enviado_meta?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           whatsapp?: string
         }
         Relationships: []
@@ -203,6 +304,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      meta_webhook_subscriptions: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          page_access_token: string
+          page_id: string
+          page_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          page_access_token: string
+          page_id: string
+          page_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          page_access_token?: string
+          page_id?: string
+          page_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       profile_types: {
         Row: {
@@ -331,6 +462,7 @@ export type Database = {
         | "outro"
         | "redes_sociais"
       lead_status: "novo" | "em_contato" | "agendado" | "convertido" | "perdido"
+      lead_tag_origem: "novo" | "site" | "google_ads" | "meta_ads" | "organico"
       profile_category:
         | "administrador"
         | "atendente"
@@ -474,6 +606,7 @@ export const Constants = {
         "redes_sociais",
       ],
       lead_status: ["novo", "em_contato", "agendado", "convertido", "perdido"],
+      lead_tag_origem: ["novo", "site", "google_ads", "meta_ads", "organico"],
       profile_category: [
         "administrador",
         "atendente",
