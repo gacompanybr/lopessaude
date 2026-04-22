@@ -444,6 +444,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_public_lead: {
+        Args: {
+          _city?: string
+          _email?: string
+          _landing_page?: string
+          _message?: string
+          _meta_ctwa_clid?: string
+          _meta_fbc?: string
+          _meta_fbp?: string
+          _name?: string
+          _notes?: string
+          _origem?: Database["public"]["Enums"]["lead_origem"]
+          _referrer?: string
+          _state?: string
+          _status?: Database["public"]["Enums"]["lead_status"]
+          _utm_campaign?: string
+          _utm_content?: string
+          _utm_medium?: string
+          _utm_source?: string
+          _utm_term?: string
+          _whatsapp?: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
