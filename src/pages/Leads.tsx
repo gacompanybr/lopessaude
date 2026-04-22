@@ -34,6 +34,7 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import ImportLeadsCard from "@/components/ImportLeadsCard";
+import AcquisitionChart from "@/components/AcquisitionChart";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
@@ -386,6 +387,9 @@ const Leads = () => {
         {/* Charts */}
         {filteredLeads.length > 0 && (
           <div className="space-y-6">
+            {/* Aquisição (Orgânico x Pago com drill-down) */}
+            <AcquisitionChart leads={filteredLeads} />
+
             {/* Linha 1: Evolução mensal (2/3) + Status (1/3) */}
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6">
