@@ -3,6 +3,8 @@ import {
   getLeads,
   deleteLead,
   updateLead,
+  sendMetaEvent,
+  STATUS_TO_META_EVENT,
   type Lead,
   type LeadStatus,
   type LeadOrigem,
@@ -12,8 +14,9 @@ import {
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
   CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle, FileDown,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Activity,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
 import { exportLeadsToPdf } from "@/lib/exportLeadsPdf";
 import { exportLeadsToExcel } from "@/lib/exportLeadsExcel";
@@ -121,9 +124,17 @@ const Leads = () => {
 
   const handleStatusChange = async (id: string, status: LeadStatus) => {
     try {
+      const previous = leads.find((l) => l.id === id);
+      const oldStatus = previous?.status ?? null;
       await updateLead(id, { status });
       setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
       toast.success("Status atualizado");
+      // Dispara evento para a Meta (não bloqueia o CRM)
+      sendMetaEvent({
+        lead_id: id,
+        event_name: STATUS_TO_META_EVENT[status],
+        old_status: oldStatus ? STATUS_TO_META_EVENT[oldStatus] : null,
+      });
     } catch {
       toast.error("Erro ao atualizar status");
     }
@@ -278,6 +289,11 @@ const Leads = () => {
             <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
               <FileDown className="w-4 h-4" /> Exportar Excel
             </Button>
+            <Link to="/meta-integration">
+              <Button variant="secondary" size="sm" className="gap-2">
+                <Activity className="w-4 h-4" /> Meta
+              </Button>
+            </Link>
             <UserMenu />
           </div>
         </div>

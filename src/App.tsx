@@ -11,6 +11,7 @@ import Index from "./pages/Index.tsx";
 import Leads from "./pages/Leads.tsx";
 import Settings from "./pages/Settings.tsx";
 import Auth from "./pages/Auth.tsx";
+import MetaIntegration from "./pages/MetaIntegration.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,14 @@ const App = () => (
                   <AdminRoute>
                     <Settings />
                   </AdminRoute>
+                }
+              />
+              <Route
+                path="/meta-integration"
+                element={
+                  <ProtectedRoute>
+                    <MetaIntegration />
+                  </ProtectedRoute>
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

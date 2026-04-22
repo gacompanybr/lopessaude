@@ -50,44 +50,159 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          id: string
+          lead_id: string
+          new_status: string
+          old_status: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id: string
+          new_status: string
+          old_status?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id?: string
+          new_status?: string
+          old_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_status_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           city: string
           created_at: string
+          email: string | null
           id: string
           message: string | null
+          meta_ctwa_clid: string | null
+          meta_fbc: string | null
+          meta_fbp: string | null
+          meta_lead_id: string | null
           name: string | null
           notes: string | null
           origem: Database["public"]["Enums"]["lead_origem"]
+          sincronizado_meta: boolean
+          state: string | null
           status: Database["public"]["Enums"]["lead_status"]
+          ultimo_envio_meta_em: string | null
+          ultimo_erro_meta: string | null
+          ultimo_retorno_meta: Json | null
+          ultimo_status_enviado_meta: string | null
           updated_at: string
           whatsapp: string
         }
         Insert: {
           city: string
           created_at?: string
+          email?: string | null
           id?: string
           message?: string | null
+          meta_ctwa_clid?: string | null
+          meta_fbc?: string | null
+          meta_fbp?: string | null
+          meta_lead_id?: string | null
           name?: string | null
           notes?: string | null
           origem?: Database["public"]["Enums"]["lead_origem"]
+          sincronizado_meta?: boolean
+          state?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
+          ultimo_envio_meta_em?: string | null
+          ultimo_erro_meta?: string | null
+          ultimo_retorno_meta?: Json | null
+          ultimo_status_enviado_meta?: string | null
           updated_at?: string
           whatsapp: string
         }
         Update: {
           city?: string
           created_at?: string
+          email?: string | null
           id?: string
           message?: string | null
+          meta_ctwa_clid?: string | null
+          meta_fbc?: string | null
+          meta_fbp?: string | null
+          meta_lead_id?: string | null
           name?: string | null
           notes?: string | null
           origem?: Database["public"]["Enums"]["lead_origem"]
+          sincronizado_meta?: boolean
+          state?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
+          ultimo_envio_meta_em?: string | null
+          ultimo_erro_meta?: string | null
+          ultimo_retorno_meta?: Json | null
+          ultimo_status_enviado_meta?: string | null
           updated_at?: string
           whatsapp?: string
         }
         Relationships: []
+      }
+      meta_integration_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          event_name: string
+          http_status: number | null
+          id: string
+          lead_id: string | null
+          request_payload: Json | null
+          response_payload: Json | null
+          success: boolean
+          test_event_code: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          event_name: string
+          http_status?: number | null
+          id?: string
+          lead_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          success?: boolean
+          test_event_code?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          event_name?: string
+          http_status?: number | null
+          id?: string
+          lead_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          success?: boolean
+          test_event_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meta_integration_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profile_types: {
         Row: {

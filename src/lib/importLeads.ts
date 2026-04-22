@@ -2,6 +2,8 @@ import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import type { LeadOrigem, LeadStatus, NewLeadInput } from "@/lib/leads";
 
+type InsertableLead = Omit<NewLeadInput, "tracking">;
+
 const STATUS_VALUES: LeadStatus[] = ["novo", "em_contato", "agendado", "convertido", "perdido"];
 const ORIGEM_VALUES: LeadOrigem[] = ["site", "manual", "whatsapp", "indicacao", "redes_sociais", "outro"];
 
@@ -74,7 +76,7 @@ export async function importLeadsFromFile(file: File): Promise<ImportResult> {
   const existingPhones = new Set((existing || []).map((l) => onlyDigits(l.whatsapp || "")));
   const seenInBatch = new Set<string>();
 
-  const toInsert: NewLeadInput[] = [];
+  const toInsert: InsertableLead[] = [];
 
   rows.forEach((row, idx) => {
     const rowNum = idx + 2; // header = 1

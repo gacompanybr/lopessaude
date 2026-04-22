@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { saveLead } from "@/lib/leads";
+import { saveLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
+import { captureMetaTracking } from "@/lib/metaTracking";
 import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "551496684609";
@@ -20,13 +21,22 @@ const ContactForm = () => {
 
     setSubmitting(true);
     try {
-      await saveLead({
+      const tracking = captureMetaTracking();
+      const created = await saveLead({
         name: formData.name || null,
         whatsapp: formData.whatsapp,
         city: formData.city,
         message: formData.message || null,
         origem: "site",
         status: "novo",
+        tracking,
+      });
+
+      // Envia evento "Novo" para a Meta (não bloqueia o fluxo)
+      sendMetaEvent({
+        lead_id: created.id,
+        event_name: STATUS_TO_META_EVENT.novo,
+        tracking,
       });
 
       const lines = [
