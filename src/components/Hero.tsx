@@ -31,7 +31,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="px-8 lg:px-14 py-12 lg:py-20"
+              className="px-8 lg:px-14 pt-12 pb-8 lg:py-20"
             >
               <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-tight mb-5">
                 Seu sorriso é<br />nossa prioridade
@@ -57,7 +57,7 @@ const Hero = () => {
               <img
                 src="/clinic-facade.png"
                 alt="Clínica Lopes Saúde e Odontologia - Fachada"
-                className="w-full h-full object-cover scale-125"
+                className="w-full h-full object-cover lg:scale-125"
               />
             </motion.div>
           </div>
