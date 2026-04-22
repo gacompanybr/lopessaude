@@ -6,17 +6,17 @@ const Hero = () => {
     <section className="bg-background">
       {/* Schedule strip */}
       <div className="section-container py-4">
-        <div className="grid grid-cols-3 gap-4 text-center text-sm">
-          <div>
-            <p className="text-muted-foreground">Segunda a Sexta</p>
-            <p className="font-semibold text-foreground">8h00 às 18h00</p>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center text-xs sm:text-sm items-start">
+          <div className="flex flex-col">
+            <p className="text-muted-foreground leading-tight">Segunda a Sexta</p>
+            <p className="font-semibold text-foreground whitespace-nowrap">8h às 18h</p>
           </div>
-          <div>
-            <p className="text-muted-foreground">Sábado</p>
-            <p className="font-semibold text-foreground">8h00 às 12h00</p>
+          <div className="flex flex-col">
+            <p className="text-muted-foreground leading-tight">Sábado</p>
+            <p className="font-semibold text-foreground whitespace-nowrap">8h às 12h</p>
           </div>
-          <div>
-            <p className="text-muted-foreground">Domingo</p>
+          <div className="flex flex-col">
+            <p className="text-muted-foreground leading-tight">Domingo</p>
             <p className="font-semibold text-foreground">Fechado</p>
           </div>
         </div>
