@@ -10,6 +10,8 @@ import {
   type LeadOrigem,
   STATUS_LABELS,
   ORIGEM_LABELS,
+  TAG_ORIGEM_LABELS,
+  TAG_ORIGEM_COLORS,
 } from "@/lib/leads";
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
@@ -551,6 +553,11 @@ const Leads = () => {
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
                           {ORIGEM_LABELS[lead.origem]}
                         </span>
+                        {lead.tag_origem && lead.tag_origem !== "novo" && (
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${TAG_ORIGEM_COLORS[lead.tag_origem]}`}>
+                            {TAG_ORIGEM_LABELS[lead.tag_origem]}
+                          </span>
+                        )}
                       </div>
                       <div className="grid sm:grid-cols-3 gap-3 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
