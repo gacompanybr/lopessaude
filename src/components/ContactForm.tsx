@@ -19,6 +19,20 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Abre a janela do WhatsApp IMEDIATAMENTE (dentro do gesto do usuário)
+    // para evitar bloqueio de popup em navegadores mobile.
+    const lines = [
+      `*Nova solicitação de contato*`,
+      ``,
+      `*Nome:* ${formData.name || "Não informado"}`,
+      `*WhatsApp:* ${formData.whatsapp}`,
+      `*Cidade:* ${formData.city}`,
+      `*Condição odontológica:* ${formData.message || "Não informado"}`,
+    ];
+    const text = lines.join("\n");
+    const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
+    const waWindow = window.open(waUrl, "_blank");
+
     setSubmitting(true);
     try {
       const tracking = captureMetaTracking();
@@ -39,19 +53,10 @@ const ContactForm = () => {
         tracking,
       });
 
-      const lines = [
-        `*Nova solicitação de contato*`,
-        ``,
-        `*Nome:* ${formData.name || "Não informado"}`,
-        `*WhatsApp:* ${formData.whatsapp}`,
-        `*Cidade:* ${formData.city}`,
-        `*Condição odontológica:* ${formData.message || "Não informado"}`,
-      ];
-      const text = lines.join("\n");
-      window.open(
-        `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`,
-        "_blank"
-      );
+      // Fallback: se popup foi bloqueado (mobile), redireciona a aba atual
+      if (!waWindow || waWindow.closed || typeof waWindow.closed === "undefined") {
+        window.location.href = waUrl;
+      }
 
       // GTM: dispara evento apenas após envio bem-sucedido
       (window as any).dataLayer = (window as any).dataLayer || [];
