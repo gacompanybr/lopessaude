@@ -3,6 +3,8 @@ import {
   getLeads,
   deleteLead,
   updateLead,
+  sendMetaEvent,
+  STATUS_TO_META_EVENT,
   type Lead,
   type LeadStatus,
   type LeadOrigem,
@@ -121,9 +123,17 @@ const Leads = () => {
 
   const handleStatusChange = async (id: string, status: LeadStatus) => {
     try {
+      const previous = leads.find((l) => l.id === id);
+      const oldStatus = previous?.status ?? null;
       await updateLead(id, { status });
       setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
       toast.success("Status atualizado");
+      // Dispara evento para a Meta (não bloqueia o CRM)
+      sendMetaEvent({
+        lead_id: id,
+        event_name: STATUS_TO_META_EVENT[status],
+        old_status: oldStatus ? STATUS_TO_META_EVENT[oldStatus] : null,
+      });
     } catch {
       toast.error("Erro ao atualizar status");
     }
