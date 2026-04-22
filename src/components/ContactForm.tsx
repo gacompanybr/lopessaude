@@ -65,10 +65,17 @@ const ContactForm = () => {
       });
 
       toast.success("Solicitação enviada com sucesso!");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao salvar lead:", err);
+      // Tenta extrair a mensagem mais útil possível pra debug em mobile
+      const detail =
+        err?.message ||
+        err?.error_description ||
+        err?.details ||
+        (typeof err === "string" ? err : JSON.stringify(err));
       toast.error("Erro ao enviar", {
-        description: "Tente novamente em instantes ou fale conosco pelo WhatsApp.",
+        description: detail || "Tente novamente em instantes ou fale conosco pelo WhatsApp.",
+        duration: 10000,
       });
     } finally {
       setSubmitting(false);
