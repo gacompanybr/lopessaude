@@ -56,34 +56,46 @@ export async function getLeads(): Promise<Lead[]> {
   return (data || []) as Lead[];
 }
 
+function buildLeadInsertPayload(lead: NewLeadInput, id?: string) {
+  return {
+    ...(id ? { id } : {}),
+    name: lead.name ?? null,
+    whatsapp: lead.whatsapp,
+    city: lead.city,
+    message: lead.message ?? null,
+    status: lead.status ?? "novo",
+    origem: lead.origem ?? "site",
+    notes: lead.notes ?? null,
+    email: lead.email ?? null,
+    state: lead.state ?? null,
+    meta_fbc: lead.tracking?.fbc ?? null,
+    meta_fbp: lead.tracking?.fbp ?? null,
+    meta_ctwa_clid: lead.tracking?.ctwa_clid ?? null,
+    utm_source: lead.tracking?.utm_source ?? null,
+    utm_medium: lead.tracking?.utm_medium ?? null,
+    utm_campaign: lead.tracking?.utm_campaign ?? null,
+    utm_content: lead.tracking?.utm_content ?? null,
+    utm_term: lead.tracking?.utm_term ?? null,
+    referrer: lead.tracking?.referrer ?? null,
+    landing_page: lead.tracking?.landing_page ?? null,
+  };
+}
+
 export async function saveLead(lead: NewLeadInput): Promise<Lead> {
   const { data, error } = await supabase
     .from("leads")
-    .insert({
-      name: lead.name ?? null,
-      whatsapp: lead.whatsapp,
-      city: lead.city,
-      message: lead.message ?? null,
-      status: lead.status ?? "novo",
-      origem: lead.origem ?? "site",
-      notes: lead.notes ?? null,
-      email: lead.email ?? null,
-      state: lead.state ?? null,
-      meta_fbc: lead.tracking?.fbc ?? null,
-      meta_fbp: lead.tracking?.fbp ?? null,
-      meta_ctwa_clid: lead.tracking?.ctwa_clid ?? null,
-      utm_source: lead.tracking?.utm_source ?? null,
-      utm_medium: lead.tracking?.utm_medium ?? null,
-      utm_campaign: lead.tracking?.utm_campaign ?? null,
-      utm_content: lead.tracking?.utm_content ?? null,
-      utm_term: lead.tracking?.utm_term ?? null,
-      referrer: lead.tracking?.referrer ?? null,
-      landing_page: lead.tracking?.landing_page ?? null,
-    })
+    .insert(buildLeadInsertPayload(lead))
     .select()
     .single();
   if (error) throw error;
   return data as Lead;
+}
+
+export async function savePublicLead(lead: NewLeadInput): Promise<{ id: string }> {
+  const id = crypto.randomUUID();
+  const { error } = await supabase.from("leads").insert(buildLeadInsertPayload(lead, id));
+  if (error) throw error;
+  return { id };
 }
 
 export async function updateLead(

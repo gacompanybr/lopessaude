@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { saveLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
+import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
 import { toast } from "sonner";
 
@@ -45,7 +45,7 @@ const ContactForm = () => {
     let tracking: ReturnType<typeof captureMetaTracking> | null = null;
     try {
       tracking = captureMetaTracking();
-      const created = await saveLead({
+      const created = await savePublicLead({
         name: formData.name || null,
         whatsapp: formData.whatsapp,
         city: formData.city,
