@@ -32,11 +32,14 @@ const ContactForm = () => {
     const text = lines.join("\n");
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
 
+    // CRÍTICO MOBILE: abrir uma janela/aba JÁ AGORA, sincronamente, dentro do
+    // gesto do usuário (touchend). Se esperarmos o await do saveLead, iOS Safari
+    // e Chrome Android bloqueiam a abertura do WhatsApp porque o gesto "expirou".
+    // A janela abre como about:blank e depois redirecionamos pra URL do WhatsApp.
+    const waWindow = window.open("about:blank", "_blank");
+
     setSubmitting(true);
 
-    // CRÍTICO MOBILE: salvar o lead ANTES de abrir o WhatsApp.
-    // Em navegadores mobile, abrir uma nova aba/app suspende a página atual e
-    // cancela qualquer fetch pendente — por isso muitos leads mobile sumiam.
     let leadSavedOk = false;
     let createdId: string | null = null;
     let tracking: ReturnType<typeof captureMetaTracking> | null = null;
@@ -71,7 +74,6 @@ const ContactForm = () => {
       setSubmitting(false);
     }
 
-    // Só abre o WhatsApp depois que o lead foi gravado com sucesso.
     if (leadSavedOk) {
       // Dispara o evento Meta em background (não aguarda).
       if (createdId) {
@@ -81,8 +83,18 @@ const ContactForm = () => {
           tracking,
         });
       }
-      // Em mobile, navegar a própria aba é mais confiável que window.open.
-      window.location.href = waUrl;
+      // Redireciona a janela já aberta para o WhatsApp.
+      // Se o popup foi bloqueado (waWindow === null), faz fallback de mesma aba.
+      if (waWindow && !waWindow.closed) {
+        waWindow.location.href = waUrl;
+      } else {
+        window.location.href = waUrl;
+      }
+    } else {
+      // Falhou ao salvar: fecha a janela vazia que abrimos.
+      if (waWindow && !waWindow.closed) {
+        waWindow.close();
+      }
     }
   };
 
