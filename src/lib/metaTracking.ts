@@ -11,11 +11,23 @@ export interface MetaTracking {
   fbc: string | null;
   fbp: string | null;
   ctwa_clid: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  referrer: string | null;
+  landing_page: string | null;
 }
 
 export function captureMetaTracking(): MetaTracking {
   if (typeof window === "undefined") {
-    return { fbc: null, fbp: null, ctwa_clid: null };
+    return {
+      fbc: null, fbp: null, ctwa_clid: null,
+      utm_source: null, utm_medium: null, utm_campaign: null,
+      utm_content: null, utm_term: null,
+      referrer: null, landing_page: null,
+    };
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -34,5 +46,12 @@ export function captureMetaTracking(): MetaTracking {
     fbc: fbc || null,
     fbp: fbp || null,
     ctwa_clid: ctwa_clid || null,
+    utm_source: params.get("utm_source"),
+    utm_medium: params.get("utm_medium"),
+    utm_campaign: params.get("utm_campaign"),
+    utm_content: params.get("utm_content"),
+    utm_term: params.get("utm_term"),
+    referrer: document.referrer || null,
+    landing_page: window.location.href,
   };
 }
