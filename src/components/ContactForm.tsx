@@ -19,8 +19,8 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Abre a janela do WhatsApp IMEDIATAMENTE (dentro do gesto do usuário)
-    // para evitar bloqueio de popup em navegadores mobile.
+    // Monta a URL do WhatsApp já agora (dentro do gesto do usuário) para
+    // que o navegador a aceite mesmo após o await.
     const lines = [
       `*Nova solicitação de contato*`,
       ``,
@@ -31,11 +31,17 @@ const ContactForm = () => {
     ];
     const text = lines.join("\n");
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
-    const waWindow = window.open(waUrl, "_blank");
 
     setSubmitting(true);
+
+    // CRÍTICO MOBILE: salvar o lead ANTES de abrir o WhatsApp.
+    // Em navegadores mobile, abrir uma nova aba/app suspende a página atual e
+    // cancela qualquer fetch pendente — por isso muitos leads mobile sumiam.
+    let leadSavedOk = false;
+    let createdId: string | null = null;
+    let tracking: ReturnType<typeof captureMetaTracking> | null = null;
     try {
-      const tracking = captureMetaTracking();
+      tracking = captureMetaTracking();
       const created = await saveLead({
         name: formData.name || null,
         whatsapp: formData.whatsapp,
@@ -45,18 +51,8 @@ const ContactForm = () => {
         status: "novo",
         tracking,
       });
-
-      // Envia evento "Novo" para a Meta (não bloqueia o fluxo)
-      sendMetaEvent({
-        lead_id: created.id,
-        event_name: STATUS_TO_META_EVENT.novo,
-        tracking,
-      });
-
-      // Fallback: se popup foi bloqueado (mobile), redireciona a aba atual
-      if (!waWindow || waWindow.closed || typeof waWindow.closed === "undefined") {
-        window.location.href = waUrl;
-      }
+      createdId = created.id;
+      leadSavedOk = true;
 
       // GTM: dispara evento apenas após envio bem-sucedido
       (window as any).dataLayer = (window as any).dataLayer || [];
@@ -73,6 +69,20 @@ const ContactForm = () => {
       });
     } finally {
       setSubmitting(false);
+    }
+
+    // Só abre o WhatsApp depois que o lead foi gravado com sucesso.
+    if (leadSavedOk) {
+      // Dispara o evento Meta em background (não aguarda).
+      if (createdId) {
+        sendMetaEvent({
+          lead_id: createdId,
+          event_name: STATUS_TO_META_EVENT.novo,
+          tracking,
+        });
+      }
+      // Em mobile, navegar a própria aba é mais confiável que window.open.
+      window.location.href = waUrl;
     }
   };
 
