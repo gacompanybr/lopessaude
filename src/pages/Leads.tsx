@@ -14,8 +14,9 @@ import {
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
   CalendarIcon, BarChart3, Plus, Pencil, Search, MessageCircle, FileDown,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Activity,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
 import { exportLeadsToPdf } from "@/lib/exportLeadsPdf";
 import { exportLeadsToExcel } from "@/lib/exportLeadsExcel";
