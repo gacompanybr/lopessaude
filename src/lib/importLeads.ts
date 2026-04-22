@@ -76,7 +76,7 @@ export async function importLeadsFromFile(file: File): Promise<ImportResult> {
   const existingPhones = new Set((existing || []).map((l) => onlyDigits(l.whatsapp || "")));
   const seenInBatch = new Set<string>();
 
-  const toInsert: NewLeadInput[] = [];
+  const toInsert: InsertableLead[] = [];
 
   rows.forEach((row, idx) => {
     const rowNum = idx + 2; // header = 1
