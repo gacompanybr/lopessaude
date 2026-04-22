@@ -1,5 +1,5 @@
-// Captura automática de identificadores de rastreamento da Meta
-// (cookies _fbc / _fbp e parâmetros de URL fbclid / ctwa_clid).
+// Captura automática de identificadores de rastreamento
+// (cookies _fbc / _fbp / _gcl_aw e parâmetros de URL fbclid / ctwa_clid / gclid).
 
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -7,10 +7,18 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+function setCookie(name: string, value: string, days = 90) {
+  if (typeof document === "undefined") return;
+  const d = new Date();
+  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+}
+
 export interface MetaTracking {
   fbc: string | null;
   fbp: string | null;
   ctwa_clid: string | null;
+  gclid: string | null;
   utm_source: string | null;
   utm_medium: string | null;
   utm_campaign: string | null;
@@ -23,7 +31,7 @@ export interface MetaTracking {
 export function captureMetaTracking(): MetaTracking {
   if (typeof window === "undefined") {
     return {
-      fbc: null, fbp: null, ctwa_clid: null,
+      fbc: null, fbp: null, ctwa_clid: null, gclid: null,
       utm_source: null, utm_medium: null, utm_campaign: null,
       utm_content: null, utm_term: null,
       referrer: null, landing_page: null,
@@ -33,6 +41,7 @@ export function captureMetaTracking(): MetaTracking {
   const params = new URLSearchParams(window.location.search);
   const fbclid = params.get("fbclid");
   const ctwa_clid = params.get("ctwa_clid");
+  const gclidParam = params.get("gclid");
 
   let fbc = getCookie("_fbc");
   // Se houver fbclid e ainda não há _fbc, monta o valor padrão
@@ -42,10 +51,19 @@ export function captureMetaTracking(): MetaTracking {
 
   const fbp = getCookie("_fbp");
 
+  // gclid: prioriza URL, salva em cookie próprio, e faz fallback para cookie persistido
+  let gclid = gclidParam;
+  if (gclid) {
+    setCookie("_lov_gclid", gclid, 90);
+  } else {
+    gclid = getCookie("_lov_gclid");
+  }
+
   return {
     fbc: fbc || null,
     fbp: fbp || null,
     ctwa_clid: ctwa_clid || null,
+    gclid: gclid || null,
     utm_source: params.get("utm_source"),
     utm_medium: params.get("utm_medium"),
     utm_campaign: params.get("utm_campaign"),

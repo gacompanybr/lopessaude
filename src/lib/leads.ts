@@ -23,6 +23,7 @@ export interface Lead {
   meta_fbc?: string | null;
   meta_fbp?: string | null;
   meta_ctwa_clid?: string | null;
+  gclid?: string | null;
   sincronizado_meta?: boolean | null;
   ultimo_status_enviado_meta?: string | null;
   ultimo_envio_meta_em?: string | null;
@@ -71,6 +72,7 @@ function buildLeadInsertPayload(lead: NewLeadInput, id?: string) {
     meta_fbc: lead.tracking?.fbc ?? null,
     meta_fbp: lead.tracking?.fbp ?? null,
     meta_ctwa_clid: lead.tracking?.ctwa_clid ?? null,
+    gclid: lead.tracking?.gclid ?? null,
     utm_source: lead.tracking?.utm_source ?? null,
     utm_medium: lead.tracking?.utm_medium ?? null,
     utm_campaign: lead.tracking?.utm_campaign ?? null,
