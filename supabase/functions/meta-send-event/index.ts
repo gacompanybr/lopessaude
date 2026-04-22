@@ -230,7 +230,7 @@ Deno.serve(async (req) => {
       lead_id: lead.id,
       old_status: body.old_status,
       new_status: body.event_name,
-      changed_by: claimsData.claims.sub,
+      changed_by: callerUserId,
     });
   }
 
