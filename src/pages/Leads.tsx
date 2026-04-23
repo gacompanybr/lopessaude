@@ -557,7 +557,7 @@ const Leads = () => {
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
                           {ORIGEM_LABELS[lead.origem]}
                         </span>
-                        {lead.tag_origem && lead.tag_origem !== "novo" && (
+                        {lead.tag_origem && lead.tag_origem !== "novo" && lead.tag_origem !== "organico" && lead.tag_origem !== "site" && (
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${TAG_ORIGEM_COLORS[lead.tag_origem]}`}>
                             {TAG_ORIGEM_LABELS[lead.tag_origem]}
                           </span>
