@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import ImportLeadsCard from "@/components/ImportLeadsCard";
 import AcquisitionChart from "@/components/AcquisitionChart";
+import MonthlyEvolutionChart from "@/components/MonthlyEvolutionChart";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
@@ -392,39 +393,8 @@ const Leads = () => {
 
             {/* Linha 1: Evolução mensal (2/3) + Status (1/3) */}
             <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-primary" />
-                    <h3 className="font-display font-bold text-foreground text-sm">Evolução mensal de leads</h3>
-                  </div>
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" />Total</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(142, 60%, 45%)" }} />Convertidos</span>
-                  </div>
-                </div>
-                <div className="h-[260px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={monthlyData} margin={{ top: 15, right: 15, left: -10, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="gradTotal" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.45} />
-                          <stop offset="100%" stopColor="hsl(213, 80%, 45%)" stopOpacity={0.02} />
-                        </linearGradient>
-                        <linearGradient id="gradConv" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.4} />
-                          <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.02} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 92%)" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} padding={{ left: 10, right: 10 }} />
-                      <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 10%, 46%)" }} axisLine={false} tickLine={false} width={32} />
-                      <Tooltip content={<PremiumTooltip />} cursor={{ stroke: "hsl(213, 80%, 45%)", strokeOpacity: 0.15, strokeWidth: 40 }} />
-                      <Area type="natural" dataKey="total" name="Total" stroke="hsl(213, 80%, 45%)" strokeWidth={2.5} fill="url(#gradTotal)" dot={false} activeDot={{ r: 5, strokeWidth: 2, stroke: "hsl(0 0% 100%)" }} />
-                      <Area type="natural" dataKey="convertidos" name="Convertidos" stroke="hsl(142, 60%, 45%)" strokeWidth={2.5} fill="url(#gradConv)" dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "hsl(0 0% 100%)" }} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+              <div className="lg:col-span-2">
+                <MonthlyEvolutionChart data={monthlyData} />
               </div>
 
               <div className="bg-card rounded-2xl border border-border p-6">
