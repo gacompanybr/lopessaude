@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import ImportLeadsCard from "@/components/ImportLeadsCard";
 import AcquisitionChart from "@/components/AcquisitionChart";
+import MonthlyEvolutionChart from "@/components/MonthlyEvolutionChart";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
