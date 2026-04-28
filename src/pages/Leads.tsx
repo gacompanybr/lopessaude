@@ -293,11 +293,6 @@ const Leads = () => {
             <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
               <FileDown className="w-4 h-4" /> Exportar Excel
             </Button>
-            <Link to="/meta-integration">
-              <Button variant="secondary" size="sm" className="gap-2">
-                <Activity className="w-4 h-4" /> Meta Ads
-              </Button>
-            </Link>
             <UserMenu />
           </div>
         </div>
