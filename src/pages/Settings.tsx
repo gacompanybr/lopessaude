@@ -82,18 +82,71 @@ const Settings = () => {
   const [creatingUser, setCreatingUser] = useState(false);
   const [nuName, setNuName] = useState("");
   const [nuEmail, setNuEmail] = useState("");
+  const [nuUsername, setNuUsername] = useState("");
   const [nuPassword, setNuPassword] = useState("");
   const [nuProfileId, setNuProfileId] = useState<string>("");
 
+  // Editar usuário
+  const [editUser, setEditUser] = useState<UserRow | null>(null);
+  const [savingUser, setSavingUser] = useState(false);
+  const [euName, setEuName] = useState("");
+  const [euEmail, setEuEmail] = useState("");
+  const [euUsername, setEuUsername] = useState("");
+  const [euPassword, setEuPassword] = useState("");
+
+  const openEditUser = (u: UserRow) => {
+    setEditUser(u);
+    setEuName(u.display_name ?? "");
+    // Esconde e-mail interno (placeholder gerado a partir do usuário) na edição.
+    setEuEmail(u.email && u.email.endsWith("@crm.local") ? "" : (u.email ?? ""));
+    setEuUsername(u.username ?? "");
+    setEuPassword("");
+  };
+
+  const saveUser = async () => {
+    if (!editUser) return;
+    if (!euEmail && !euUsername) {
+      return toast.error("Informe e-mail ou nome de usuário");
+    }
+    if (euPassword && euPassword.length < 6) {
+      return toast.error("Senha deve ter no mínimo 6 caracteres");
+    }
+    setSavingUser(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-update-user", {
+        body: {
+          user_id: editUser.id,
+          display_name: euName.trim() || null,
+          email: euEmail.trim() || null,
+          username: euUsername.trim() || null,
+          password: euPassword || null,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success("Usuário atualizado");
+      setEditUser(null);
+      loadAll();
+    } catch (e: any) {
+      toast.error(e.message ?? "Erro ao atualizar usuário");
+    } finally {
+      setSavingUser(false);
+    }
+  };
+
   const createUser = async () => {
-    if (!nuEmail || !nuPassword || nuPassword.length < 6) {
-      return toast.error("Informe e-mail e senha (mín. 6 caracteres)");
+    if (!nuPassword || nuPassword.length < 6) {
+      return toast.error("Senha deve ter no mínimo 6 caracteres");
+    }
+    if (!nuEmail && !nuUsername) {
+      return toast.error("Informe e-mail OU nome de usuário");
     }
     setCreatingUser(true);
     try {
       const { data, error } = await supabase.functions.invoke("admin-create-user", {
         body: {
-          email: nuEmail.trim(),
+          email: nuEmail.trim() || null,
+          username: nuUsername.trim() || null,
           password: nuPassword,
           display_name: nuName.trim() || undefined,
           profile_type_id: nuProfileId || undefined,
@@ -103,7 +156,7 @@ const Settings = () => {
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success("Usuário cadastrado");
       setNewUserOpen(false);
-      setNuName(""); setNuEmail(""); setNuPassword(""); setNuProfileId("");
+      setNuName(""); setNuEmail(""); setNuUsername(""); setNuPassword(""); setNuProfileId("");
       loadAll();
     } catch (e: any) {
       toast.error(e.message ?? "Erro ao cadastrar usuário");
