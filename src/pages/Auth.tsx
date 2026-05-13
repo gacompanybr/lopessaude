@@ -55,20 +55,36 @@ export default function Auth() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
+    const parsed = loginSchema.safeParse({ identifier: loginIdentifier, password: loginPassword });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
+
+    // Resolve e-mail a partir do identificador (e-mail OU nome de usuário).
+    let email = parsed.data.identifier;
+    if (!email.includes("@")) {
+      const { data: resolvedEmail, error: rpcErr } = await supabase.rpc(
+        "get_email_by_username",
+        { _username: email }
+      );
+      if (rpcErr || !resolvedEmail) {
+        setLoading(false);
+        toast.error("Usuário ou senha incorretos");
+        return;
+      }
+      email = resolvedEmail as string;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
-      email: parsed.data.email,
+      email,
       password: parsed.data.password,
     });
     setLoading(false);
     if (error) {
       const msg = error.message.includes("Invalid login")
-        ? "E-mail ou senha incorretos"
+        ? "E-mail/usuário ou senha incorretos"
         : error.message;
       toast.error(msg);
       return;
