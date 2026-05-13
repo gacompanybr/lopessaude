@@ -523,8 +523,8 @@ const Leads = () => {
                 </Select>
               </div>
             </div>
-            <div className="space-y-3">
-              {paginatedLeads.map((lead) => (
+            <div className="space-y-3" data-tour="leads-list">
+              {paginatedLeads.map((lead, idx) => (
                 <div key={lead.id} className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
