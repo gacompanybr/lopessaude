@@ -592,6 +592,7 @@ const Leads = () => {
                         )}
                         <button
                           onClick={() => openEdit(lead)}
+                          {...(idx === 0 ? { "data-tour": "lead-edit" } : {})}
                           className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                           title="Editar"
                         >
