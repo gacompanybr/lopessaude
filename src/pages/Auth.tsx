@@ -118,7 +118,7 @@ export default function Auth() {
       return;
     }
     toast.success("Cadastro realizado! Faça login para continuar.");
-    setLoginEmail(parsed.data.email);
+    setLoginIdentifier(parsed.data.email);
     setName(""); setEmail(""); setPassword(""); setConfirm("");
     setTab("login");
   };
