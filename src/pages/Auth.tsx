@@ -38,7 +38,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
 
   // Login fields
-  const [loginEmail, setLoginEmail] = useState("");
+  const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   // Signup fields
