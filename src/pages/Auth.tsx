@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 import logo from "@/assets/lopes-logo.jpg";
 
 const loginSchema = z.object({
-  email: z.string().trim().email("E-mail inválido").max(255),
+  identifier: z.string().trim().min(2, "Informe e-mail ou usuário").max(255),
   password: z.string().min(6, "Mínimo 6 caracteres").max(72),
 });
 
