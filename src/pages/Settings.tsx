@@ -48,6 +48,7 @@ type UserRow = {
   id: string;
   display_name: string | null;
   email: string | null;
+  username: string | null;
   profile_type_id: string | null;
 };
 
