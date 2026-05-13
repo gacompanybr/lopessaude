@@ -578,8 +578,17 @@ const Settings = () => {
                         <Input value={nuName} onChange={(e) => setNuName(e.target.value)} placeholder="Nome completo" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label>E-mail</Label>
-                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                        <Label>Nome de usuário <span className="text-muted-foreground font-normal">(para login)</span></Label>
+                        <Input
+                          value={nuUsername}
+                          onChange={(e) => setNuUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ""))}
+                          placeholder="ex: maria.silva"
+                        />
+                        <p className="text-xs text-muted-foreground">Letras minúsculas, números, ponto, hífen ou underline.</p>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>E-mail <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com (pode adicionar depois)" />
                       </div>
                       <div className="space-y-1.5">
                         <Label>Senha</Label>
@@ -599,7 +608,7 @@ const Settings = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <p className="text-xs text-muted-foreground">Se nenhum perfil for selecionado, o usuário recebe automaticamente o perfil <strong>Atendente</strong>.</p>
+                        <p className="text-xs text-muted-foreground">Informe e-mail OU nome de usuário (ao menos um). Sem perfil selecionado, o usuário recebe automaticamente <strong>Atendente</strong>.</p>
                       </div>
                     </div>
                     <DialogFooter>
