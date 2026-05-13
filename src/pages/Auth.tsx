@@ -155,14 +155,14 @@ export default function Auth() {
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email">E-mail</Label>
+                <Label htmlFor="login-identifier">E-mail ou usuário</Label>
                 <Input
-                  id="login-email"
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  autoComplete="email"
+                  id="login-identifier"
+                  type="text"
+                  value={loginIdentifier}
+                  onChange={(e) => setLoginIdentifier(e.target.value)}
+                  placeholder="seu@email.com  ou  nome.usuario"
+                  autoComplete="username"
                   required
                 />
               </div>
