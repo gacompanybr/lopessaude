@@ -34,7 +34,7 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import ImportLeadsCard from "@/components/ImportLeadsCard";
-import CrmGuideDialog from "@/components/CrmGuideDialog";
+import CrmTour, { CrmTourButton, tourAlreadySeen } from "@/components/CrmTour";
 import AcquisitionChart from "@/components/AcquisitionChart";
 import MonthlyEvolutionChart from "@/components/MonthlyEvolutionChart";
 import {
