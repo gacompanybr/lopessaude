@@ -48,6 +48,7 @@ type UserRow = {
   id: string;
   display_name: string | null;
   email: string | null;
+  username: string | null;
   profile_type_id: string | null;
 };
 
@@ -81,18 +82,71 @@ const Settings = () => {
   const [creatingUser, setCreatingUser] = useState(false);
   const [nuName, setNuName] = useState("");
   const [nuEmail, setNuEmail] = useState("");
+  const [nuUsername, setNuUsername] = useState("");
   const [nuPassword, setNuPassword] = useState("");
   const [nuProfileId, setNuProfileId] = useState<string>("");
 
+  // Editar usuário
+  const [editUser, setEditUser] = useState<UserRow | null>(null);
+  const [savingUser, setSavingUser] = useState(false);
+  const [euName, setEuName] = useState("");
+  const [euEmail, setEuEmail] = useState("");
+  const [euUsername, setEuUsername] = useState("");
+  const [euPassword, setEuPassword] = useState("");
+
+  const openEditUser = (u: UserRow) => {
+    setEditUser(u);
+    setEuName(u.display_name ?? "");
+    // Esconde e-mail interno (placeholder gerado a partir do usuário) na edição.
+    setEuEmail(u.email && u.email.endsWith("@crm.local") ? "" : (u.email ?? ""));
+    setEuUsername(u.username ?? "");
+    setEuPassword("");
+  };
+
+  const saveUser = async () => {
+    if (!editUser) return;
+    if (!euEmail && !euUsername) {
+      return toast.error("Informe e-mail ou nome de usuário");
+    }
+    if (euPassword && euPassword.length < 6) {
+      return toast.error("Senha deve ter no mínimo 6 caracteres");
+    }
+    setSavingUser(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-update-user", {
+        body: {
+          user_id: editUser.id,
+          display_name: euName.trim() || null,
+          email: euEmail.trim() || null,
+          username: euUsername.trim() || null,
+          password: euPassword || null,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success("Usuário atualizado");
+      setEditUser(null);
+      loadAll();
+    } catch (e: any) {
+      toast.error(e.message ?? "Erro ao atualizar usuário");
+    } finally {
+      setSavingUser(false);
+    }
+  };
+
   const createUser = async () => {
-    if (!nuEmail || !nuPassword || nuPassword.length < 6) {
-      return toast.error("Informe e-mail e senha (mín. 6 caracteres)");
+    if (!nuPassword || nuPassword.length < 6) {
+      return toast.error("Senha deve ter no mínimo 6 caracteres");
+    }
+    if (!nuEmail && !nuUsername) {
+      return toast.error("Informe e-mail OU nome de usuário");
     }
     setCreatingUser(true);
     try {
       const { data, error } = await supabase.functions.invoke("admin-create-user", {
         body: {
-          email: nuEmail.trim(),
+          email: nuEmail.trim() || null,
+          username: nuUsername.trim() || null,
           password: nuPassword,
           display_name: nuName.trim() || undefined,
           profile_type_id: nuProfileId || undefined,
@@ -102,7 +156,7 @@ const Settings = () => {
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success("Usuário cadastrado");
       setNewUserOpen(false);
-      setNuName(""); setNuEmail(""); setNuPassword(""); setNuProfileId("");
+      setNuName(""); setNuEmail(""); setNuUsername(""); setNuPassword(""); setNuProfileId("");
       loadAll();
     } catch (e: any) {
       toast.error(e.message ?? "Erro ao cadastrar usuário");
@@ -115,7 +169,7 @@ const Settings = () => {
     const [{ data: comp }, { data: profs }, { data: profUsers }, { data: assignments }] = await Promise.all([
       supabase.from("company_settings").select("*").maybeSingle(),
       supabase.from("profile_types").select("*").order("created_at", { ascending: true }),
-      supabase.from("profiles").select("id, display_name, email"),
+      supabase.from("profiles").select("id, display_name, email, username"),
       supabase.from("user_profile_assignments").select("user_id, profile_type_id"),
     ]);
 
@@ -139,6 +193,7 @@ const Settings = () => {
         id: u.id,
         display_name: u.display_name,
         email: u.email,
+        username: u.username ?? null,
         profile_type_id: map.get(u.id) ?? null,
       }))
     );
@@ -523,8 +578,17 @@ const Settings = () => {
                         <Input value={nuName} onChange={(e) => setNuName(e.target.value)} placeholder="Nome completo" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label>E-mail</Label>
-                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                        <Label>Nome de usuário <span className="text-muted-foreground font-normal">(para login)</span></Label>
+                        <Input
+                          value={nuUsername}
+                          onChange={(e) => setNuUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ""))}
+                          placeholder="ex: maria.silva"
+                        />
+                        <p className="text-xs text-muted-foreground">Letras minúsculas, números, ponto, hífen ou underline.</p>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>E-mail <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+                        <Input type="email" value={nuEmail} onChange={(e) => setNuEmail(e.target.value)} placeholder="usuario@empresa.com (pode adicionar depois)" />
                       </div>
                       <div className="space-y-1.5">
                         <Label>Senha</Label>
@@ -544,7 +608,7 @@ const Settings = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <p className="text-xs text-muted-foreground">Se nenhum perfil for selecionado, o usuário recebe automaticamente o perfil <strong>Atendente</strong>.</p>
+                        <p className="text-xs text-muted-foreground">Informe e-mail OU nome de usuário (ao menos um). Sem perfil selecionado, o usuário recebe automaticamente <strong>Atendente</strong>.</p>
                       </div>
                     </div>
                     <DialogFooter>
@@ -561,21 +625,30 @@ const Settings = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Nome</TableHead>
                       <TableHead>Usuário</TableHead>
                       <TableHead>E-mail</TableHead>
                       <TableHead>Perfil atual</TableHead>
                       <TableHead className="w-56">Definir perfil</TableHead>
-                      <TableHead className="w-20 text-right">Ações</TableHead>
+                      <TableHead className="w-24 text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {users.map((u) => {
                       const current = profileLabel(u.profile_type_id);
                       const isSelf = u.id === user?.id;
+                      const displayEmail = u.email && !u.email.endsWith("@crm.local") ? u.email : null;
                       return (
                         <TableRow key={u.id}>
                           <TableCell className="font-medium">{u.display_name ?? "—"}</TableCell>
-                          <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                          <TableCell>
+                            {u.username ? (
+                              <Badge variant="outline" className="font-mono text-xs">{u.username}</Badge>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{displayEmail ?? <span className="italic">sem e-mail</span>}</TableCell>
                           <TableCell>
                             {current ? (
                               <div className="flex items-center gap-2">
@@ -607,27 +680,73 @@ const Settings = () => {
                             </Select>
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              disabled={isSelf}
-                              title={isSelf ? "Você não pode excluir a si mesmo" : "Excluir usuário"}
-                              onClick={() => deleteUser(u.id, u.display_name ?? u.email ?? "este usuário")}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="Editar usuário"
+                                onClick={() => openEditUser(u)}
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                disabled={isSelf}
+                                title={isSelf ? "Você não pode excluir a si mesmo" : "Excluir usuário"}
+                                onClick={() => deleteUser(u.id, u.display_name ?? u.email ?? "este usuário")}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
                     })}
                     {users.length === 0 && (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
+
+            {/* Dialog de edição de usuário */}
+            <Dialog open={!!editUser} onOpenChange={(o) => !o && setEditUser(null)}>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Editar usuário</DialogTitle></DialogHeader>
+                <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Nome</Label>
+                    <Input value={euName} onChange={(e) => setEuName(e.target.value)} placeholder="Nome completo" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nome de usuário</Label>
+                    <Input
+                      value={euUsername}
+                      onChange={(e) => setEuUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ""))}
+                      placeholder="ex: maria.silva"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>E-mail</Label>
+                    <Input type="email" value={euEmail} onChange={(e) => setEuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nova senha <span className="text-muted-foreground font-normal">(deixe em branco para manter)</span></Label>
+                    <Input type="password" value={euPassword} onChange={(e) => setEuPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEditUser(null)}>Cancelar</Button>
+                  <Button onClick={saveUser} disabled={savingUser} className="gap-2">
+                    {savingUser ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    Salvar
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>

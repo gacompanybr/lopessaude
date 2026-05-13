@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 import logo from "@/assets/lopes-logo.jpg";
 
 const loginSchema = z.object({
-  email: z.string().trim().email("E-mail inválido").max(255),
+  identifier: z.string().trim().min(2, "Informe e-mail ou usuário").max(255),
   password: z.string().min(6, "Mínimo 6 caracteres").max(72),
 });
 
@@ -38,7 +38,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
 
   // Login fields
-  const [loginEmail, setLoginEmail] = useState("");
+  const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   // Signup fields
@@ -55,20 +55,36 @@ export default function Auth() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
+    const parsed = loginSchema.safeParse({ identifier: loginIdentifier, password: loginPassword });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
     }
     setLoading(true);
+
+    // Resolve e-mail a partir do identificador (e-mail OU nome de usuário).
+    let email = parsed.data.identifier;
+    if (!email.includes("@")) {
+      const { data: resolvedEmail, error: rpcErr } = await supabase.rpc(
+        "get_email_by_username",
+        { _username: email }
+      );
+      if (rpcErr || !resolvedEmail) {
+        setLoading(false);
+        toast.error("Usuário ou senha incorretos");
+        return;
+      }
+      email = resolvedEmail as string;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
-      email: parsed.data.email,
+      email,
       password: parsed.data.password,
     });
     setLoading(false);
     if (error) {
       const msg = error.message.includes("Invalid login")
-        ? "E-mail ou senha incorretos"
+        ? "E-mail/usuário ou senha incorretos"
         : error.message;
       toast.error(msg);
       return;
@@ -102,7 +118,7 @@ export default function Auth() {
       return;
     }
     toast.success("Cadastro realizado! Faça login para continuar.");
-    setLoginEmail(parsed.data.email);
+    setLoginIdentifier(parsed.data.email);
     setName(""); setEmail(""); setPassword(""); setConfirm("");
     setTab("login");
   };
@@ -139,14 +155,14 @@ export default function Auth() {
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email">E-mail</Label>
+                <Label htmlFor="login-identifier">E-mail ou usuário</Label>
                 <Input
-                  id="login-email"
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  autoComplete="email"
+                  id="login-identifier"
+                  type="text"
+                  value={loginIdentifier}
+                  onChange={(e) => setLoginIdentifier(e.target.value)}
+                  placeholder="seu@email.com  ou  nome.usuario"
+                  autoComplete="username"
                   required
                 />
               </div>
