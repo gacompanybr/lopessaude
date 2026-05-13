@@ -64,10 +64,16 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Atualiza Auth (email e/ou senha) — apenas se fornecidos
+    // Busca usuário atual para evitar updates desnecessários (ex.: enviar o mesmo e-mail dispara 422)
+    const { data: currentUser } = await admin.auth.admin.getUserById(user_id);
+    const currentEmail = currentUser?.user?.email ?? null;
+
     const authUpdate: Record<string, unknown> = {};
-    if (email !== undefined && email !== null) authUpdate.email = email;
-    if (password) {
+    // Só atualiza e-mail se foi fornecido E é diferente do atual
+    if (email && email !== currentEmail) {
+      authUpdate.email = email;
+    }
+    if (password && password.trim().length > 0) {
       if (password.length < 6) {
         return new Response(JSON.stringify({ error: "Senha mínima de 6 caracteres" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
@@ -76,7 +82,16 @@ Deno.serve(async (req) => {
     if (Object.keys(authUpdate).length > 0) {
       const { error: authErr } = await admin.auth.admin.updateUserById(user_id, authUpdate);
       if (authErr) {
-        return new Response(JSON.stringify({ error: authErr.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const raw = authErr.message ?? "";
+        let friendly = raw;
+        if (/already.*registered|email.*exists|duplicate/i.test(raw)) {
+          friendly = "Este e-mail já está em uso por outro usuário.";
+        } else if (/invalid.*email/i.test(raw)) {
+          friendly = "E-mail inválido.";
+        } else if (/password/i.test(raw)) {
+          friendly = "Senha inválida. Use no mínimo 6 caracteres.";
+        }
+        return new Response(JSON.stringify({ error: friendly }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
