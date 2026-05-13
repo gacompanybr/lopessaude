@@ -122,8 +122,14 @@ const Settings = () => {
           password: euPassword || null,
         },
       });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
+      // Mensagem amigável: prioriza erro retornado pela função sobre o genérico do invoke
+      const fnError = (data as any)?.error;
+      if (fnError) throw new Error(fnError);
+      if (error) {
+        // Tenta extrair mensagem do contexto da resposta HTTP
+        const ctxMsg = await (error as any)?.context?.json?.().then((j: any) => j?.error).catch(() => null);
+        throw new Error(ctxMsg ?? error.message);
+      }
       toast.success("Usuário atualizado");
       setEditUser(null);
       loadAll();
