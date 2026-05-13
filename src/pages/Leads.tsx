@@ -294,6 +294,7 @@ const Leads = () => {
             <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
               <FileDown className="w-4 h-4" /> Exportar Excel
             </Button>
+            <CrmGuideDialog />
             <UserMenu />
           </div>
         </div>
