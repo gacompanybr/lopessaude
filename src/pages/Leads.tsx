@@ -34,7 +34,7 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import LeadFormDialog from "@/components/LeadFormDialog";
 import ImportLeadsCard from "@/components/ImportLeadsCard";
-import CrmGuideDialog from "@/components/CrmGuideDialog";
+import CrmTour, { CrmTourButton, tourAlreadySeen } from "@/components/CrmTour";
 import AcquisitionChart from "@/components/AcquisitionChart";
 import MonthlyEvolutionChart from "@/components/MonthlyEvolutionChart";
 import {
@@ -98,6 +98,14 @@ const Leads = () => {
   const [editing, setEditing] = useState<Lead | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  useEffect(() => {
+    if (!tourAlreadySeen()) {
+      const t = setTimeout(() => setTourOpen(true), 600);
+      return () => clearTimeout(t);
+    }
+  }, []);
 
   const refresh = async () => {
     setLoading(true);
@@ -272,7 +280,7 @@ const Leads = () => {
 
   return (
     <div className="min-h-screen bg-background font-body">
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-primary text-primary-foreground" data-tour="header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 dark:text-white" />
@@ -282,19 +290,25 @@ const Leads = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={openNew} variant="secondary" size="sm" className="gap-2">
-              <Plus className="w-4 h-4" /> Novo Lead
-            </Button>
+            <span data-tour="new-lead">
+              <Button onClick={openNew} variant="secondary" size="sm" className="gap-2">
+                <Plus className="w-4 h-4" /> Novo Lead
+              </Button>
+            </span>
             <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
-            <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
-              <FileDown className="w-4 h-4" /> Exportar PDF
-            </Button>
-            <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
-              <FileDown className="w-4 h-4" /> Exportar Excel
-            </Button>
-            <CrmGuideDialog />
+            <span data-tour="exports" className="flex items-center gap-2">
+              <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
+                <FileDown className="w-4 h-4" /> Exportar PDF
+              </Button>
+              <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
+                <FileDown className="w-4 h-4" /> Exportar Excel
+              </Button>
+            </span>
+            <span data-tour="help">
+              <CrmTourButton onOpen={() => setTourOpen(true)} />
+            </span>
             <UserMenu />
           </div>
         </div>
@@ -302,7 +316,7 @@ const Leads = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" data-tour="stats">
           {[
             { label: "Total de leads", value: filteredLeads.length },
             { label: "Novos", value: filteredLeads.filter((l) => l.status === "novo").length },
@@ -318,7 +332,7 @@ const Leads = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+        <div className="bg-card rounded-xl border border-border p-4 space-y-3" data-tour="filters">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[220px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -384,7 +398,7 @@ const Leads = () => {
 
         {/* Charts */}
         {filteredLeads.length > 0 && (
-          <div className="space-y-6">
+          <div className="space-y-6" data-tour="charts">
             {/* Aquisição (Orgânico x Pago com drill-down) */}
             <AcquisitionChart leads={filteredLeads} />
 
@@ -509,8 +523,8 @@ const Leads = () => {
                 </Select>
               </div>
             </div>
-            <div className="space-y-3">
-              {paginatedLeads.map((lead) => (
+            <div className="space-y-3" data-tour="leads-list">
+              {paginatedLeads.map((lead, idx) => (
                 <div key={lead.id} className="bg-card rounded-xl border border-border p-5 hover:shadow-sm transition-shadow">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
@@ -555,7 +569,10 @@ const Leads = () => {
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
                       <Select value={lead.status} onValueChange={(v) => handleStatusChange(lead.id, v as LeadStatus)}>
-                        <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                        <SelectTrigger
+                          {...(idx === 0 ? { "data-tour": "lead-status" } : {})}
+                          className="w-[140px] h-8 text-xs"
+                        ><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {Object.entries(STATUS_LABELS).map(([k, v]) => (
                             <SelectItem key={k} value={k}>{v}</SelectItem>
@@ -575,6 +592,7 @@ const Leads = () => {
                         )}
                         <button
                           onClick={() => openEdit(lead)}
+                          {...(idx === 0 ? { "data-tour": "lead-edit" } : {})}
                           className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                           title="Editar"
                         >
@@ -625,6 +643,7 @@ const Leads = () => {
       </div>
 
       <LeadFormDialog open={dialogOpen} onOpenChange={setDialogOpen} lead={editing} onSaved={refresh} />
+      <CrmTour open={tourOpen} onClose={() => setTourOpen(false)} />
     </div>
   );
 };
