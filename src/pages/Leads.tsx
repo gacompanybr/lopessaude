@@ -280,7 +280,7 @@ const Leads = () => {
 
   return (
     <div className="min-h-screen bg-background font-body">
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-primary text-primary-foreground" data-tour="header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 dark:text-white" />
@@ -290,19 +290,25 @@ const Leads = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={openNew} variant="secondary" size="sm" className="gap-2">
-              <Plus className="w-4 h-4" /> Novo Lead
-            </Button>
+            <span data-tour="new-lead">
+              <Button onClick={openNew} variant="secondary" size="sm" className="gap-2">
+                <Plus className="w-4 h-4" /> Novo Lead
+              </Button>
+            </span>
             <Button onClick={refresh} variant="secondary" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
-            <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
-              <FileDown className="w-4 h-4" /> Exportar PDF
-            </Button>
-            <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
-              <FileDown className="w-4 h-4" /> Exportar Excel
-            </Button>
-            <CrmGuideDialog />
+            <span data-tour="exports" className="flex items-center gap-2">
+              <Button onClick={handleExportPdf} variant="secondary" size="sm" className="gap-2">
+                <FileDown className="w-4 h-4" /> Exportar PDF
+              </Button>
+              <Button onClick={handleExportExcel} variant="secondary" size="sm" className="gap-2">
+                <FileDown className="w-4 h-4" /> Exportar Excel
+              </Button>
+            </span>
+            <span data-tour="help">
+              <CrmTourButton onOpen={() => setTourOpen(true)} />
+            </span>
             <UserMenu />
           </div>
         </div>
