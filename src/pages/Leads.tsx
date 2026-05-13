@@ -569,7 +569,10 @@ const Leads = () => {
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
                       <Select value={lead.status} onValueChange={(v) => handleStatusChange(lead.id, v as LeadStatus)}>
-                        <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                        <SelectTrigger
+                          {...(idx === 0 ? { "data-tour": "lead-status" } : {})}
+                          className="w-[140px] h-8 text-xs"
+                        ><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {Object.entries(STATUS_LABELS).map(([k, v]) => (
                             <SelectItem key={k} value={k}>{v}</SelectItem>
