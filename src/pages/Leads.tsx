@@ -398,7 +398,7 @@ const Leads = () => {
 
         {/* Charts */}
         {filteredLeads.length > 0 && (
-          <div className="space-y-6">
+          <div className="space-y-6" data-tour="charts">
             {/* Aquisição (Orgânico x Pago com drill-down) */}
             <AcquisitionChart leads={filteredLeads} />
 
