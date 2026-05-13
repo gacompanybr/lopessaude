@@ -625,21 +625,30 @@ const Settings = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Nome</TableHead>
                       <TableHead>Usuário</TableHead>
                       <TableHead>E-mail</TableHead>
                       <TableHead>Perfil atual</TableHead>
                       <TableHead className="w-56">Definir perfil</TableHead>
-                      <TableHead className="w-20 text-right">Ações</TableHead>
+                      <TableHead className="w-24 text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {users.map((u) => {
                       const current = profileLabel(u.profile_type_id);
                       const isSelf = u.id === user?.id;
+                      const displayEmail = u.email && !u.email.endsWith("@crm.local") ? u.email : null;
                       return (
                         <TableRow key={u.id}>
                           <TableCell className="font-medium">{u.display_name ?? "—"}</TableCell>
-                          <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                          <TableCell>
+                            {u.username ? (
+                              <Badge variant="outline" className="font-mono text-xs">{u.username}</Badge>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{displayEmail ?? <span className="italic">sem e-mail</span>}</TableCell>
                           <TableCell>
                             {current ? (
                               <div className="flex items-center gap-2">
@@ -671,27 +680,73 @@ const Settings = () => {
                             </Select>
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              disabled={isSelf}
-                              title={isSelf ? "Você não pode excluir a si mesmo" : "Excluir usuário"}
-                              onClick={() => deleteUser(u.id, u.display_name ?? u.email ?? "este usuário")}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="Editar usuário"
+                                onClick={() => openEditUser(u)}
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                disabled={isSelf}
+                                title={isSelf ? "Você não pode excluir a si mesmo" : "Excluir usuário"}
+                                onClick={() => deleteUser(u.id, u.display_name ?? u.email ?? "este usuário")}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
                     })}
                     {users.length === 0 && (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-6">Nenhum usuário encontrado</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
+
+            {/* Dialog de edição de usuário */}
+            <Dialog open={!!editUser} onOpenChange={(o) => !o && setEditUser(null)}>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Editar usuário</DialogTitle></DialogHeader>
+                <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Nome</Label>
+                    <Input value={euName} onChange={(e) => setEuName(e.target.value)} placeholder="Nome completo" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nome de usuário</Label>
+                    <Input
+                      value={euUsername}
+                      onChange={(e) => setEuUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ""))}
+                      placeholder="ex: maria.silva"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>E-mail</Label>
+                    <Input type="email" value={euEmail} onChange={(e) => setEuEmail(e.target.value)} placeholder="usuario@empresa.com" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nova senha <span className="text-muted-foreground font-normal">(deixe em branco para manter)</span></Label>
+                    <Input type="password" value={euPassword} onChange={(e) => setEuPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEditUser(null)}>Cancelar</Button>
+                  <Button onClick={saveUser} disabled={savingUser} className="gap-2">
+                    {savingUser ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    Salvar
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>
