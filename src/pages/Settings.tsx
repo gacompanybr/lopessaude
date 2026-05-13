@@ -169,7 +169,7 @@ const Settings = () => {
     const [{ data: comp }, { data: profs }, { data: profUsers }, { data: assignments }] = await Promise.all([
       supabase.from("company_settings").select("*").maybeSingle(),
       supabase.from("profile_types").select("*").order("created_at", { ascending: true }),
-      supabase.from("profiles").select("id, display_name, email"),
+      supabase.from("profiles").select("id, display_name, email, username"),
       supabase.from("user_profile_assignments").select("user_id, profile_type_id"),
     ]);
 
@@ -193,6 +193,7 @@ const Settings = () => {
         id: u.id,
         display_name: u.display_name,
         email: u.email,
+        username: u.username ?? null,
         profile_type_id: map.get(u.id) ?? null,
       }))
     );
