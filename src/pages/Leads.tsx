@@ -98,6 +98,14 @@ const Leads = () => {
   const [editing, setEditing] = useState<Lead | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  useEffect(() => {
+    if (!tourAlreadySeen()) {
+      const t = setTimeout(() => setTourOpen(true), 600);
+      return () => clearTimeout(t);
+    }
+  }, []);
 
   const refresh = async () => {
     setLoading(true);
