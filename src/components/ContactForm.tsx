@@ -11,6 +11,7 @@ const ContactForm = () => {
     name: "",
     whatsapp: "",
     city: "",
+    availability: "",
     message: "",
   });
 
@@ -24,9 +25,10 @@ const ContactForm = () => {
     const lines = [
       `*Nova solicitação de contato*`,
       ``,
-      `*Nome:* ${formData.name || "Não informado"}`,
+      `*Nome:* ${formData.name}`,
       `*WhatsApp:* ${formData.whatsapp}`,
       `*Cidade:* ${formData.city}`,
+      `*Disponibilidade para consulta este mês:* ${formData.availability || "Não informado"}`,
       `*Condição odontológica:* ${formData.message || "Não informado"}`,
     ];
     const text = lines.join("\n");
@@ -45,11 +47,20 @@ const ContactForm = () => {
     let tracking: ReturnType<typeof captureMetaTracking> | null = null;
     try {
       tracking = captureMetaTracking();
+      const composedMessage = [
+        formData.availability
+          ? `Disponibilidade este mês: ${formData.availability}`
+          : null,
+        formData.message || null,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
       const created = await savePublicLead({
-        name: formData.name || null,
+        name: formData.name,
         whatsapp: formData.whatsapp,
         city: formData.city,
-        message: formData.message || null,
+        message: composedMessage || null,
         origem: "site",
         status: "novo",
         tracking,
@@ -135,14 +146,9 @@ const ContactForm = () => {
                 </div>
               </div>
 
-              <a
-                href={`https://api.whatsapp.com/send?phone=5514996684609&text=${encodeURIComponent("Olá, vim pelo Google e gostaria de saber mais informações")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-8 bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
-              >
-                Enviar agora mesmo
-              </a>
+              <p className="mt-8 text-sm text-foreground font-medium">
+                Preencha o formulário ao lado rapidinho para entrar em contato com a nossa equipe.
+              </p>
             </motion.div>
 
             {/* Form */}
@@ -153,9 +159,14 @@ const ContactForm = () => {
               className="px-8 lg:px-12 py-10 lg:py-14 bg-background/50"
             >
               <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary text-center">
+                  Lembrete: Somos uma Clínica Particular!
+                </div>
+
                 <input
                   type="text"
-                  placeholder="Nome"
+                  required
+                  placeholder="*Nome"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors"
@@ -179,6 +190,22 @@ const ContactForm = () => {
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                 />
 
+                <div>
+                  <label className="block text-sm text-foreground mb-2">
+                    Você teria disponibilidade para consulta este mês ainda?
+                  </label>
+                  <select
+                    value={formData.availability}
+                    onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
+                  >
+                    <option value="">Selecione uma opção</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                    <option value="Talvez">Talvez</option>
+                  </select>
+                </div>
+
                 <textarea
                   rows={4}
                   placeholder="Escreva em detalhes sua condição odontológica"
@@ -186,6 +213,7 @@ const ContactForm = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors resize-none"
                 />
+
 
                 <button
                   type="submit"
