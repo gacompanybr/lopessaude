@@ -5,15 +5,44 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
+    __metaPixelFallback?: (eventName?: string, params?: Record<string, unknown>) => void;
   }
 }
+
+const fireMetaPixelFallback = (eventName = "PageView", params: Record<string, unknown> = {}) => {
+  if (typeof window === "undefined") return;
+
+  const query = new URLSearchParams({
+    id: "4618957974838971",
+    ev: eventName,
+    dl: window.location.href,
+    rl: document.referrer || "",
+    if: "false",
+    ts: String(Date.now()),
+    sw: String(window.screen?.width || window.innerWidth),
+    sh: String(window.screen?.height || window.innerHeight),
+    v: "2.9.338",
+    r: "stable",
+  });
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) query.set(`cd[${key}]`, String(value));
+  });
+
+  const img = new Image(1, 1);
+  img.style.display = "none";
+  img.src = `https://www.facebook.com/tr/?${query.toString()}`;
+};
 
 const MetaPixelPageTracker = () => {
   const location = useLocation();
   useEffect(() => {
+    window.__metaPixelFallback = fireMetaPixelFallback;
+
     if (typeof window !== "undefined" && typeof window.fbq === "function") {
       window.fbq("track", "PageView");
     }
+    fireMetaPixelFallback("PageView");
   }, [location.pathname, location.search]);
   return null;
 };
