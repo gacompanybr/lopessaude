@@ -75,6 +75,22 @@ const ContactForm = () => {
         nome_formulario: 'lead_principal',
       });
 
+      // Meta Pixel: dispara evento de Lead (conversa iniciada via WhatsApp)
+      try {
+        const fbq = (window as any).fbq;
+        if (typeof fbq === "function") {
+          fbq("track", "Lead", {
+            content_name: "lead_principal",
+            content_category: "whatsapp_form",
+          });
+          fbq("trackCustom", "WhatsAppConversation", {
+            source: "contact_form",
+          });
+        }
+      } catch (e) {
+        console.warn("Meta Pixel Lead event failed:", e);
+      }
+
       toast.success("Solicitação enviada com sucesso!");
     } catch (err: any) {
       console.error("Erro ao salvar lead:", err);
