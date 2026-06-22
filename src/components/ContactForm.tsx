@@ -87,6 +87,15 @@ const ContactForm = () => {
             source: "contact_form",
           });
         }
+        if (typeof (window as any).__metaPixelFallback === "function") {
+          (window as any).__metaPixelFallback("Lead", {
+            content_name: "lead_principal",
+            content_category: "whatsapp_form",
+          });
+          (window as any).__metaPixelFallback("WhatsAppConversation", {
+            source: "contact_form",
+          });
+        }
       } catch (e) {
         console.warn("Meta Pixel Lead event failed:", e);
       }
