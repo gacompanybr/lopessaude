@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+
 import { toast } from "sonner";
 import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
