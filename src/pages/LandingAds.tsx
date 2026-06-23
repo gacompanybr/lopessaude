@@ -169,11 +169,6 @@ const LandingAds = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Agende sua consulta — Clínica Lopes</title>
-        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-        <meta name="googlebot" content="noindex, nofollow" />
-      </Helmet>
 
       <main className="min-h-screen bg-background flex items-start justify-center px-4 py-6 sm:py-10">
         <div className="w-full max-w-md">
