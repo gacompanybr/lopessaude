@@ -20,10 +20,8 @@ const AVAILABILITY_OPTIONS = [
   "Ainda estou pesquisando",
 ];
 
-const INTENT_OPTIONS = [
-  { value: "Sim, quero agendar", label: "Sim, quero agendar" },
-  { value: "Só estou pesquisando por enquanto", label: "Só estou pesquisando por enquanto" },
-];
+
+
 
 // Máscara BR: (XX) XXXXX-XXXX
 const maskPhoneBR = (raw: string) => {
