@@ -302,41 +302,6 @@ const ContactForm = () => {
                   />
                 </div>
 
-                <div>
-                  <label className={labelClass}>
-                    Você está buscando agendar uma consulta agora?
-                  </label>
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    {INTENT_OPTIONS.map((opt) => {
-                      const active = formData.intent === opt.value;
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, intent: opt.value })}
-                          className={`px-3 py-2.5 rounded-lg text-xs font-medium border transition-colors text-center ${
-                            active
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-card text-foreground border-border hover:border-primary/60"
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {/* validação obrigatória via input hidden */}
-                  <input
-                    type="text"
-                    required
-                    value={formData.intent}
-                    onChange={() => {}}
-                    tabIndex={-1}
-                    aria-hidden="true"
-                    className="sr-only"
-                    style={{ position: "absolute", opacity: 0, height: 0, width: 0 }}
-                  />
-                </div>
 
                 <button
                   type="submit"
