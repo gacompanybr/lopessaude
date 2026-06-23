@@ -6,12 +6,43 @@ import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "551496684609";
 
+const QUICK_NEEDS = [
+  "Limpeza / prevenção",
+  "Dor de dente / urgência",
+  "Estética / clareamento",
+  "Avaliação geral / não sei ainda",
+  "Outro",
+];
+
+const AVAILABILITY_OPTIONS = [
+  "Quero agendar esta semana",
+  "Quero agendar este mês",
+  "Ainda estou pesquisando",
+];
+
+const INTENT_OPTIONS = [
+  { value: "Sim, quero agendar", label: "Sim, quero agendar" },
+  { value: "Só estou pesquisando por enquanto", label: "Só estou pesquisando por enquanto" },
+];
+
+// Máscara BR: (XX) XXXXX-XXXX
+const maskPhoneBR = (raw: string) => {
+  const digits = raw.replace(/\D/g, "").slice(0, 11);
+  if (digits.length <= 2) return digits.length ? `(${digits}` : "";
+  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  if (digits.length <= 10)
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+};
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     whatsapp: "",
-    city: "",
+    email: "",
+    quickNeed: "",
     availability: "",
+    intent: "",
     message: "",
   });
 
@@ -20,26 +51,22 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Monta a URL do WhatsApp já agora (dentro do gesto do usuário) para
-    // que o navegador a aceite mesmo após o await.
+    // Monta mensagem do WhatsApp já no gesto do usuário (mobile)
     const lines = [
       `*Nova solicitação de contato*`,
       ``,
       `*Nome:* ${formData.name}`,
       `*WhatsApp:* ${formData.whatsapp}`,
-      `*Cidade:* ${formData.city}`,
-      `*Disponibilidade para consulta este mês:* ${formData.availability || "Não informado"}`,
-      `*Condição odontológica:* ${formData.message || "Não informado"}`,
-    ];
+      formData.email ? `*E-mail:* ${formData.email}` : null,
+      `*Necessidade:* ${formData.quickNeed || "Não informado"}`,
+      `*Disponibilidade:* ${formData.availability}`,
+      `*Intenção:* ${formData.intent}`,
+      formData.message ? `*Detalhes:* ${formData.message}` : null,
+    ].filter(Boolean);
     const text = lines.join("\n");
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
 
-    // CRÍTICO MOBILE: abrir uma janela/aba JÁ AGORA, sincronamente, dentro do
-    // gesto do usuário (touchend). Se esperarmos o await do saveLead, iOS Safari
-    // e Chrome Android bloqueiam a abertura do WhatsApp porque o gesto "expirou".
-    // A janela abre como about:blank e depois redirecionamos pra URL do WhatsApp.
     const waWindow = window.open("about:blank", "_blank");
-
     setSubmitting(true);
 
     let leadSavedOk = false;
@@ -48,9 +75,10 @@ const ContactForm = () => {
     try {
       tracking = captureMetaTracking();
       const composedMessage = [
-        formData.availability
-          ? `Disponibilidade este mês: ${formData.availability}`
-          : null,
+        formData.quickNeed ? `Necessidade: ${formData.quickNeed}` : null,
+        `Disponibilidade: ${formData.availability}`,
+        `Intenção: ${formData.intent}`,
+        formData.email ? `E-mail: ${formData.email}` : null,
         formData.message || null,
       ]
         .filter(Boolean)
@@ -59,7 +87,7 @@ const ContactForm = () => {
       const created = await savePublicLead({
         name: formData.name,
         whatsapp: formData.whatsapp,
-        city: formData.city,
+        city: "",
         message: composedMessage || null,
         origem: "site",
         status: "novo",
@@ -68,14 +96,12 @@ const ContactForm = () => {
       createdId = created.id;
       leadSavedOk = true;
 
-      // GTM: dispara evento apenas após envio bem-sucedido
       (window as any).dataLayer = (window as any).dataLayer || [];
       (window as any).dataLayer.push({
-        event: 'formulario_enviado',
-        nome_formulario: 'lead_principal',
+        event: "formulario_enviado",
+        nome_formulario: "lead_principal",
       });
 
-      // Meta Pixel: dispara evento de Lead (conversa iniciada via WhatsApp)
       try {
         const fbq = (window as any).fbq;
         if (typeof fbq === "function") {
@@ -83,9 +109,7 @@ const ContactForm = () => {
             content_name: "lead_principal",
             content_category: "whatsapp_form",
           });
-          fbq("trackCustom", "WhatsAppConversation", {
-            source: "contact_form",
-          });
+          fbq("trackCustom", "WhatsAppConversation", { source: "contact_form" });
         }
         if (typeof (window as any).__metaPixelFallback === "function") {
           (window as any).__metaPixelFallback("Lead", {
@@ -103,7 +127,6 @@ const ContactForm = () => {
       toast.success("Solicitação enviada com sucesso!");
     } catch (err: any) {
       console.error("Erro ao salvar lead:", err);
-      // Tenta extrair a mensagem mais útil possível pra debug em mobile
       const detail =
         err?.message ||
         err?.error_description ||
@@ -118,7 +141,6 @@ const ContactForm = () => {
     }
 
     if (leadSavedOk) {
-      // Dispara o evento Meta em background (não aguarda).
       if (createdId) {
         sendMetaEvent({
           lead_id: createdId,
@@ -126,20 +148,21 @@ const ContactForm = () => {
           tracking,
         });
       }
-      // Redireciona a janela já aberta para o WhatsApp.
-      // Se o popup foi bloqueado (waWindow === null), faz fallback de mesma aba.
       if (waWindow && !waWindow.closed) {
         waWindow.location.href = waUrl;
       } else {
         window.location.href = waUrl;
       }
     } else {
-      // Falhou ao salvar: fecha a janela vazia que abrimos.
       if (waWindow && !waWindow.closed) {
         waWindow.close();
       }
     }
   };
+
+  const labelClass = "block text-xs font-semibold text-foreground mb-1.5";
+  const inputClass =
+    "w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors";
 
   return (
     <section id="contato" className="py-16 lg:py-24 bg-background">
@@ -184,61 +207,136 @@ const ContactForm = () => {
               className="px-8 lg:px-12 py-10 lg:py-14 bg-background/50"
             >
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary text-center">
-                  Lembrete: Somos uma Clínica Particular!
-                </div>
-
-                <input
-                  type="text"
-                  required
-                  placeholder="*Nome"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors"
-                />
-
-                <input
-                  type="tel"
-                  required
-                  placeholder="*Whatsapp"
-                  value={formData.whatsapp}
-                  onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors"
-                />
-
-                <input
-                  type="text"
-                  required
-                  placeholder="*Digite sua cidade"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors"
-                />
+                <p className="text-xs text-muted-foreground text-center">
+                  Somos uma Clínica Particular
+                </p>
 
                 <div>
-                  <label className="block text-sm text-foreground mb-2">
-                    Você teria disponibilidade para consulta este mês ainda?
-                  </label>
+                  <label className={labelClass}>Nome completo</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Seu nome completo"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>WhatsApp (com DDD)</label>
+                  <input
+                    type="tel"
+                    required
+                    inputMode="numeric"
+                    placeholder="(14) 99668-4609"
+                    value={formData.whatsapp}
+                    onChange={(e) =>
+                      setFormData({ ...formData, whatsapp: maskPhoneBR(e.target.value) })
+                    }
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>E-mail (opcional)</label>
+                  <input
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Qual a sua intenção de agendamento?</label>
                   <select
+                    required
                     value={formData.availability}
                     onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
+                    className={inputClass}
                   >
                     <option value="">Selecione uma opção</option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                    <option value="Talvez">Talvez</option>
+                    {AVAILABILITY_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
-                <textarea
-                  rows={4}
-                  placeholder="Escreva em detalhes sua condição odontológica"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:border-primary transition-colors resize-none"
-                />
+                <div>
+                  <label className={labelClass}>O que você precisa?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {QUICK_NEEDS.map((opt) => {
+                      const active = formData.quickNeed === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, quickNeed: opt })}
+                          className={`px-3 py-2 rounded-full text-xs font-medium border transition-colors ${
+                            active
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-card text-foreground border-border hover:border-primary/60"
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
+                <div>
+                  <label className={labelClass}>
+                    Conte brevemente o que você precisa (opcional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Se quiser, adicione algum detalhe…"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className={`${inputClass} resize-none`}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>
+                    Você está buscando agendar uma consulta agora?
+                  </label>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {INTENT_OPTIONS.map((opt) => {
+                      const active = formData.intent === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, intent: opt.value })}
+                          className={`px-3 py-2.5 rounded-lg text-xs font-medium border transition-colors text-center ${
+                            active
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-card text-foreground border-border hover:border-primary/60"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {/* validação obrigatória via input hidden */}
+                  <input
+                    type="text"
+                    required
+                    value={formData.intent}
+                    onChange={() => {}}
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="sr-only"
+                    style={{ position: "absolute", opacity: 0, height: 0, width: 0 }}
+                  />
+                </div>
 
                 <button
                   type="submit"
