@@ -47,16 +47,20 @@ const LandingAds = () => {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  // Bloqueia indexação reforçado
+  // Bloqueia indexação reforçado + título
   useEffect(() => {
+    const prevTitle = document.title;
+    document.title = "Agende sua consulta — Clínica Lopes";
     const meta = document.createElement("meta");
     meta.name = "robots";
     meta.content = "noindex, nofollow, noarchive, nosnippet";
     document.head.appendChild(meta);
     return () => {
       document.head.removeChild(meta);
+      document.title = prevTitle;
     };
   }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
