@@ -40,7 +40,7 @@ const ContactForm = () => {
     email: "",
     quickNeed: "",
     availability: "",
-    intent: "",
+    
     message: "",
   });
 
