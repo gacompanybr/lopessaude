@@ -58,7 +58,7 @@ const ContactForm = () => {
       formData.email ? `*E-mail:* ${formData.email}` : null,
       `*Necessidade:* ${formData.quickNeed || "Não informado"}`,
       `*Disponibilidade:* ${formData.availability}`,
-      `*Intenção:* ${formData.intent}`,
+
       formData.message ? `*Detalhes:* ${formData.message}` : null,
     ].filter(Boolean);
     const text = lines.join("\n");
