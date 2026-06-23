@@ -1,14 +1,31 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /consulta-3k7
+Disallow: /leads
+Disallow: /settings
+Disallow: /meta-integration
+Disallow: /auth
 
 User-agent: Bingbot
 Allow: /
+Disallow: /consulta-3k7
+Disallow: /leads
+Disallow: /settings
+Disallow: /meta-integration
+Disallow: /auth
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /consulta-3k7
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /consulta-3k7
 
 User-agent: *
 Allow: /
+Disallow: /consulta-3k7
+Disallow: /leads
+Disallow: /settings
+Disallow: /meta-integration
+Disallow: /auth

@@ -59,6 +59,7 @@ import Settings from "./pages/Settings.tsx";
 import Auth from "./pages/Auth.tsx";
 import MetaIntegration from "./pages/MetaIntegration.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import LandingAds from "./pages/LandingAds.tsx";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +99,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route path="/consulta-3k7" element={<LandingAds />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
