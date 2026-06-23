@@ -75,7 +75,7 @@ const ContactForm = () => {
       const composedMessage = [
         formData.quickNeed ? `Necessidade: ${formData.quickNeed}` : null,
         `Disponibilidade: ${formData.availability}`,
-        `Intenção: ${formData.intent}`,
+        
         formData.email ? `E-mail: ${formData.email}` : null,
         formData.message || null,
       ]
