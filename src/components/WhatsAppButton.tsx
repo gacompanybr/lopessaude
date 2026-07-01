@@ -3,10 +3,12 @@ import { MessageCircle } from "lucide-react";
 const WhatsAppButton = () => {
   return (
     <a
-      href="#contato"
+      href="https://wa.me/5514996684609"
+      target="_blank"
+      rel="noopener noreferrer"
       className="floating-whatsapp"
-      aria-label="Preencha o formulário para entrar em contato"
-      title="Preencha o formulário rápido para entrar em contato"
+      aria-label="Enviar mensagem pelo WhatsApp"
+      title="Enviar mensagem pelo WhatsApp"
     >
       <MessageCircle className="w-6 h-6 text-primary-foreground" />
     </a>
