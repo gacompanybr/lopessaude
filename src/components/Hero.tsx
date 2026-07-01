@@ -47,7 +47,7 @@ const Hero = () => {
                   Agendar Consulta
                 </a>
                 <a
-                  href="https://wa.me/5514996684609"
+                  href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block bg-[#25D366] text-white px-6 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"

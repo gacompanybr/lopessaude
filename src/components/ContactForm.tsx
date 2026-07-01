@@ -205,7 +205,7 @@ const ContactForm = () => {
               className="px-8 lg:px-12 py-10 lg:py-14 bg-background/50"
             >
               <form onSubmit={handleSubmit} className="space-y-5">
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-sm font-bold text-primary text-center">
                   Somos uma Clínica Particular
                 </p>
 
