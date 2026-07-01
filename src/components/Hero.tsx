@@ -39,12 +39,22 @@ const Hero = () => {
               <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-md">
                 Cuidamos da sua saúde bucal com atenção, carinho e tecnologia, para que você sorria com confiança todos os dias.
               </p>
-              <a
-                href="#contato"
-                className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
-              >
-                Atendimento particular
-              </a>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="#contato"
+                  className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
+                >
+                  Agendar Consulta
+                </a>
+                <a
+                  href="https://wa.me/5514996684609"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-[#25D366] text-white px-6 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
+                >
+                  Enviar mensagem para o WhatsApp
+                </a>
+              </div>
             </motion.div>
 
             {/* Image */}
