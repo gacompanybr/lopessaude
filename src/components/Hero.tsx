@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { CalendarDays, Clock, Siren } from "lucide-react";
+import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
 const Hero = () => {
   return (
