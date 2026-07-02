@@ -60,6 +60,7 @@ import Auth from "./pages/Auth.tsx";
 import MetaIntegration from "./pages/MetaIntegration.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import LandingAds from "./pages/LandingAds.tsx";
+import WhatsAppClickTracker from "./components/WhatsAppClickTracker";
 
 const queryClient = new QueryClient();
 
