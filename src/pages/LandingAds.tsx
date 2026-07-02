@@ -78,6 +78,7 @@ const LandingAds = () => {
       ? `Olá, me chamo ${form.name}. Quero agendar uma consulta para ${form.reason}, de preferência ${form.timing.toLowerCase()}.`
       : `Olá, me chamo ${form.name}. Tenho interesse em ${form.reason}, mas ainda estou pesquisando. Podem me avisar quando houver disponibilidade?`;
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
+    pushWhatsappDataLayerEvent({ linkUrl: waUrl, buttonText: "LandingAds — Enviar", source: "LandingAds" });
     const waWindow = window.open("about:blank", "_blank");
 
     setSubmitting(true);
