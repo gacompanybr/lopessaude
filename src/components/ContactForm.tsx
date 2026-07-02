@@ -65,6 +65,8 @@ const ContactForm = () => {
     const text = lines.join("\n");
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
 
+    pushWhatsappDataLayerEvent({ linkUrl: waUrl, buttonText: "Formulário — Enviar", source: "ContactForm" });
+
     const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
 
