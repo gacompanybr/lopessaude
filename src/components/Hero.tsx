@@ -41,7 +41,9 @@ const Hero = () => {
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="#contato"
+                  href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
                 >
                   Agendar Consulta
@@ -102,16 +104,12 @@ const Hero = () => {
         </div>
         <div className="text-center mt-8 flex flex-col items-center gap-3">
           <a
-            href="#contato"
+            href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
           >
             Agendar agora
-          </a>
-          <a
-            href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
-            className="inline-block bg-[#25D366] text-white px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
-          >
-            Enviar mensagem para o WhatsApp
           </a>
         </div>
       </div>
