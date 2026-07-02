@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
+import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
 import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "551496684609";
