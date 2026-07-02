@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
+import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
 import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "551496684609";
@@ -63,6 +64,8 @@ const ContactForm = () => {
     ].filter(Boolean);
     const text = lines.join("\n");
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
+
+    pushWhatsappDataLayerEvent({ linkUrl: waUrl, buttonText: "Formulário — Enviar", source: "ContactForm" });
 
     const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);

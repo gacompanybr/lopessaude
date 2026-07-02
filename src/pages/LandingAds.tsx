@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
+import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
 import logo from "@/assets/lopes-logo.jpg";
 
 const WHATSAPP_NUMBER = "551496684609";
@@ -77,6 +78,7 @@ const LandingAds = () => {
       ? `Olá, me chamo ${form.name}. Quero agendar uma consulta para ${form.reason}, de preferência ${form.timing.toLowerCase()}.`
       : `Olá, me chamo ${form.name}. Tenho interesse em ${form.reason}, mas ainda estou pesquisando. Podem me avisar quando houver disponibilidade?`;
     const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
+    pushWhatsappDataLayerEvent({ linkUrl: waUrl, buttonText: "LandingAds — Enviar", source: "LandingAds" });
     const waWindow = window.open("about:blank", "_blank");
 
     setSubmitting(true);
