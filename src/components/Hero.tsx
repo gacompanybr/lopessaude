@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Siren } from "lucide-react";
+import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
 const Hero = () => {
   return (
@@ -44,6 +45,7 @@ const Hero = () => {
                   href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => { void trackWhatsappClick("Hero — Agendar Consulta"); }}
                   className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
                 >
                   Agendar Consulta
@@ -107,6 +109,7 @@ const Hero = () => {
             href="https://wa.me/5514996684609?text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => { void trackWhatsappClick("Cards — Agendar agora"); }}
             className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
           >
             Agendar agora
