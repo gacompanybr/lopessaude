@@ -7,7 +7,7 @@ import { captureMetaTracking } from "@/lib/metaTracking";
 import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
 import logo from "@/assets/lopes-logo.jpg";
 
-const WHATSAPP_NUMBER = "551496684609";
+const WHATSAPP_NUMBER = "5514996684609";
 
 const TIMING_OPTIONS = [
   { value: "Esta semana", label: "Esta semana", qualified: true },
