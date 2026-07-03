@@ -5,7 +5,7 @@ declare global {
 }
 
 /**
- * Envia o evento `whatsapp_click` para o dataLayer do GTM.
+ * Envia o evento `clique_whatsapp` para o dataLayer do GTM.
  * Chamado tanto pelos handlers dos botões quanto pelo listener global.
  */
 export function pushWhatsappDataLayerEvent(params: {
@@ -14,17 +14,21 @@ export function pushWhatsappDataLayerEvent(params: {
   source?: string;
 }): void {
   if (typeof window === "undefined") return;
+  const linkUrl = params.linkUrl || "";
+  const linkText = params.buttonText || params.source || "WhatsApp";
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    event: "whatsapp_click",
+    event: "clique_whatsapp",
+    link_url: linkUrl,
+    link_text: linkText,
+    page_url: window.location.href,
+    // campos adicionais mantidos para compatibilidade com tags existentes
     event_category: "Contato",
     event_action: "click",
     event_label: "WhatsApp",
     channel: "whatsapp",
-    link_url: params.linkUrl || "",
     page_path: window.location.pathname,
-    page_url: window.location.href,
-    button_text: params.buttonText || params.source || "WhatsApp",
+    button_text: linkText,
     source: params.source || "",
   });
 }
