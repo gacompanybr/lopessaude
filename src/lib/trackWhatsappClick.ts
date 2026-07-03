@@ -1,6 +1,3 @@
-import { savePublicLead } from "@/lib/leads";
-import { captureMetaTracking } from "@/lib/metaTracking";
-
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
@@ -33,10 +30,9 @@ export function pushWhatsappDataLayerEvent(params: {
 }
 
 /**
- * Registra um clique em botão de WhatsApp como lead no CRM,
- * dispara o evento Lead no Meta Pixel e envia o evento
- * whatsapp_click para o dataLayer do GTM.
- * Não bloqueia o fluxo: erros são apenas logados.
+ * Rastreia o clique em botão de WhatsApp APENAS para fins de analytics
+ * (GTM dataLayer + Meta Pixel). NÃO cria lead no CRM — o lead só é
+ * registrado quando a pessoa realmente envia mensagem/preenche formulário.
  */
 export async function trackWhatsappClick(source: string, linkUrl?: string): Promise<void> {
   try {
@@ -54,19 +50,5 @@ export async function trackWhatsappClick(source: string, linkUrl?: string): Prom
     }
   } catch (e) {
     console.warn("[trackWhatsappClick] pixel error:", e);
-  }
-
-  try {
-    const tracking = captureMetaTracking();
-    await savePublicLead({
-      name: `Clique WhatsApp — ${source}`,
-      whatsapp: "Não informado",
-      city: "Não informado",
-      message: `Lead gerado por clique no botão "${source}". Contato iniciado via WhatsApp direto.`,
-      origem: "whatsapp",
-      tracking,
-    });
-  } catch (e) {
-    console.warn("[trackWhatsappClick] save lead error:", e);
   }
 }
