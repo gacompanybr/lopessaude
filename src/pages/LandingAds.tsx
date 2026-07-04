@@ -87,11 +87,19 @@ const LandingAds = () => {
     let tracking: ReturnType<typeof captureMetaTracking> | null = null;
 
     try {
-      tracking = captureMetaTracking();
+      const baseTracking = captureMetaTracking();
+      // Landing /consulta-3k7 só é usada em anúncios do Meta Ads.
+      // Garante que a classificação da tag seja meta_ads mesmo sem fbclid/fbc.
+      tracking = {
+        ...baseTracking,
+        utm_source: baseTracking.utm_source || "meta",
+        utm_medium: baseTracking.utm_medium || "paid_social",
+        utm_campaign: baseTracking.utm_campaign || campaign,
+      };
       const message = [
         `Motivo: ${form.reason}`,
         `Prazo: ${form.timing}`,
-        `Origem: campanha ${campaign}`,
+        `Origem: campanha ${campaign} (landing /consulta-3k7)`,
         qualified ? null : "ATENÇÃO: lead marcou 'Só pesquisando'",
       ]
         .filter(Boolean)
@@ -100,7 +108,8 @@ const LandingAds = () => {
       const created = await savePublicLead({
         name: form.name,
         whatsapp: form.whatsapp,
-        city: "",
+        // city é NOT NULL na base; a landing não pergunta cidade, então usamos placeholder.
+        city: "Não informado",
         message,
         origem: "site",
         status: "novo",
