@@ -651,6 +651,11 @@ const Leads = () => {
           </div>
         )}
       </div>
+        </TabsContent>
+        <TabsContent value="dispatch" className="mt-0">
+          <DispatchTab />
+        </TabsContent>
+      </Tabs>
 
       <LeadFormDialog open={dialogOpen} onOpenChange={setDialogOpen} lead={editing} onSaved={refresh} />
       <CrmTour open={tourOpen} onClose={() => setTourOpen(false)} />
