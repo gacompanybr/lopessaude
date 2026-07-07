@@ -97,11 +97,12 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
   };
 
   const handleReset = () => {
-    if (!confirm("Remover configuração da Evolution API deste navegador?")) return;
+    if (!confirm("Restaurar configuração padrão da Evolution API?")) return;
     clearEvolutionConfig();
-    setCfg(null);
-    setForm({ baseUrl: "", apiKey: "", instance: "" });
-    setEditing(true);
+    const def = getEvolutionConfig();
+    setCfg(def);
+    setForm(def);
+    setEditing(false);
     setQr(null);
     setState("unknown");
   };
