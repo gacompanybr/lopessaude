@@ -317,7 +317,14 @@ const Leads = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <Tabs defaultValue="crm" className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <TabsList className="mb-6">
+          <TabsTrigger value="crm" className="gap-2"><Users className="w-4 h-4" /> CRM de Leads</TabsTrigger>
+          <TabsTrigger value="dispatch" className="gap-2"><Send className="w-4 h-4" /> Disparo de Mensagens</TabsTrigger>
+        </TabsList>
+        <TabsContent value="crm" className="space-y-8 mt-0">
+      <div className="space-y-8">
+
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" data-tour="stats">
           {[
