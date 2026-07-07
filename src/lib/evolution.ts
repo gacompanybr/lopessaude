@@ -9,15 +9,25 @@ export interface EvolutionConfig {
 
 const STORAGE_KEY = "evolution_config_v1";
 
-export function getEvolutionConfig(): EvolutionConfig | null {
+const DEFAULT_CONFIG: EvolutionConfig = {
+  baseUrl: "https://evo.gacompany.online",
+  apiKey: "e1f579cd2b8a109c9959dcd829b1a23cc6de6623",
+  instance: "disparo clinica lopes",
+};
+
+export function getDefaultEvolutionConfig(): EvolutionConfig {
+  return { ...DEFAULT_CONFIG };
+}
+
+export function getEvolutionConfig(): EvolutionConfig {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    if (!raw) return { ...DEFAULT_CONFIG };
     const p = JSON.parse(raw);
-    if (!p?.baseUrl || !p?.apiKey || !p?.instance) return null;
+    if (!p?.baseUrl || !p?.apiKey || !p?.instance) return { ...DEFAULT_CONFIG };
     return { baseUrl: p.baseUrl.replace(/\/+$/, ""), apiKey: p.apiKey, instance: p.instance };
   } catch {
-    return null;
+    return { ...DEFAULT_CONFIG };
   }
 }
 
