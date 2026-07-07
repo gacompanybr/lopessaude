@@ -41,6 +41,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
 } from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DispatchTab from "@/components/dispatch/DispatchTab";
+import { Send } from "lucide-react";
 
 const ORIGEM_COLORS: Record<LeadOrigem, string> = {
   site: "hsl(213, 80%, 45%)",
