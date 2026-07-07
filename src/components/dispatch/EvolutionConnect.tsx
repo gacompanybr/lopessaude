@@ -19,11 +19,9 @@ interface Props {
 }
 
 const EvolutionConnect = ({ onStatusChange }: Props) => {
-  const [cfg, setCfg] = useState<EvolutionConfig | null>(getEvolutionConfig());
-  const [editing, setEditing] = useState(!getEvolutionConfig());
-  const [form, setForm] = useState<EvolutionConfig>(
-    getEvolutionConfig() || { baseUrl: "", apiKey: "", instance: "" }
-  );
+  const [cfg, setCfg] = useState<EvolutionConfig>(getEvolutionConfig());
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState<EvolutionConfig>(getEvolutionConfig());
   const [state, setState] = useState<string>("unknown");
   const [qr, setQr] = useState<{ base64?: string; code?: string; pairingCode?: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -99,11 +97,12 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
   };
 
   const handleReset = () => {
-    if (!confirm("Remover configuração da Evolution API deste navegador?")) return;
+    if (!confirm("Restaurar configuração padrão da Evolution API?")) return;
     clearEvolutionConfig();
-    setCfg(null);
-    setForm({ baseUrl: "", apiKey: "", instance: "" });
-    setEditing(true);
+    const def = getEvolutionConfig();
+    setCfg(def);
+    setForm(def);
+    setEditing(false);
     setQr(null);
     setState("unknown");
   };
