@@ -4,8 +4,6 @@ import { captureMetaTracking } from "@/lib/metaTracking";
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
-    fbq?: (...args: unknown[]) => void;
-    __metaPixelFallback?: (...args: unknown[]) => void;
   }
 }
 
