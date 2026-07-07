@@ -56,6 +56,8 @@ export async function parseDispatchFile(file: File): Promise<DispatchContact[]> 
         situacao: pick(row, PICK.situacao),
         vencimento: pick(row, PICK.vencimento),
         documento: pick(row, PICK.documento),
+        idade: pick(row, PICK.idade),
+        prontuario: pick(row, PICK.prontuario),
         raw: row,
       };
       return contact;
