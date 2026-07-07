@@ -8,6 +8,8 @@ export interface DispatchContact {
   situacao?: string;
   vencimento?: string;
   documento?: string;
+  idade?: string;
+  prontuario?: string;
   raw: Record<string, any>;
 }
 
@@ -22,6 +24,8 @@ const PICK: Record<keyof Omit<DispatchContact, "raw">, string[]> = {
   situacao: ["situacao", "situação", "status"],
   vencimento: ["data de vencimento", "vencimento", "due date"],
   documento: ["documento", "cpf", "cnpj", "doc"],
+  idade: ["idade", "age"],
+  prontuario: ["prontuario", "prontuário", "chart", "registro"],
 };
 
 function pick(row: Record<string, any>, keys: string[]): string | undefined {
@@ -52,6 +56,8 @@ export async function parseDispatchFile(file: File): Promise<DispatchContact[]> 
         situacao: pick(row, PICK.situacao),
         vencimento: pick(row, PICK.vencimento),
         documento: pick(row, PICK.documento),
+        idade: pick(row, PICK.idade),
+        prontuario: pick(row, PICK.prontuario),
         raw: row,
       };
       return contact;
@@ -71,6 +77,8 @@ export function renderTemplate(template: string, c: DispatchContact): string {
     situacao: c.situacao || "",
     vencimento: c.vencimento || "",
     documento: c.documento || "",
+    idade: c.idade || "",
+    prontuario: c.prontuario || "",
   };
   return template.replace(/\{(\w+)\}/g, (_, key) => {
     const v = vars[key.toLowerCase()];
@@ -94,5 +102,7 @@ export const TEMPLATE_VARIABLES: { key: string; desc: string }[] = [
   { key: "{situacao}", desc: "Situação (Pendente, Pago, etc.)" },
   { key: "{vencimento}", desc: "Data de vencimento" },
   { key: "{documento}", desc: "CPF/CNPJ" },
+  { key: "{idade}", desc: "Idade do paciente" },
+  { key: "{prontuario}", desc: "Nº de prontuário" },
   { key: "{whatsapp}", desc: "Número do WhatsApp" },
 ];
