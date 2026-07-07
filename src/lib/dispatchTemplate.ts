@@ -77,6 +77,8 @@ export function renderTemplate(template: string, c: DispatchContact): string {
     situacao: c.situacao || "",
     vencimento: c.vencimento || "",
     documento: c.documento || "",
+    idade: c.idade || "",
+    prontuario: c.prontuario || "",
   };
   return template.replace(/\{(\w+)\}/g, (_, key) => {
     const v = vars[key.toLowerCase()];
@@ -100,5 +102,7 @@ export const TEMPLATE_VARIABLES: { key: string; desc: string }[] = [
   { key: "{situacao}", desc: "Situação (Pendente, Pago, etc.)" },
   { key: "{vencimento}", desc: "Data de vencimento" },
   { key: "{documento}", desc: "CPF/CNPJ" },
+  { key: "{idade}", desc: "Idade do paciente" },
+  { key: "{prontuario}", desc: "Nº de prontuário" },
   { key: "{whatsapp}", desc: "Número do WhatsApp" },
 ];
