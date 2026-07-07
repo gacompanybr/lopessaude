@@ -95,11 +95,12 @@ export async function trackWhatsappClick(source: string, linkUrl?: string): Prom
   }
 
   try {
-    if (typeof window !== "undefined" && typeof window.fbq === "function") {
-      window.fbq("track", "Lead", { content_name: source });
+    const w = window as any;
+    if (typeof w.fbq === "function") {
+      w.fbq("track", "Lead", { content_name: source });
     }
-    if (typeof window !== "undefined" && typeof window.__metaPixelFallback === "function") {
-      window.__metaPixelFallback("Lead", { content_name: source });
+    if (typeof w.__metaPixelFallback === "function") {
+      w.__metaPixelFallback("Lead", { content_name: source });
     }
   } catch (e) {
     console.warn("[trackWhatsappClick] pixel error:", e);
