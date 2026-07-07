@@ -41,6 +41,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area, LabelList,
 } from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DispatchTab from "@/components/dispatch/DispatchTab";
+import { Send } from "lucide-react";
 
 const ORIGEM_COLORS: Record<LeadOrigem, string> = {
   site: "hsl(213, 80%, 45%)",
@@ -314,7 +317,14 @@ const Leads = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <Tabs defaultValue="crm" className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <TabsList className="mb-6">
+          <TabsTrigger value="crm" className="gap-2"><Users className="w-4 h-4" /> CRM de Leads</TabsTrigger>
+          <TabsTrigger value="dispatch" className="gap-2"><Send className="w-4 h-4" /> Disparo de Mensagens</TabsTrigger>
+        </TabsList>
+        <TabsContent value="crm" className="space-y-8 mt-0">
+      <div className="space-y-8">
+
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" data-tour="stats">
           {[
@@ -641,6 +651,11 @@ const Leads = () => {
           </div>
         )}
       </div>
+        </TabsContent>
+        <TabsContent value="dispatch" className="mt-0">
+          <DispatchTab />
+        </TabsContent>
+      </Tabs>
 
       <LeadFormDialog open={dialogOpen} onOpenChange={setDialogOpen} lead={editing} onSaved={refresh} />
       <CrmTour open={tourOpen} onClose={() => setTourOpen(false)} />
