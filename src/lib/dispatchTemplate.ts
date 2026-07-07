@@ -8,6 +8,8 @@ export interface DispatchContact {
   situacao?: string;
   vencimento?: string;
   documento?: string;
+  idade?: string;
+  prontuario?: string;
   raw: Record<string, any>;
 }
 
@@ -22,6 +24,8 @@ const PICK: Record<keyof Omit<DispatchContact, "raw">, string[]> = {
   situacao: ["situacao", "situação", "status"],
   vencimento: ["data de vencimento", "vencimento", "due date"],
   documento: ["documento", "cpf", "cnpj", "doc"],
+  idade: ["idade", "age"],
+  prontuario: ["prontuario", "prontuário", "chart", "registro"],
 };
 
 function pick(row: Record<string, any>, keys: string[]): string | undefined {
