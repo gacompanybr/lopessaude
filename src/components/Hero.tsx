@@ -56,20 +56,18 @@ const Hero = () => {
           </a>
         </motion.div>
 
-        {/* Doctor photo with arch */}
+        {/* Hero banner */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className="relative flex justify-center lg:justify-end items-end"
         >
-          <div className="relative w-full max-w-md lg:max-w-none">
-            {/* Arch backdrop */}
-            <div className="absolute inset-x-6 top-6 bottom-0 rounded-t-[999px] bg-primary-foreground/15" />
+          <div className="relative w-full">
             <img
-              src={draKaren.url}
-              alt="Dra. Karen Lopes"
-              className="relative w-full h-[420px] sm:h-[500px] lg:h-[560px] object-cover object-left rounded-t-[999px]"
+              src={heroBanner.url}
+              alt="Dra. Karen Lopes na clínica Lopes Saúde e Odontologia em Bauru"
+              className="relative w-full aspect-[5/2] object-cover object-center rounded-2xl saturate-[0.85]"
             />
           </div>
         </motion.div>
