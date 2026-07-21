@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import AlinhadorFeature from "@/components/AlinhadorFeature";
 import About from "@/components/About";
+import ClinicGallery from "@/components/ClinicGallery";
 import Differentials from "@/components/Differentials";
 import Testimonials from "@/components/Testimonials";
 import FinalCTA from "@/components/FinalCTA";
