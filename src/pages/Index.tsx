@@ -5,7 +5,9 @@ import HowWeWork from "@/components/HowWeWork";
 import Stats from "@/components/Stats";
 import Differentials from "@/components/Differentials";
 import About from "@/components/About";
+import Testimonials from "@/components/Testimonials";
 import ContactForm from "@/components/ContactForm";
+import LocationContact from "@/components/LocationContact";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -20,7 +22,9 @@ const Index = () => {
       <Stats />
       <Differentials />
       <About />
+      <Testimonials />
       <ContactForm />
+      <LocationContact />
       <FAQ />
       <Footer />
       <WhatsAppButton />
