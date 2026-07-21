@@ -78,7 +78,7 @@ const Differentials = () => {
               className="bg-card rounded-2xl overflow-hidden shadow-sm"
             >
               <img
-                src={img}
+                src={img.url}
                 alt={`Resultado de tratamento ${i + 1}`}
                 className="w-full h-56 object-cover"
               />
