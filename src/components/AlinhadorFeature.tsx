@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
+import alignerImg from "@/assets/aligner-closeup.jpg.asset.json";
 
 const WA_URL =
   "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20alinhador%20invis%C3%ADvel";
