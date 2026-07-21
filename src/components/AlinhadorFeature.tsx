@@ -74,8 +74,12 @@ const AlinhadorFeature = () => {
             viewport={{ once: true }}
             className="grid grid-cols-2 gap-4"
           >
-            <div className="aspect-[3/4] rounded-3xl bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-20 h-20 text-primary/40" strokeWidth={1} />
+            <div className="aspect-[3/4] rounded-3xl overflow-hidden">
+              <img
+                src={alignerImg.url}
+                alt="Alinhador invisível sendo colocado — Lopes Saúde Bauru"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="aspect-[3/4] rounded-3xl bg-primary flex items-center justify-center mt-10 relative overflow-hidden">
               <div className="text-center text-primary-foreground px-6">
