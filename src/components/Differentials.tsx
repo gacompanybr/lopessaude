@@ -59,7 +59,7 @@ const Differentials = () => {
             >
               <div className="mt-0.5">{feature.icon}</div>
               <div>
-                <h4 className="font-bold text-foreground text-sm uppercase tracking-wide mb-2">{feature.title}</h4>
+                <h3 className="font-bold text-foreground text-sm uppercase tracking-wide mb-2">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
               </div>
             </motion.div>
