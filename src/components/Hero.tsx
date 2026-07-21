@@ -40,8 +40,8 @@ const Hero = () => {
         </div>
 
         {/* Overlay content */}
-        <div className="absolute inset-0 z-10 flex items-end lg:items-center">
-          <div className="section-container w-full pb-10 lg:pb-0">
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <div className="section-container w-full text-center">
             <a
               href={WA_URL}
               target="_blank"
@@ -50,7 +50,7 @@ const Hero = () => {
               data-event="clique_whatsapp"
               data-channel="whatsapp"
               onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
-              className="inline-block bg-primary text-primary-foreground px-10 py-4 text-sm font-bold hover:opacity-90 transition-opacity rounded-full shadow-md"
+              className="inline-block bg-primary text-primary-foreground px-10 py-4 text-sm font-bold hover:opacity-90 transition-opacity rounded-xl shadow-md"
             >
               Agende sua avaliação
             </a>
