@@ -14,6 +14,10 @@ const Hero = () => {
         <img
           src={heroBanner.url}
           alt="Dra. Karen Lopes na clínica Lopes Saúde e Odontologia em Bauru"
+          width="1920"
+          height="1080"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover object-center saturate-[0.9]"
         />
         {/* Subtle overlay for legibility */}

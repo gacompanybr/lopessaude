@@ -29,3 +29,5 @@ Disallow: /leads
 Disallow: /settings
 Disallow: /meta-integration
 Disallow: /auth
+
+Sitemap: https://lopessaude.com.br/sitemap.xml
