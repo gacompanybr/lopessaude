@@ -40,8 +40,8 @@ const Hero = () => {
         </div>
 
         {/* Overlay content */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center">
-          <div className="section-container w-full text-center">
+        <div className="absolute inset-0 z-10 flex items-end justify-center">
+          <div className="section-container w-full text-center pb-12">
             <a
               href={WA_URL}
               target="_blank"
