@@ -22,6 +22,7 @@ const Index = () => {
         <Services />
         <AlinhadorFeature />
         <About />
+        <ClinicGallery />
         <Differentials />
         <Testimonials />
         <FinalCTA />
