@@ -6,6 +6,7 @@ import Stats from "@/components/Stats";
 import Differentials from "@/components/Differentials";
 import About from "@/components/About";
 import ContactForm from "@/components/ContactForm";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -20,6 +21,7 @@ const Index = () => {
       <Differentials />
       <About />
       <ContactForm />
+      <FAQ />
       <Footer />
       <WhatsAppButton />
     </div>
