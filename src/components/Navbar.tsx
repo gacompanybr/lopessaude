@@ -6,8 +6,9 @@ import { Phone, MapPin, Menu, X } from "lucide-react";
 const navLinks = [
   { label: "Serviços", href: "#servicos" },
   { label: "Sobre", href: "#sobre" },
-  { label: "Horários", href: "#horarios" },
+  { label: "Depoimentos", href: "#depoimentos" },
   { label: "Diferenciais", href: "#diferenciais" },
+  { label: "Localização", href: "#localizacao" },
 ];
 
 const Navbar = () => {

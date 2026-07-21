@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { CalendarDays, Clock, Siren } from "lucide-react";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
+const WA_URL =
+  "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
+
 const Hero = () => {
   return (
     <section className="bg-background">
@@ -34,24 +37,29 @@ const Hero = () => {
               transition={{ duration: 0.5 }}
               className="px-8 lg:px-14 pt-12 pb-8 lg:py-20"
             >
+              <p className="text-primary font-semibold text-sm mb-3 tracking-wide uppercase">
+                Clínica Odontológica em Bauru
+              </p>
               <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-tight mb-5">
-                Dentista em Bauru:<br />seu sorriso é nossa prioridade
+                Transformando sorrisos em Bauru com saúde, estética e confiança.
               </h1>
               <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-md">
-                Clínica odontológica particular em Bauru e região — atendimento humanizado em implante dentário, prótese, ortodontia, alinhador invisível e estética do sorriso.
+                Atendimento humanizado em prótese, protocolo, implante dentário,
+                ortodontia e alinhadores invisíveis — plano de tratamento
+                personalizado após avaliação.
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
+                  href={WA_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-track="whatsapp-click"
                   data-event="clique_whatsapp"
                   data-channel="whatsapp"
-                  onClick={() => { void trackWhatsappClick("Hero — Agendar Consulta", "https://api.whatsapp.com/send?phone=5514996684609"); }}
+                  onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
                   className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
                 >
-                  Agendar Consulta
+                  Agende sua avaliação
                 </a>
               </div>
             </motion.div>
@@ -65,7 +73,7 @@ const Hero = () => {
             >
               <img
                 src="/clinic-facade.png"
-                alt="Clínica Lopes Saúde e Odontologia - Fachada"
+                alt="Clínica Lopes Saúde e Odontologia - Fachada em Bauru"
                 className="w-full h-full object-cover lg:scale-125"
               />
             </motion.div>
@@ -74,32 +82,29 @@ const Hero = () => {
       </div>
 
       {/* Info cards */}
-      <div className="section-container pb-12">
+      <div className="section-container pb-16">
         <div className="grid sm:grid-cols-3 gap-5">
           {[
             {
               title: "Agendamentos",
-              desc: "Facilitamos seu atendimento com horários flexíveis e equipe preparada para te receber com conforto e pontualidade.",
+              desc: "Horários flexíveis e equipe preparada para te receber com conforto e pontualidade.",
               highlight: "Seg-Sex: 8h–18h",
               icon: <CalendarDays className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
             {
               title: "Funcionamento",
-              desc: "Segunda a Sexta: 8h00 às 18h00 · Sábado: 8h00 às 12h00 · Domingo: Fechado",
+              desc: "Segunda a Sexta: 8h às 18h · Sábado: 8h às 12h · Domingo: Fechado",
               highlight: "Sábado: 8h–12h",
               icon: <Clock className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
             {
-              title: "Emergência",
-              desc: "Para situações urgentes, estamos disponíveis para te atender com rapidez e segurança.",
+              title: "Urgência",
+              desc: "Dor de dente, fratura ou trauma? Fale conosco pelo WhatsApp e atendemos com rapidez.",
               highlight: "(14) 99668-4609",
               icon: <Siren className="w-7 h-7 text-primary" strokeWidth={1.5} />,
             },
           ].map((item) => (
-            <div
-              key={item.title}
-              className="bg-card rounded-2xl p-6 shadow-sm"
-            >
+            <div key={item.title} className="bg-card rounded-2xl p-6 shadow-sm">
               <div className="mb-3">{item.icon}</div>
               <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.desc}</p>
@@ -107,18 +112,18 @@ const Hero = () => {
             </div>
           ))}
         </div>
-        <div className="text-center mt-8 flex flex-col items-center gap-3">
+        <div className="text-center mt-10">
           <a
-            href="https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20consulta"
+            href={WA_URL}
             target="_blank"
             rel="noopener noreferrer"
             data-track="whatsapp-click"
             data-event="clique_whatsapp"
             data-channel="whatsapp"
-            onClick={() => { void trackWhatsappClick("Cards — Agendar agora", "https://api.whatsapp.com/send?phone=5514996684609"); }}
+            onClick={() => { void trackWhatsappClick("Cards — Agende sua avaliação", WA_URL); }}
             className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
           >
-            Agendar agora
+            Agende sua avaliação
           </a>
         </div>
       </div>
