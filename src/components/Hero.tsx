@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Siren } from "lucide-react";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
+import draKaren from "@/assets/dra-karen-lopes.png.asset.json";
 
 const WA_URL =
   "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
@@ -72,9 +73,9 @@ const Hero = () => {
               className="relative h-full min-h-[300px] lg:min-h-[420px]"
             >
               <img
-                src="/clinic-facade.png"
-                alt="Clínica Lopes Saúde e Odontologia - Fachada em Bauru"
-                className="w-full h-full object-cover lg:scale-125"
+                src={draKaren.url}
+                alt="Dra. Karen Lopes — Lopes Saúde e Odontologia em Bauru"
+                className="w-full h-full object-cover"
               />
             </motion.div>
           </div>

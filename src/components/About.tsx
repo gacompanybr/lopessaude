@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { GraduationCap, Award, Heart } from "lucide-react";
-import clinicInterior from "@/assets/clinic-interior.jpg";
+import draKaren from "@/assets/dra-karen-lopes.png.asset.json";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
 const WA_URL =
@@ -19,9 +19,9 @@ const About = () => {
             className="relative"
           >
             <img
-              src={clinicInterior}
+              src={draKaren.url}
               alt="Dra. Karen Lopes — Lopes Saúde e Odontologia em Bauru"
-              className="w-full h-[460px] object-cover rounded-3xl shadow-sm"
+              className="w-full h-[460px] object-cover object-left rounded-3xl shadow-sm"
             />
             <div className="absolute bottom-4 left-4 right-4 bg-card/95 backdrop-blur rounded-2xl px-5 py-4 shadow-md">
               <p className="font-bold text-foreground text-sm">Dra. Karen Cristina Costa Lopes Aleixo</p>
