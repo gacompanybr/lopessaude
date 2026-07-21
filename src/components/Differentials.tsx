@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Hospital, Banknote, ShieldCheck, Search } from "lucide-react";
-import beforeAfter1 from "@/assets/before-after-1.jpg";
-import beforeAfter2 from "@/assets/before-after-2.jpg";
-import beforeAfter3 from "@/assets/before-after-3.jpg";
+import beforeAfter1 from "@/assets/teeth-restoration.jpg.asset.json";
+import beforeAfter2 from "@/assets/whitening.jpg.asset.json";
+import beforeAfter3 from "@/assets/braces-before-after.png.asset.json";
 
 const features = [
   {
@@ -78,7 +78,7 @@ const Differentials = () => {
               className="bg-card rounded-2xl overflow-hidden shadow-sm"
             >
               <img
-                src={img}
+                src={img.url}
                 alt={`Resultado de tratamento ${i + 1}`}
                 className="w-full h-56 object-cover"
               />
