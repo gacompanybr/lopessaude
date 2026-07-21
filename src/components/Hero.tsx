@@ -48,14 +48,6 @@ const Hero = () => {
               transition={{ duration: 0.5 }}
               className="max-w-xl bg-card/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/40 p-6 sm:p-8"
             >
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] mb-4 text-foreground">
-                Transformando sorrisos em Bauru com saúde, estética e confiança.
-              </h1>
-              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6">
-                Clínica odontológica com atendimento humanizado, estrutura moderna e
-                tratamentos especializados em Prótese, Protocolo, Implante,
-                Ortodontia e Alinhadores Invisíveis.
-              </p>
               <a
                 href={WA_URL}
                 target="_blank"
