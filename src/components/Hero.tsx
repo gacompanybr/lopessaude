@@ -42,25 +42,18 @@ const Hero = () => {
         {/* Overlay content */}
         <div className="absolute inset-0 z-10 flex items-end lg:items-center">
           <div className="section-container w-full pb-10 lg:pb-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="max-w-xl bg-card/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/40 p-6 sm:p-8"
+            <a
+              href={WA_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="whatsapp-click"
+              data-event="clique_whatsapp"
+              data-channel="whatsapp"
+              onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
+              className="inline-block bg-primary text-primary-foreground px-10 py-4 text-sm font-bold hover:opacity-90 transition-opacity rounded-full shadow-md"
             >
-              <a
-                href={WA_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-track="whatsapp-click"
-                data-event="clique_whatsapp"
-                data-channel="whatsapp"
-                onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
-                className="inline-block bg-primary text-primary-foreground px-10 py-4 text-sm font-bold hover:opacity-90 transition-opacity rounded-full shadow-md"
-              >
-                Agende sua avaliação
-              </a>
-            </motion.div>
+              Agende sua avaliação
+            </a>
           </div>
         </div>
       </div>
