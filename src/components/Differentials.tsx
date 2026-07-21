@@ -39,8 +39,11 @@ const Differentials = () => {
           className="mb-12"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-primary leading-tight max-w-2xl">
-            Já pensou em poder se alimentar normalmente sem o medo e a insegurança que uma dentadura te traz?
+            Por que escolher a Lopes Saúde como sua clínica odontológica em Bauru?
           </h2>
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-2xl mt-3">
+            Dentista particular em Bauru com garantia vitalícia em implantes, acompanhamento pré e pós-cirúrgico e opções de pagamento facilitadas. Também atendemos urgências odontológicas — dor de dente, fratura ou trauma — com rapidez e segurança.
+          </p>
         </motion.div>
 
         {/* Features grid */}
