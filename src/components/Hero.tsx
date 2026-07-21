@@ -35,10 +35,10 @@ const Hero = () => {
               className="px-8 lg:px-14 pt-12 pb-8 lg:py-20"
             >
               <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-tight mb-5">
-                Seu sorriso é<br />nossa prioridade
+                Dentista em Bauru:<br />seu sorriso é nossa prioridade
               </h1>
               <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-md">
-                Cuidamos da sua saúde bucal com atenção, carinho e tecnologia, para que você sorria com confiança todos os dias.
+                Clínica odontológica particular em Bauru e região — atendimento humanizado em implante dentário, prótese, ortodontia, alinhador invisível e estética do sorriso.
               </p>
               <div className="flex flex-wrap gap-3">
                 <a

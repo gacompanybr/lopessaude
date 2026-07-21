@@ -25,23 +25,23 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <p className="text-primary font-semibold text-sm mb-2">Nossa História</p>
+            <p className="text-primary font-semibold text-sm mb-2">Clínica odontológica em Bauru e região</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-6">
-              Nossa História
+              Nossa história como dentista particular em Bauru
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed text-sm">
               <p>
-                A clínica Lopes Saúde e Odontologia surgiu em 2013 com o sonho de atender todas as pessoas da cidade de Duartina e região, onde a Dra. Karen Cristina Costa Lopes Aleixo já atendia desde 2007, mas somente com um consultório.
+                A Lopes Saúde e Odontologia é uma clínica odontológica particular que atende Bauru e região desde 2013, com a Dra. Karen Cristina Costa Lopes Aleixo à frente do consultório desde 2007. Atendemos pacientes de Bauru, Duartina, Lençóis Paulista, Pederneiras, Bariri e Agudos.
               </p>
               <p>
-                Hoje em 2024, temos uma clínica completa. Localizados na Avenida São Paulo, 227, no centro de Duartina, a clínica conta com 3 consultórios para atendimento, uma recepção confortável e climatizada, salas com o máximo de conforto e qualidade, além de uma equipe qualificada e dedicada.
+                Nossa estrutura conta com 3 consultórios, recepção climatizada e equipe qualificada, oferecendo odontologia em Bauru com foco em implante dentário, prótese, ortodontia, alinhador invisível, clareamento dental e estética do sorriso — sempre com plano de tratamento personalizado após avaliação.
               </p>
             </div>
             <a
               href="#contato"
               className="inline-block mt-6 text-primary font-semibold text-sm hover:underline"
             >
-              Conheça nossa equipe →
+              Agende sua avaliação em Bauru →
             </a>
           </motion.div>
         </div>
