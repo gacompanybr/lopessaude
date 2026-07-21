@@ -1,119 +1,47 @@
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, Siren } from "lucide-react";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 import draKaren from "@/assets/dra-karen-lopes.png.asset.json";
+import logoLopes from "@/assets/logo-lopes.jpg";
 
 const WA_URL =
   "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
 
 const Hero = () => {
   return (
-    <section className="bg-background">
-      {/* Schedule strip */}
-      <div className="section-container py-4">
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center text-xs sm:text-sm items-start">
-          <div className="flex flex-col">
-            <p className="text-muted-foreground leading-tight">Segunda a Sexta</p>
-            <p className="font-semibold text-foreground whitespace-nowrap">8h às 18h</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-muted-foreground leading-tight">Sábado</p>
-            <p className="font-semibold text-foreground whitespace-nowrap">8h às 12h</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-muted-foreground leading-tight">Domingo</p>
-            <p className="font-semibold text-foreground">Fechado</p>
+    <section className="relative bg-primary overflow-hidden">
+      {/* Doctor identity pill */}
+      <div className="relative z-10 flex justify-center pt-6 sm:pt-8">
+        <div className="bg-card rounded-2xl shadow-md px-6 sm:px-10 py-3 flex items-center gap-4">
+          <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-10 sm:h-12 object-contain" />
+          <div className="h-8 sm:h-10 w-px bg-border" />
+          <div>
+            <p className="font-bold text-foreground text-sm sm:text-base leading-tight uppercase tracking-wide">
+              Dra. Karen Lopes
+            </p>
+            <p className="text-muted-foreground text-[10px] sm:text-xs uppercase tracking-wider">
+              Cirurgiã-Dentista · CROSP 94468
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Hero card */}
-      <div className="section-container pb-8">
-        <div className="bg-card rounded-3xl overflow-hidden shadow-sm">
-          <div className="grid lg:grid-cols-2 gap-0 items-center">
-            {/* Text */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="px-8 lg:px-14 pt-12 pb-8 lg:py-20"
-            >
-              <p className="text-primary font-semibold text-sm mb-3 tracking-wide uppercase">
-                Clínica Odontológica em Bauru
-              </p>
-              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-tight mb-5">
-                Transformando sorrisos em Bauru com saúde, estética e confiança.
-              </h1>
-              <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-md">
-                Atendimento humanizado em prótese, protocolo, implante dentário,
-                ortodontia e alinhadores invisíveis — plano de tratamento
-                personalizado após avaliação.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href={WA_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-track="whatsapp-click"
-                  data-event="clique_whatsapp"
-                  data-channel="whatsapp"
-                  onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
-                  className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
-                >
-                  Agende sua avaliação
-                </a>
-              </div>
-            </motion.div>
-
-            {/* Image */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="relative h-full min-h-[300px] lg:min-h-[420px]"
-            >
-              <img
-                src={draKaren.url}
-                alt="Dra. Karen Lopes — Lopes Saúde e Odontologia em Bauru"
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* Info cards */}
-      <div className="section-container pb-16">
-        <div className="grid sm:grid-cols-3 gap-5">
-          {[
-            {
-              title: "Agendamentos",
-              desc: "Horários flexíveis e equipe preparada para te receber com conforto e pontualidade.",
-              highlight: "Seg-Sex: 8h–18h",
-              icon: <CalendarDays className="w-7 h-7 text-primary" strokeWidth={1.5} />,
-            },
-            {
-              title: "Funcionamento",
-              desc: "Segunda a Sexta: 8h às 18h · Sábado: 8h às 12h · Domingo: Fechado",
-              highlight: "Sábado: 8h–12h",
-              icon: <Clock className="w-7 h-7 text-primary" strokeWidth={1.5} />,
-            },
-            {
-              title: "Urgência",
-              desc: "Dor de dente, fratura ou trauma? Fale conosco pelo WhatsApp e atendemos com rapidez.",
-              highlight: "(14) 99668-4609",
-              icon: <Siren className="w-7 h-7 text-primary" strokeWidth={1.5} />,
-            },
-          ].map((item) => (
-            <div key={item.title} className="bg-card rounded-2xl p-6 shadow-sm">
-              <div className="mb-3">{item.icon}</div>
-              <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.desc}</p>
-              <span className="text-sm font-semibold text-primary">{item.highlight}</span>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-10">
+      {/* Hero content */}
+      <div className="section-container relative z-10 grid lg:grid-cols-2 gap-8 items-center pt-12 lg:pt-16 pb-8 lg:pb-0">
+        {/* Text */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-primary-foreground lg:pr-6"
+        >
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] mb-6">
+            Transformando sorrisos em Bauru com saúde, estética e confiança.
+          </h1>
+          <p className="text-primary-foreground/90 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+            Clínica odontológica com atendimento humanizado, estrutura moderna e
+            tratamentos especializados em Prótese, Protocolo, Implante,
+            Ortodontia e Alinhadores Invisíveis.
+          </p>
           <a
             href={WA_URL}
             target="_blank"
@@ -121,12 +49,30 @@ const Hero = () => {
             data-track="whatsapp-click"
             data-event="clique_whatsapp"
             data-channel="whatsapp"
-            onClick={() => { void trackWhatsappClick("Cards — Agende sua avaliação", WA_URL); }}
-            className="inline-block bg-primary text-primary-foreground px-10 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity rounded-xl"
+            onClick={() => { void trackWhatsappClick("Hero — Agende sua avaliação", WA_URL); }}
+            className="inline-block bg-card text-primary px-10 py-4 text-sm font-bold hover:opacity-90 transition-opacity rounded-full shadow-md"
           >
             Agende sua avaliação
           </a>
-        </div>
+        </motion.div>
+
+        {/* Doctor photo with arch */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="relative flex justify-center lg:justify-end items-end"
+        >
+          <div className="relative w-full max-w-md lg:max-w-none">
+            {/* Arch backdrop */}
+            <div className="absolute inset-x-6 top-6 bottom-0 rounded-t-[999px] bg-primary-foreground/15" />
+            <img
+              src={draKaren.url}
+              alt="Dra. Karen Lopes"
+              className="relative w-full h-[420px] sm:h-[500px] lg:h-[560px] object-cover object-left rounded-t-[999px]"
+            />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
