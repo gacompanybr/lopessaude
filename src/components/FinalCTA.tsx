@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
 const WA_URL =
-  "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
+  "https://api.whatsapp.com/send?phone=5514998805438&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
 
 const FinalCTA = () => {
   return (
