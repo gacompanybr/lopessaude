@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 
 const WA_URL =
-  "https://api.whatsapp.com/send?phone=5514996684609&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20conhecer%20os%20tratamentos";
+  "https://api.whatsapp.com/send?phone=5514998805438&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20conhecer%20os%20tratamentos";
 
 const cards = [
   {

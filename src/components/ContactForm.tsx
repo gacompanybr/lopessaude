@@ -5,7 +5,7 @@ import { captureMetaTracking } from "@/lib/metaTracking";
 import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
 import { toast } from "sonner";
 
-const WHATSAPP_NUMBER = "5514996684609";
+const WHATSAPP_NUMBER = "5514998805438";
 
 const QUICK_NEEDS = [
   "Limpeza / prevenção",

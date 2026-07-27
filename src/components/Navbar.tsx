@@ -35,7 +35,7 @@ const Navbar = () => {
             <MapPin className="w-4 h-4 text-primary" />
             <span className="hidden sm:inline">Bauru - SP</span>
           </a>
-          <a href="tel:+5514996684609" className="flex items-center gap-2 hover:text-primary transition-colors">
+          <a href="tel:+5514998805438" className="flex items-center gap-2 hover:text-primary transition-colors">
             <Phone className="w-4 h-4 text-primary" />
             +55 (14)99668-4609
           </a>
