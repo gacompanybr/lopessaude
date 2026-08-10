@@ -437,7 +437,7 @@ const Settings = () => {
                   </div>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2"><MessageSquare className="w-3.5 h-3.5" /> WhatsApp</Label>
-                    <Input value={company.whatsapp} onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })} placeholder="(14) 99668-4609" />
+                    <Input value={company.whatsapp} onChange={(e) => setCompany({ ...company, whatsapp: e.target.value })} placeholder="(14) 99880-5438" />
                   </div>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> E-mail</Label>
