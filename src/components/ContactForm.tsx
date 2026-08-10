@@ -186,7 +186,7 @@ const ContactForm = () => {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Contato</p>
-                  <p className="font-semibold text-foreground">+55 (14) 99668-4609</p>
+                  <p className="font-semibold text-foreground">+55 (14) 99880-5438</p>
                 </div>
                 <div className="p-4 rounded-xl bg-background border border-border">
                   <p className="text-muted-foreground italic text-xs leading-relaxed">
@@ -230,7 +230,7 @@ const ContactForm = () => {
                     type="tel"
                     required
                     inputMode="numeric"
-                    placeholder="(14) 99668-4609"
+                    placeholder="(14) 99880-5438"
                     value={formData.whatsapp}
                     onChange={(e) =>
                       setFormData({ ...formData, whatsapp: maskPhoneBR(e.target.value) })

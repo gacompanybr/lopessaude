@@ -37,7 +37,7 @@ const faqs = [
   },
   {
     q: "Vocês atendem urgência odontológica em Bauru?",
-    a: "Sim. Para dor de dente, fratura, trauma ou pós-operatório, entre em contato pelo WhatsApp (14) 99668-4609 e nossa equipe encaixa seu atendimento com prioridade dentro do horário de funcionamento.",
+    a: "Sim. Para dor de dente, fratura, trauma ou pós-operatório, entre em contato pelo WhatsApp (14) 99880-5438 e nossa equipe encaixa seu atendimento com prioridade dentro do horário de funcionamento.",
   },
   {
     q: "Vale a pena escolher uma clínica odontológica particular em Bauru?",

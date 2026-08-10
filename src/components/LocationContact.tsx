@@ -84,7 +84,7 @@ const LocationContact = () => {
               <div>
                 <p className="font-bold text-foreground text-sm mb-1">Fale conosco</p>
                 <a href="tel:+5514998805438" className="text-sm text-muted-foreground hover:text-primary transition-colors block">
-                  +55 (14) 99668-4609
+                  +55 (14) 99880-5438
                 </a>
                 <a
                   href="https://instagram.com/lopes_saude"
