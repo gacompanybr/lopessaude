@@ -392,7 +392,7 @@ const Settings = () => {
           </TabsList>
 
           {/* ============== GERAL ============== */}
-          <TabsContent value="general">
+          <TabsContent value="general" className="space-y-6">
             <Card className="rounded-xl">
               <CardHeader>
                 <CardTitle className="text-lg">Dados da Empresa</CardTitle>
