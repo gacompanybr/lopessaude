@@ -453,7 +453,10 @@ const Settings = () => {
                 </div>
               </CardContent>
             </Card>
+
+            <MetaWebhookCard />
           </TabsContent>
+
 
           {/* ============== PERFIS ============== */}
           <TabsContent value="profiles" className="space-y-6">
