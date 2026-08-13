@@ -10,6 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import MetaWebhookCard from "@/components/MetaWebhookCard";
+
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -392,7 +394,7 @@ const Settings = () => {
           </TabsList>
 
           {/* ============== GERAL ============== */}
-          <TabsContent value="general">
+          <TabsContent value="general" className="space-y-6">
             <Card className="rounded-xl">
               <CardHeader>
                 <CardTitle className="text-lg">Dados da Empresa</CardTitle>
@@ -453,7 +455,10 @@ const Settings = () => {
                 </div>
               </CardContent>
             </Card>
+
+            <MetaWebhookCard />
           </TabsContent>
+
 
           {/* ============== PERFIS ============== */}
           <TabsContent value="profiles" className="space-y-6">
