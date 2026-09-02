@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import logoAsset from "@/assets/logo-lopes-novo.png.asset.json";
+import logoAsset from "@/assets/logo-lopes-v2.png.asset.json";
 const logo = logoAsset.url;
 
 const loginSchema = z.object({
