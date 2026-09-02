@@ -39,10 +39,6 @@ const faqs = [
     q: "Vocês atendem urgência odontológica em Bauru?",
     a: "Sim. Para dor de dente, fratura, trauma ou pós-operatório, entre em contato pelo WhatsApp (14) 99880-5438 e nossa equipe encaixa seu atendimento com prioridade dentro do horário de funcionamento.",
   },
-  {
-    q: "Vale a pena escolher uma clínica odontológica particular em Bauru?",
-    a: "Clínica particular oferece atendimento personalizado, escolha do profissional, tempo dedicado por consulta e materiais de sua preferência. Na Lopes Saúde oferecemos opções de pagamento facilitadas para tornar o tratamento acessível.",
-  },
 ];
 
 const faqSchema = {

@@ -52,7 +52,7 @@ const LocationContact = () => {
                 <MapPin className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="font-bold text-foreground text-sm mb-1">Bauru — Unidade principal</p>
+                <p className="font-bold text-foreground text-sm mb-1">Bauru — Consultório Odontológico Avenida Getúlio Vargas</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Avenida Getúlio Vargas — Bauru/SP
                 </p>
