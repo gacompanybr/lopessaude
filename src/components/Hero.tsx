@@ -33,7 +33,7 @@ const Hero = () => {
                 Dra. Karen Lopes
               </p>
               <p className="text-muted-foreground text-[10px] sm:text-xs uppercase tracking-wider">
-                Cirurgiã-Dentista · CROSP-CL 13231
+                Cirurgiã-Dentista RT · CROSP-CL 13231
               </p>
             </div>
           </div>
