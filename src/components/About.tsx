@@ -25,7 +25,7 @@ const About = () => {
             />
             <div className="absolute bottom-4 left-4 right-4 bg-card/95 backdrop-blur rounded-2xl px-5 py-4 shadow-md">
               <p className="font-bold text-foreground text-sm">Dra. Karen Cristina Costa Lopes Aleixo</p>
-              <p className="text-xs text-muted-foreground">CROSP 94468 · Responsável Técnica · CROSP-CL 13231</p>
+              <p className="text-xs text-muted-foreground">CROSP-CL 13231 · Responsável Técnica</p>
             </div>
           </motion.div>
 
@@ -64,7 +64,7 @@ const About = () => {
             <div className="grid sm:grid-cols-3 gap-4 mt-8">
               {[
                 { icon: GraduationCap, label: "Desde 2007", sub: "Atuação clínica" },
-                { icon: Award, label: "CROSP 94468", sub: "Responsável Técnica" },
+                { icon: Award, label: "CROSP-CL 13231", sub: "Responsável Técnica" },
                 { icon: Heart, label: "Atendimento", sub: "Humanizado" },
               ].map((item) => {
                 const Icon = item.icon;
