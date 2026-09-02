@@ -25,7 +25,8 @@ const About = () => {
             />
             <div className="absolute bottom-4 left-4 right-4 bg-card/95 backdrop-blur rounded-2xl px-5 py-4 shadow-md">
               <p className="font-bold text-foreground text-sm">Dra. Karen Cristina Costa Lopes Aleixo</p>
-              <p className="text-xs text-muted-foreground">Cirurgiã-Dentista RT · CROSP-CL 13231</p>
+              <p className="text-xs text-muted-foreground">Cirurgiã-Dentista RT · CROSP 94468</p>
+              <p className="text-xs text-muted-foreground">Clínica · CROSP-CL 13231</p>
             </div>
           </motion.div>
 
@@ -64,7 +65,7 @@ const About = () => {
             <div className="grid sm:grid-cols-3 gap-4 mt-8">
               {[
                 { icon: GraduationCap, label: "Desde 2007", sub: "Atuação clínica" },
-                { icon: Award, label: "CROSP-CL 13231", sub: "Cirurgiã-Dentista RT" },
+                { icon: Award, label: "CROSP 94468", sub: "Cirurgiã-Dentista RT · Clínica CROSP-CL 13231" },
                 { icon: Heart, label: "Atendimento", sub: "Humanizado" },
               ].map((item) => {
                 const Icon = item.icon;
