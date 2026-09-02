@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { savePublicLead, sendMetaEvent, STATUS_TO_META_EVENT } from "@/lib/leads";
 import { captureMetaTracking } from "@/lib/metaTracking";
 import { pushWhatsappDataLayerEvent } from "@/lib/trackWhatsappClick";
-import logoAsset from "@/assets/logo-lopes-novo.png.asset.json";
+import logoAsset from "@/assets/logo-lopes-v2.png.asset.json";
 const logo = logoAsset.url;
 
 const WHATSAPP_NUMBER = "5514998805438";
