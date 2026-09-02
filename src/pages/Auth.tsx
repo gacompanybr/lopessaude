@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import logo from "@/assets/lopes-logo.jpg";
+import logoAsset from "@/assets/logo-lopes-novo.png.asset.json";
+const logo = logoAsset.url;
 
 const loginSchema = z.object({
   identifier: z.string().trim().min(2, "Informe e-mail ou usuário").max(255),

@@ -1,4 +1,5 @@
-import logoLopes from "@/assets/logo-lopes.jpg";
+import logoAsset from "@/assets/logo-lopes-novo.png.asset.json";
+const logoLopes = logoAsset.url;
 
 const Footer = () => {
   return (

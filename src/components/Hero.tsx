@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
 import heroBanner from "@/assets/hero-lopes-banner.png.asset.json";
-import logoLopes from "@/assets/logo-lopes.jpg";
+import logoAsset from "@/assets/logo-lopes-novo.png.asset.json";
+const logoLopes = logoAsset.url;
 
 const WA_URL =
   "https://api.whatsapp.com/send?phone=5514998805438&text=Ol%C3%A1%20vim%20do%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o";
