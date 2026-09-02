@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { trackWhatsappClick } from "@/lib/trackWhatsappClick";
-import heroBanner from "@/assets/hero-karen-clinica.png.asset.json";
+import heroBanner from "@/assets/hero-lopes-banner.png.asset.json";
 import logoLopes from "@/assets/logo-lopes.jpg";
 
 const WA_URL =
