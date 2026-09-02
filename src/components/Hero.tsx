@@ -27,7 +27,7 @@ const Hero = () => {
         {/* Doctor identity pill */}
         <div className="relative z-10 flex justify-center pt-6 sm:pt-8">
           <div className="bg-card/85 backdrop-blur-md rounded-2xl shadow-lg px-6 sm:px-10 py-3 flex items-center gap-4 border border-white/40">
-            <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-10 sm:h-12 object-contain" />
+            <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-7 sm:h-9 object-contain" />
             <div className="h-8 sm:h-10 w-px bg-border" />
             <div>
               <p className="font-bold text-foreground text-sm sm:text-base leading-tight uppercase tracking-wide">
