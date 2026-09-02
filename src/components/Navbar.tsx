@@ -51,7 +51,7 @@ const Navbar = () => {
       >
         <div className="section-container flex items-center justify-between h-20">
           <a href="#" className="flex items-center gap-2">
-            <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-12 object-contain" />
+            <img src={logoLopes} alt="Lopes Saúde e Odontologia" className="h-8 sm:h-9 object-contain" />
           </a>
 
           {/* Desktop links */}
