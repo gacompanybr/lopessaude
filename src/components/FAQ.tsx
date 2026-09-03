@@ -4,8 +4,8 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    q: "Quanto custa um implante dentário em Bauru?",
-    a: "O valor do implante dentário varia conforme o caso — número de dentes, tipo de prótese sobre implante e necessidade de enxerto ósseo. Somos uma clínica particular em Bauru e informamos o valor personalizado após a avaliação. Fale com nossa equipe pelo WhatsApp para conhecer as condições e opções de pagamento parcelado.",
+    q: "Quanto custa um implante dentário?",
+    a: "O valor do implante dentário varia conforme o caso — número de dentes, tipo de prótese sobre implante e necessidade de enxerto ósseo. Somos uma clínica particular  e informamos o valor personalizado após a avaliação. Fale com nossa equipe pelo WhatsApp para conhecer as condições e opções de pagamento parcelado.",
   },
   {
     q: "Qual a diferença entre prótese dentária e implante dentário?",
@@ -61,7 +61,7 @@ const FAQ = () => {
         >
           <p className="text-primary font-semibold text-sm mb-2">Dúvidas Frequentes</p>
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
-            Perguntas frequentes sobre dentista em Bauru
+            Perguntas frequentes sobre dentista
           </h2>
           <p className="text-muted-foreground text-sm mt-3">
             Atendemos Bauru e região: Duartina, Lençóis Paulista, Pederneiras, Bariri e Agudos.
