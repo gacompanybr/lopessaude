@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Hospital, Banknote, ShieldCheck, Search } from "lucide-react";
+import { Hospital, Banknote, Search } from "lucide-react";
 import beforeAfter1 from "@/assets/teeth-restoration.jpg.asset.json";
 import beforeAfter2 from "@/assets/whitening.jpg.asset.json";
 import beforeAfter3 from "@/assets/braces-before-after.png.asset.json";
