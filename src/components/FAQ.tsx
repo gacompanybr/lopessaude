@@ -35,10 +35,6 @@ const faqs = [
     q: "Quanto tempo dura um implante dentário?",
     a: "Um implante dentário bem indicado e cuidado pode durar a vida toda. Oferecemos garantia vitalícia nos implantes realizados na clínica, condicionada às revisões e higiene bucal recomendadas.",
   },
-  {
-    q: "Vocês atendem urgência odontológica em Bauru?",
-    a: "Sim. Para dor de dente, fratura, trauma ou pós-operatório, entre em contato pelo WhatsApp (14) 99880-5438 e nossa equipe encaixa seu atendimento com prioridade dentro do horário de funcionamento.",
-  },
 ];
 
 const faqSchema = {
