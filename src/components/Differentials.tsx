@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Hospital, Banknote, ShieldCheck, Search } from "lucide-react";
+import { Hospital, Banknote, Search } from "lucide-react";
 import beforeAfter1 from "@/assets/teeth-restoration.jpg.asset.json";
 import beforeAfter2 from "@/assets/whitening.jpg.asset.json";
 import beforeAfter3 from "@/assets/braces-before-after.png.asset.json";
@@ -14,11 +14,6 @@ const features = [
     title: "INFORMAÇÕES SOBRE VALORES",
     desc: "A Lopes Saúde é uma clínica particular. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
     icon: <Banknote className="w-6 h-6 text-primary" strokeWidth={1.5} />,
-  },
-  {
-    title: "GARANTIA VITALÍCIA",
-    desc: "Entendemos que um tratamento odontológico é um investimento para a vida toda. Por isso, oferecemos garantia vitalícia para os nossos implantes dentários.",
-    icon: <ShieldCheck className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
     title: "AVALIAÇÃO ESPECIALIZADA",
