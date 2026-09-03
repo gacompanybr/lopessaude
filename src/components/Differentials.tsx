@@ -16,11 +16,6 @@ const features = [
     icon: <Banknote className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
-    title: "GARANTIA VITALÍCIA",
-    desc: "Entendemos que um tratamento odontológico é um investimento para a vida toda. Por isso, oferecemos garantia vitalícia para os nossos implantes dentários.",
-    icon: <ShieldCheck className="w-6 h-6 text-primary" strokeWidth={1.5} />,
-  },
-  {
     title: "AVALIAÇÃO ESPECIALIZADA",
     desc: "Utilizamos tecnologias avançadas para garantir uma avaliação ainda mais precisa e detalhada, com plano de tratamento personalizado.",
     icon: <Search className="w-6 h-6 text-primary" strokeWidth={1.5} />,
