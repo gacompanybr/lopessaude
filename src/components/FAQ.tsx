@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     q: "Quanto custa um implante dentário?",
-    a: "O valor do implante dentário varia conforme o caso — número de dentes, tipo de prótese sobre implante e necessidade de enxerto ósseo. Somos uma clínica particular  e informamos o valor personalizado após a avaliação. Fale com nossa equipe pelo WhatsApp para conhecer as condições e opções de pagamento parcelado.",
+    a: "O valor do implante dentário varia conforme o caso — número de dentes, tipo de prótese sobre implante e necessidade de enxerto ósseo. Somos uma clínica particular e informamos o valor personalizado após a avaliação. Fale com nossa equipe pelo WhatsApp.",
   },
   {
     q: "Qual a diferença entre prótese dentária e implante dentário?",
@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "Quanto tempo dura um implante dentário?",
-    a: "Um implante dentário bem indicado e cuidado pode durar a vida toda. Oferecemos garantia vitalícia nos implantes realizados na clínica, condicionada às revisões e higiene bucal recomendadas.",
+    a: "Um implante dentário bem indicado e cuidado pode durar muitos anos. A durabilidade depende das revisões periódicas e da higiene bucal adequada.",
   },
 ];
 
