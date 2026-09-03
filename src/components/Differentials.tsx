@@ -12,7 +12,7 @@ const features = [
   },
   {
     title: "INFORMAÇÕES SOBRE VALORES",
-    desc: "A Lopes Saúde é uma clínica particular, com valores acessíveis e opções de pagamento. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
+    desc: "A Lopes Saúde é uma clínica particular. Para saber o valor do seu atendimento, fale com nossa equipe pelo WhatsApp.",
     icon: <Banknote className="w-6 h-6 text-primary" strokeWidth={1.5} />,
   },
   {
