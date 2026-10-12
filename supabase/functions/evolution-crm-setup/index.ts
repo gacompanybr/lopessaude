@@ -16,7 +16,7 @@ Deno.serve(async req=>{
     if(!user) return json({error:'Unauthorized'},401);
     const {data:admin}=await db.rpc('has_role',{_user_id:user.id,_role:'admin'});
     if(!admin) return json({error:'Forbidden'},403);
-    const parsed=z.object({action:z.enum(['inspect','activate'])}).safeParse(await req.json());
+    const parsed=z.object({action:z.enum(['inspect','activate']),force:z.boolean().optional()}).safeParse(await req.json());
     if(!parsed.success) return json({error:'Invalid action'},400);
     const call=async(path:string,body?:unknown)=>{
       const response=await fetch(`${base.replace(/\/$/,'')}${path}`,{method:body?'POST':'GET',headers:{apikey:apiKey,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(15000)});

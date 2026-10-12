@@ -11,10 +11,22 @@ Deno.serve(async req => {
   const secret = Deno.env.get('EVOLUTION_WEBHOOK_SECRET');
   if (!secret || req.headers.get('x-webhook-secret')!==secret) return json({error:'Unauthorized'},401);
   try {
-    const parsed = schema.safeParse(await req.json());
+    const raw = await req.text();
+    const parsed = schema.safeParse(JSON.parse(raw));
     if (!parsed.success) return json({error:'Invalid webhook payload'},400);
     const {event,instance,data}=parsed.data;
     if (instance!==Deno.env.get('EVOLUTION_INSTANCE')) return json({error:'Unexpected instance'},400);
+    // Forward every event to the pre-existing integration (the clinic's bot),
+    // so taking over the instance webhook never breaks it.
+    const forwardUrl = Deno.env.get('EVOLUTION_FORWARD_URL');
+    if (forwardUrl) {
+      try {
+        const fwd = await fetch(forwardUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body: raw, signal: AbortSignal.timeout(10000)});
+        if (!fwd.ok) console.error('Forward to existing integration failed:', fwd.status);
+      } catch (fwdError) {
+        console.error('Forward to existing integration error:', fwdError instanceof Error ? fwdError.message : 'unknown');
+      }
+    }
     if (event.toLowerCase().replace(/_/g,'.')!=='messages.upsert') return json({ignored:true});
     const url=Deno.env.get('SUPABASE_URL'), key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (!url || !key) return json({error:'Service unavailable'},503);
