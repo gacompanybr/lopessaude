@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, QrCode, LogOut, CheckCircle2, RefreshCw, Wifi, WifiOff, Settings } from "lucide-react";
+import { Loader2, QrCode, LogOut, CheckCircle2, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import {
-  clearEvolutionConfig,
   fetchConnectionState,
   fetchQrCode,
   getEvolutionConfig,
   logoutInstance,
-  saveEvolutionConfig,
   type EvolutionConfig,
 } from "@/lib/evolution";
 
@@ -19,9 +15,7 @@ interface Props {
 }
 
 const EvolutionConnect = ({ onStatusChange }: Props) => {
-  const [cfg, setCfg] = useState<EvolutionConfig>(getEvolutionConfig());
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState<EvolutionConfig>(getEvolutionConfig());
+  const [cfg] = useState<EvolutionConfig>(getEvolutionConfig());
   const [state, setState] = useState<string>("unknown");
   const [qr, setQr] = useState<{ base64?: string; code?: string; pairingCode?: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,17 +39,6 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
     const id = setInterval(tick, 5000);
     return () => { alive = false; clearInterval(id); };
   }, [cfg, qr]);
-
-  const handleSave = () => {
-    if (!form.baseUrl || !form.apiKey || !form.instance) {
-      toast.error("Preencha URL, API Key e nome da instância");
-      return;
-    }
-    saveEvolutionConfig(form);
-    setCfg(getEvolutionConfig());
-    setEditing(false);
-    toast.success("Configuração salva");
-  };
 
   const handleGenerateQr = async () => {
     if (!cfg) return;
@@ -96,17 +79,6 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
     }
   };
 
-  const handleReset = () => {
-    if (!confirm("Restaurar configuração padrão da Evolution API?")) return;
-    clearEvolutionConfig();
-    const def = getEvolutionConfig();
-    setCfg(def);
-    setForm(def);
-    setEditing(false);
-    setQr(null);
-    setState("unknown");
-  };
-
   return (
     <div className="bg-card rounded-xl border border-border p-5 space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -127,7 +99,7 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
           </div>
         </div>
         <div className="flex gap-2">
-          {cfg && !editing && (
+          {cfg && (
             <>
               <Button variant="outline" size="sm" onClick={handleCheckNow} disabled={checking} className="gap-2">
                 {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
@@ -138,43 +110,7 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
         </div>
       </div>
 
-      {false && editing && (
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div>
-            <Label className="text-xs">URL da Evolution API</Label>
-            <Input placeholder="https://evolution.seudominio.com"
-              value={form.baseUrl} onChange={(e) => setForm({ ...form, baseUrl: e.target.value })} />
-          </div>
-          <div>
-            <Label className="text-xs">API Key (global)</Label>
-            <Input placeholder="apikey" type="password"
-              value={form.apiKey} onChange={(e) => setForm({ ...form, apiKey: e.target.value })} />
-          </div>
-          <div>
-            <Label className="text-xs">Nome da instância</Label>
-            <Input placeholder="ex: lopes-saude"
-              value={form.instance} onChange={(e) => setForm({ ...form, instance: e.target.value })} />
-          </div>
-          <div className="sm:col-span-3 flex gap-2">
-            <Button size="sm" onClick={handleSave}>Salvar configuração</Button>
-            {cfg && (
-              <Button size="sm" variant="ghost" onClick={() => { setEditing(false); setForm(cfg); }}>
-                Cancelar
-              </Button>
-            )}
-            {cfg && (
-              <Button size="sm" variant="ghost" className="ml-auto text-destructive" onClick={handleReset}>
-                Remover config
-              </Button>
-            )}
-          </div>
-          <p className="sm:col-span-3 text-xs text-muted-foreground">
-            As credenciais ficam salvas apenas neste navegador. As chamadas partem do seu dispositivo direto para sua Evolution API.
-          </p>
-        </div>
-      )}
-
-      {cfg && !editing && (
+      {cfg && (
         <div className="space-y-3">
           {connected ? (
             <div className="flex items-center justify-between gap-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg px-4 py-3">
