@@ -12,7 +12,7 @@ const STORAGE_KEY = "evolution_config_v1";
 const DEFAULT_CONFIG: EvolutionConfig = {
   baseUrl: "https://evo.gacompany.online",
   apiKey: "e1f579cd2b8a109c9959dcd829b1a23cc6de6623",
-  instance: "disparo clinica lopes",
+  instance: "port_bab9656f_n1k1u",
 };
 
 export function getDefaultEvolutionConfig(): EvolutionConfig {
