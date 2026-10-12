@@ -47,9 +47,10 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !SUPABASE_ANON_KEY) return new Response('Configuration missing', { status: 503, headers: corsHeaders });
   const META_DATASET_ID = Deno.env.get("META_DATASET_ID");
   const META_ACCESS_TOKEN = Deno.env.get("META_ACCESS_TOKEN");
   const META_TEST_EVENT_CODE = Deno.env.get("META_TEST_EVENT_CODE") || null;
@@ -74,6 +75,8 @@ Deno.serve(async (req) => {
     });
   }
   const callerUserId = userData.user.id;
+  const { data: allowed, error: accessError } = await userClient.rpc('has_crm_access');
+  if (accessError || !allowed) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   if (!META_DATASET_ID || !META_ACCESS_TOKEN) {
     return new Response(
@@ -95,7 +98,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  if (!body.lead_id || !body.event_name) {
+  if (typeof body.lead_id !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.lead_id) || !['Novo', 'EmContato', 'Agendado', 'Convertido', 'Perdido'].includes(body.event_name)) {
     return new Response(
       JSON.stringify({ error: "lead_id and event_name are required" }),
       {
@@ -172,7 +175,7 @@ Deno.serve(async (req) => {
     requestPayload.test_event_code = META_TEST_EVENT_CODE;
   }
 
-  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${META_DATASET_ID}/events?access_token=${META_ACCESS_TOKEN}`;
+  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${META_DATASET_ID}/events`;
 
   let httpStatus = 0;
   let responseJson: unknown = null;
@@ -182,7 +185,7 @@ Deno.serve(async (req) => {
   try {
     const resp = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${META_ACCESS_TOKEN}` },
       body: JSON.stringify(requestPayload),
     });
     httpStatus = resp.status;

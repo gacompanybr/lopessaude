@@ -133,15 +133,12 @@ const EvolutionConnect = ({ onStatusChange }: Props) => {
                 {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                 Verificar
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setEditing(true)} className="gap-2">
-                <Settings className="w-4 h-4" /> Editar
-              </Button>
             </>
           )}
         </div>
       </div>
 
-      {editing && (
+      {false && editing && (
         <div className="grid gap-3 sm:grid-cols-3">
           <div>
             <Label className="text-xs">URL da Evolution API</Label>
