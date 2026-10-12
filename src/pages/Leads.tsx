@@ -12,6 +12,7 @@ import {
   ORIGEM_LABELS,
   TAG_ORIGEM_LABELS,
   TAG_ORIGEM_COLORS,
+  CATEGORY_LABELS, campaignKey, campaignLabel,
 } from "@/lib/leads";
 import {
   Trash2, RefreshCw, Users, Clock, MapPin, Phone, MessageSquare,
@@ -43,6 +44,9 @@ import {
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DispatchTab from "@/components/dispatch/DispatchTab";
+import CampaignRulesDialog from "@/components/CampaignRulesDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Send } from "lucide-react";
 
 const ORIGEM_COLORS: Record<LeadOrigem, string> = {
@@ -97,6 +101,11 @@ const Leads = () => {
   const [statusFilter, setStatusFilter] = useState<string>("todos");
   const [origemFilter, setOrigemFilter] = useState<string>("todos");
   const [search, setSearch] = useState("");
+  const [tagFilter, setTagFilter] = useState("todos");
+  const [campaignFilter, setCampaignFilter] = useState("todos");
+  const [categoryFilter, setCategoryFilter] = useState("todos");
+  const { isAdmin } = useUserRole();
+  const campaigns = useMemo(() => Array.from(new Map(leads.filter(l=>campaignKey(l)).map(l=>[`${l.tag_origem}:${campaignKey(l)}`, {key:`${l.tag_origem}:${campaignKey(l)}`,label:campaignLabel(l)}])).values()), [leads]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
   const [page, setPage] = useState(1);
@@ -125,6 +134,9 @@ const Leads = () => {
 
   useEffect(() => {
     refresh();
+    const channel = supabase.channel('crm-leads-changes').on('postgres_changes', {event:'*',schema:'public',table:'leads'}, ()=>void refresh()).subscribe();
+    const timer = setInterval(()=>void refresh(),60000);
+    return () => { clearInterval(timer); void supabase.removeChannel(channel); };
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -170,14 +182,18 @@ const Leads = () => {
       }
       if (statusFilter !== "todos" && lead.status !== statusFilter) return false;
       if (origemFilter !== "todos" && lead.origem !== origemFilter) return false;
+      if (tagFilter !== "todos" && lead.tag_origem !== tagFilter) return false;
+      if (campaignFilter !== "todos" && `${lead.tag_origem}:${campaignKey(lead)}` !== campaignFilter) return false;
+      if (categoryFilter === "sem_categoria" && lead.category) return false;
+      if (categoryFilter !== "todos" && categoryFilter !== "sem_categoria" && lead.category !== categoryFilter) return false;
       if (search) {
         const q = search.toLowerCase();
-        const hay = `${lead.name || ""} ${lead.whatsapp} ${lead.city} ${lead.message || ""}`.toLowerCase();
+        const hay = `${lead.name || ""} ${lead.whatsapp} ${lead.city} ${lead.message || ""} ${campaignLabel(lead)} ${CATEGORY_LABELS[lead.category??'']??''}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [leads, startDate, endDate, statusFilter, origemFilter, search]);
+  }, [leads, startDate, endDate, statusFilter, origemFilter, search, tagFilter, campaignFilter, categoryFilter]);
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("pt-BR", {
@@ -243,13 +259,14 @@ const Leads = () => {
   const clearFilters = () => {
     setStartDate(undefined); setEndDate(undefined);
     setStatusFilter("todos"); setOrigemFilter("todos"); setSearch("");
+    setTagFilter("todos"); setCampaignFilter("todos"); setCategoryFilter("todos");
   };
 
   const openNew = () => { setEditing(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => { setEditing(lead); setDialogOpen(true); };
 
   // Reset to page 1 whenever filters or page size change
-  useEffect(() => { setPage(1); }, [search, statusFilter, origemFilter, startDate, endDate, pageSize]);
+  useEffect(() => { setPage(1); }, [search, statusFilter, origemFilter, startDate, endDate, pageSize, tagFilter, campaignFilter, categoryFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
   const paginatedLeads = useMemo(
@@ -343,6 +360,12 @@ const Leads = () => {
 
         {/* Filters */}
         <div className="bg-card rounded-xl border border-border p-4 space-y-3" data-tour="filters">
+          <div className="flex flex-wrap gap-3">
+            <Select value={tagFilter} onValueChange={setTagFilter}><SelectTrigger aria-label="Filtrar plataforma" className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="todos">Todas plataformas</SelectItem>{Object.entries(TAG_ORIGEM_LABELS).map(([k,v])=><SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent></Select>
+            <Select value={campaignFilter} onValueChange={setCampaignFilter}><SelectTrigger aria-label="Filtrar campanha" className="w-full sm:w-[240px]"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="todos">Todas campanhas</SelectItem>{campaigns.map(c=><SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}</SelectContent></Select>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}><SelectTrigger aria-label="Filtrar categoria" className="w-full sm:w-[220px]"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="todos">Todas categorias</SelectItem>{Object.entries(CATEGORY_LABELS).map(([k,v])=><SelectItem key={k} value={k}>{v}</SelectItem>)}<SelectItem value="sem_categoria">Sem categoria</SelectItem></SelectContent></Select>
+            {isAdmin && <CampaignRulesDialog onSaved={refresh} />}
+          </div>
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[220px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -395,7 +418,7 @@ const Leads = () => {
                 <Calendar mode="single" selected={endDate} onSelect={setEndDate} locale={ptBR} initialFocus className="p-3 pointer-events-auto" />
               </PopoverContent>
             </Popover>
-            {(startDate || endDate || statusFilter !== "todos" || origemFilter !== "todos" || search) && (
+            {(startDate || endDate || statusFilter !== "todos" || origemFilter !== "todos" || search || tagFilter !== "todos" || campaignFilter !== "todos" || categoryFilter !== "todos") && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
                 Limpar filtros
               </Button>
@@ -553,6 +576,10 @@ const Leads = () => {
                             {TAG_ORIGEM_LABELS[lead.tag_origem]}
                           </span>
                         )}
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-3 flex flex-wrap gap-x-4 gap-y-1">
+                        <span className="break-words">Campanha: <span className="text-foreground">{campaignLabel(lead)}</span></span>
+                        <span>Categoria: <span className="text-foreground">{CATEGORY_LABELS[lead.category??'']??'Sem categoria'}</span></span>
                       </div>
                       <div className="grid sm:grid-cols-3 gap-3 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
