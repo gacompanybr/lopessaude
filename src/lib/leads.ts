@@ -33,7 +33,16 @@ export interface Lead {
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
+  meta_campaign_id?: string | null;
+  meta_campaign_name?: string | null;
+  campaign_name?: string | null;
+  category?: string | null;
+  whatsapp_received_at?: string | null;
 }
+
+export const CATEGORY_LABELS: Record<string, string> = { aluguel_sala: "Aluguel de Sala", clinica: "Clínica — Tratamentos" };
+export const campaignKey = (lead: Lead) => lead.meta_campaign_id || lead.utm_campaign || "";
+export const campaignLabel = (lead: Lead) => lead.campaign_name || lead.meta_campaign_name || campaignKey(lead) || "Não identificada";
 
 export interface NewLeadInput {
   name?: string | null;
@@ -49,12 +58,13 @@ export interface NewLeadInput {
 }
 
 export async function getLeads(): Promise<Lead[]> {
-  const { data, error } = await supabase
-    .from("leads")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data || []) as Lead[];
+  const all: Lead[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data, error } = await supabase.from("leads").select("*").order("created_at", { ascending: false }).order("id").range(offset, offset + 999);
+    if (error) throw error;
+    all.push(...(data || []) as Lead[]);
+    if (!data || data.length < 1000) return all;
+  }
 }
 
 function buildLeadInsertPayload(lead: NewLeadInput, id?: string) {

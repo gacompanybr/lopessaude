@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import MetaWebhookCard from "@/components/MetaWebhookCard";
+import WhatsAppIngestionCard from "@/components/WhatsAppIngestionCard";
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
@@ -395,6 +396,7 @@ const Settings = () => {
 
           {/* ============== GERAL ============== */}
           <TabsContent value="general" className="space-y-6">
+            <WhatsAppIngestionCard />
             <Card className="rounded-xl">
               <CardHeader>
                 <CardTitle className="text-lg">Dados da Empresa</CardTitle>
