@@ -16,7 +16,7 @@ Deno.serve(async req=>{
     if(!user) return json({error:'Unauthorized'},401);
     const {data:admin}=await db.rpc('has_role',{_user_id:user.id,_role:'admin'});
     if(!admin) return json({error:'Forbidden'},403);
-    const parsed=z.object({action:z.enum(['inspect','activate'])}).safeParse(await req.json());
+    const parsed=z.object({action:z.enum(['inspect','activate']),force:z.boolean().optional()}).safeParse(await req.json());
     if(!parsed.success) return json({error:'Invalid action'},400);
     const call=async(path:string,body?:unknown)=>{
       const response=await fetch(`${base.replace(/\/$/,'')}${path}`,{method:body?'POST':'GET',headers:{apikey:apiKey,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(15000)});
@@ -33,7 +33,7 @@ Deno.serve(async req=>{
     const target=`${url}/functions/v1/evolution-leads-webhook`;
     const occupied=Boolean(hook?.enabled&&hook?.url&&hook.url!==target);
     if(parsed.data.action==='activate'){
-      if(occupied) return json({error:'Esta instância já envia mensagens para outra integração. Ela foi preservada; encaminhe também os eventos ao CRM pela integração existente.',blocked:true},409);
+      if(occupied&&!parsed.data.force) return json({error:'Esta instância já envia mensagens para outra integração. Ela foi preservada; encaminhe também os eventos ao CRM pela integração existente.',blocked:true},409);
       await call(`/webhook/set/${encodeURIComponent(instance)}`,{webhook:{enabled:true,url:target,webhookByEvents:false,webhookBase64:false,headers:{'x-webhook-secret':secret},events:['MESSAGES_UPSERT']}});
     }
     const verified=parsed.data.action==='activate'?await call(`/webhook/find/${encodeURIComponent(instance)}`):current;
