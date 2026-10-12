@@ -33,7 +33,7 @@ Deno.serve(async req=>{
     const target=`${url}/functions/v1/evolution-leads-webhook`;
     const occupied=Boolean(hook?.enabled&&hook?.url&&hook.url!==target);
     if(parsed.data.action==='activate'){
-      if(occupied) return json({error:'Esta instância já envia mensagens para outra integração. Ela foi preservada; encaminhe também os eventos ao CRM pela integração existente.',blocked:true},409);
+      if(occupied&&!parsed.data.force) return json({error:'Esta instância já envia mensagens para outra integração. Ela foi preservada; encaminhe também os eventos ao CRM pela integração existente.',blocked:true},409);
       await call(`/webhook/set/${encodeURIComponent(instance)}`,{webhook:{enabled:true,url:target,webhookByEvents:false,webhookBase64:false,headers:{'x-webhook-secret':secret},events:['MESSAGES_UPSERT']}});
     }
     const verified=parsed.data.action==='activate'?await call(`/webhook/find/${encodeURIComponent(instance)}`):current;
