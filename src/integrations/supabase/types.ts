@@ -50,6 +50,36 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_campaign_rules: {
+        Row: {
+          active: boolean
+          campaign_key: string
+          campaign_name: string
+          category: string
+          id: string
+          message_match: string | null
+          platform: string
+        }
+        Insert: {
+          active?: boolean
+          campaign_key: string
+          campaign_name: string
+          category: string
+          id?: string
+          message_match?: string | null
+          platform: string
+        }
+        Update: {
+          active?: boolean
+          campaign_key?: string
+          campaign_name?: string
+          category?: string
+          id?: string
+          message_match?: string | null
+          platform?: string
+        }
+        Relationships: []
+      }
       lead_origem_history: {
         Row: {
           automatic: boolean
@@ -125,6 +155,8 @@ export type Database = {
       }
       leads: {
         Row: {
+          campaign_name: string | null
+          category: string | null
           city: string
           created_at: string
           email: string | null
@@ -168,8 +200,11 @@ export type Database = {
           utm_source: string | null
           utm_term: string | null
           whatsapp: string
+          whatsapp_received_at: string | null
         }
         Insert: {
+          campaign_name?: string | null
+          category?: string | null
           city: string
           created_at?: string
           email?: string | null
@@ -213,8 +248,11 @@ export type Database = {
           utm_source?: string | null
           utm_term?: string | null
           whatsapp: string
+          whatsapp_received_at?: string | null
         }
         Update: {
+          campaign_name?: string | null
+          category?: string | null
           city?: string
           created_at?: string
           email?: string | null
@@ -258,6 +296,7 @@ export type Database = {
           utm_source?: string | null
           utm_term?: string | null
           whatsapp?: string
+          whatsapp_received_at?: string | null
         }
         Relationships: []
       }
@@ -445,6 +484,35 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_ingestion_events: {
+        Row: {
+          instance: string
+          lead_id: string | null
+          message_id: string
+          received_at: string
+        }
+        Insert: {
+          instance: string
+          lead_id?: string | null
+          message_id: string
+          received_at?: string
+        }
+        Update: {
+          instance?: string
+          lead_id?: string | null
+          message_id?: string
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_ingestion_events_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -507,6 +575,22 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      ingest_whatsapp_lead: {
+        Args: {
+          _campaign_id: string
+          _campaign_name: string
+          _category: string
+          _ctwa_clid: string
+          _instance: string
+          _is_meta: boolean
+          _message: string
+          _message_id: string
+          _name: string
+          _phone: string
+          _received_at: string
+        }
+        Returns: Json
       }
     }
     Enums: {
