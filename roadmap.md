@@ -1,5 +1,9 @@
 # Roadmap — Integração CRM (Google Ads + Meta Ads)
 
+- [ ] Segurança: corrigir cinco bloqueios de acesso aos leads, históricos, logs e perfis
+- [ ] Segurança: revisar integrações, credenciais e dependências; corrigir problemas confirmados
+- [ ] Segurança: validar acessos permitidos/negados e executar nova varredura
+
 - [x] Banco: colunas campanha/categoria, regras de campanha, dedup de mensagens, prioridade gclid > cookie Meta
 - [x] Reclassificar leads de outubro com gclid para google_ads
 - [x] Edge functions: evolution-leads-webhook (com repasse ao robô GACompany) e evolution-crm-setup
